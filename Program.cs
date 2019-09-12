@@ -14,46 +14,83 @@ namespace MoneyExperiment
         }
 
         ///private const string Paths = @"database\Summary.txt";
-        private const string Items = @"database\items.txt";
-        private const string Costs = @"database\costs.txt";
+        private const string Items = @"database\items.krs";
+        private const string Costs = @"database\costs.krs";
 
         private static readonly List<string> myInputItem = new List<string>();
         private static readonly List<double> myInputCost = new List<double>();
-        private static int lineCount = File.ReadLines(Items).Count();
+        private static int lineCount;// 
 
         private static void Main()
         {
             Console.WriteLine("Welcome!");
 
-
-            try
-            {   // Open the text file using a stream reader.
-                using (StreamReader srItems = new StreamReader(Items))
-                {
-                    // Read the stream to a string, and write the string to the console.
-                    for (int i = 0; i < lineCount; i++)
-                    {
-                        myInputItem.Add(srItems.ReadLine());
-                    }
-                    srItems.Close();
-                }
-
-                using (StreamReader srCosts = new StreamReader(Costs))
-                {
-                    for (int i = 0; i < lineCount; i++)
-                    {
-                        myInputCost.Add(Convert.ToDouble(srCosts.ReadLine()));
-                    }
-                    srCosts.Close();
-                }
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-            }
+            CheckForMissingFiles();
 
             ListSummary();
+        }
+
+        private static void CheckForMissingFiles()
+        {
+            if (!Directory.Exists("database"))
+            {
+                Console.WriteLine("database folder was missing so we created one for you");
+                Directory.CreateDirectory("database");
+            }
+
+            if (!File.Exists(Items))
+            {
+                Console.WriteLine("items file was missing so we created one for you");
+                File.Create(Items);
+                lineCount = 0;
+            }
+            else
+            {
+                lineCount = File.ReadLines(Items).Count();
+                try
+                {   // Open the text file using a stream reader.
+                    using (StreamReader srItems = new StreamReader(Items))
+                    {
+                        // Read the stream to a string, and write the string to the console.
+                        for (int i = 0; i < lineCount; i++)
+                        {
+                            myInputItem.Add(srItems.ReadLine());
+                        }
+                        srItems.Close();
+                    }
+
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            if (!File.Exists(Costs))
+            {
+                Console.WriteLine("costs file was missing so we created one for you");
+                File.Create(Costs);
+            }
+            else
+            {
+                try
+                {
+                    using (StreamReader srCosts = new StreamReader(Costs))
+                    {
+                        for (int i = 0; i < lineCount; i++)
+                        {
+                            myInputCost.Add(Convert.ToDouble(srCosts.ReadLine()));
+                        }
+                        srCosts.Close();
+                    }
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine(e.Message);
+                }
+            }
         }
 
         private static void ListSummary()
