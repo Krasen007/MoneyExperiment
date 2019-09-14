@@ -19,31 +19,36 @@ namespace MoneyExperiment
 
         private static readonly List<string> myInputItem = new List<string>();
         private static readonly List<double> myInputCost = new List<double>();
-        private static int lineCount;// 
-        private static readonly string key = "b14ca5898a4e4133bbce2ea2315a1911";
-        ///private static string str = Console.ReadLine();
-        private static string encryptedString;/// = AesOperation.EncryptString(key, str);
+        private static int lineCount;
+        private static string UserKey;
+
 
         private static void Main()
         {
             Console.WriteLine("Welcome!");
-                       
-            /// Console.WriteLine("Please enter a secret key for the symmetric algorithm.");  
-            /// var key = Console.ReadLine();  
-            ///var 
 
-            ////Console.Write("Please enter a string for encryption: ");
-            
-            ////Console.WriteLine($"encrypted string = {encryptedString}");
-
-            ////var decryptedString = AesOperation.DecryptString(key, encryptedString);
-            ////Console.WriteLine($"decrypted string = {decryptedString}");
-
-            ///Console.ReadKey();
+            Login();
 
             CheckForMissingFiles();
 
             ListSummary();
+        }
+
+        private static void Login()
+        {
+            Console.WriteLine("Please enter a secret key for the symmetric algorithm.");
+            var key = Console.ReadLine();
+            if (key.Length <= 31)
+            {
+                Console.WriteLine("Wrong password!");
+                Login();
+            }
+            else
+            {
+                UserKey = key;
+            }
+
+
         }
 
         private static void CheckForMissingFiles()
@@ -70,9 +75,7 @@ namespace MoneyExperiment
                         // Read the stream to a string, and write the string to the console.
                         for (int i = 0; i < lineCount; i++)
                         {
-                            var decryptedString = AesOperation.DecryptString(key, srItems.ReadLine());
-                            Console.WriteLine($"decrypted string = {decryptedString}");
-
+                            var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
                             myInputItem.Add(decryptedString);
                         }
                         srItems.Close();
@@ -99,8 +102,7 @@ namespace MoneyExperiment
                     {
                         for (int i = 0; i < lineCount; i++)
                         {
-                            var decryptedString = AesOperation.DecryptString(key, srCosts.ReadLine());
-                            Console.WriteLine($"decrypted string = {decryptedString}");
+                            var decryptedString = AesOperation.DecryptString(UserKey, srCosts.ReadLine());
                             myInputCost.Add(Convert.ToDouble(decryptedString));
                         }
                         srCosts.Close();
@@ -214,7 +216,7 @@ namespace MoneyExperiment
             {
                 for (int i = 0; i < lineCount; i++)
                 {
-                    encryptedString = AesOperation.EncryptString(key, myInputCost[i].ToString());
+                    var encryptedString = AesOperation.EncryptString(UserKey, myInputCost[i].ToString());
                     outputFile.WriteLine(encryptedString);
                 }
             }
@@ -224,8 +226,7 @@ namespace MoneyExperiment
             {
                 for (int i = 0; i < lineCount; i++)
                 {
-                    encryptedString = AesOperation.EncryptString(key, myInputItem[i].ToString());
-                    ///outputFile.WriteLine(encryptedString);
+                    var encryptedString = AesOperation.EncryptString(UserKey, myInputItem[i].ToString());
                     outputFile.WriteLine(encryptedString);
                 }
             }

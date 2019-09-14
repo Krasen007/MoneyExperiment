@@ -17,7 +17,7 @@
             byte[] iv = new byte[16];
             byte[] encrypted;
 
-            using (Aes aes = Aes.Create())
+            using (AesManaged aes = new AesManaged())
             {
                 aes.Key = Encoding.UTF8.GetBytes(key);
                 aes.IV = iv;
@@ -42,7 +42,7 @@
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipherText);
 
-            using Aes aes = Aes.Create();
+            using AesManaged aes = new AesManaged();
             aes.Key = Encoding.UTF8.GetBytes(key);
             aes.IV = iv;
 
