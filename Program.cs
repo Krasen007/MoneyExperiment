@@ -2,10 +2,12 @@
 
 namespace MoneyExperiment
 {
+    using MoneyExperiment.Helpers;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Security;
     using System.Text;
 
     public class Program
@@ -14,7 +16,7 @@ namespace MoneyExperiment
         {
         }
 
-        ///private const string Paths = @"database\Summary.txt";
+        private const string Paths = @"database\Summary.txt";
         private const string Items = @"database\items.krs";
         private const string Costs = @"database\costs.krs";
 
@@ -23,53 +25,48 @@ namespace MoneyExperiment
         private static int lineCount;
         private static string UserKey;
 
-
         private static void Main()
         {
             Console.WriteLine("Welcome!");
 
             Login();
 
-            CheckForMissingFiles();
+            DecryptDataBaseFiles();
 
-            ListSummary();
+            ListDataBaseSummary();
         }
 
         private static void Login()
         {
-            Console.WriteLine("Please enter a secret key for the symmetric algorithm.");
+            Console.Write("Please enter your password: ");
 
             StringBuilder passwordInput = new StringBuilder();
-            StringBuilder temp = new StringBuilder();
-            while (true)
+            ConsoleKeyInfo key;
+
+            do
             {
-                var key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.Enter)
+                key = Console.ReadKey(true);
+
+                // Backspace Should Not Work
+                if (!char.IsControl(key.KeyChar))
                 {
-                    Console.Clear();
-                    break;
+                    passwordInput.Append(key.KeyChar);
+                    Console.Write("*");
                 }
                 else
                 {
-                    Console.Clear();
-                    temp.Append("*");
-                    Console.Write(temp.ToString());
-                }
-
-                if (key.Key == ConsoleKey.Backspace && passwordInput.Length > 0)
-                {
-                    Console.Clear();
-                    temp.Remove(passwordInput.Length - 1, 2);
-
-                    Console.Write(temp.ToString());
-                    passwordInput.Remove(passwordInput.Length - 1, 1);
-                }
-                else if (key.Key != ConsoleKey.Backspace)
-                {
-                    passwordInput.Append(key.KeyChar);
+                    if (key.Key == ConsoleKey.Backspace && passwordInput.Length > 0)
+                    {
+                        passwordInput.Remove(passwordInput.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
                 }
             }
+            // Stops Receving Keys Once Enter is Pressed
+            while (key.Key != ConsoleKey.Enter);
+            Console.Clear();
 
+            // My check
             if (passwordInput.ToString().Length <= 31)
             {
                 StringBuilder builder = new StringBuilder(passwordInput.ToString());
@@ -92,7 +89,7 @@ namespace MoneyExperiment
             }
         }
 
-        private static void CheckForMissingFiles()
+        private static void DecryptDataBaseFiles()
         {
             if (!Directory.Exists("database"))
             {
@@ -158,7 +155,7 @@ namespace MoneyExperiment
             }
         }
 
-        private static void ListSummary()
+        private static void ListDataBaseSummary()
         {
             Console.WriteLine("Here is your summary: ");
 
@@ -177,9 +174,9 @@ namespace MoneyExperiment
 
         private static void AddToList()
         {
-            Console.WriteLine("Do you want to add another?, y/n, type 'e' for exit and save");
+            Console.WriteLine("Do you want to add another?, type 'y'to add, type 'e' for exit, \n" +
+                "type 'x' to export database in readable form");
             var userInput = Console.ReadKey(true);
-
 
             if (userInput.Key == ConsoleKey.Y)
             {
@@ -189,133 +186,61 @@ namespace MoneyExperiment
             {
                 ExitAndSaveProgram();
             }
+            else if (userInput.Key == ConsoleKey.X)
+            {
+                Console.WriteLine("View your summary in database/Summary.txt");
+                ExportReadable();
+            }
             else
             {
                 Console.Clear();
-                ListSummary();
+                ListDataBaseSummary();
             }
         }
 
         private static void UpdateList()
         {
             Console.Write("For what did you spend: ");
-            string stringInput = CheckStringInput();
+            string itemInput = ParseHelper.ParseStringInput();
 
             Console.Write("How much did it cost: ");
-            double costInput = MyParse(Console.ReadLine()); // Convert.ToDouble(Console.ReadLine());
+            double costInput = ParseHelper.ParseDouble(Console.ReadLine());
 
-            bool dublicate = false;
+            // Check if item is already in the database
+            bool dublicateItem = false;
             for (int i = 0; i < lineCount; i++)
             {
-                if (stringInput == myInputItem[i])
+                if (itemInput == myInputItem[i])
                 {
-                    dublicate = true;
+                    dublicateItem = true;
+
+                    // Only increase the cost if item is in the database
                     myInputCost[i] += costInput;
                 }
             }
 
-            if (dublicate)
+            if (dublicateItem)
             {
                 //
                 /// Do not add item
             }
             else
             {
-                myInputItem.Add(stringInput);
+                myInputItem.Add(itemInput);
                 myInputCost.Add(costInput);
                 lineCount++;
             }
 
             Console.Clear();
-            ListSummary();
+            ListDataBaseSummary();
         }
 
-        private static string CheckStringInput()
-        {
-            var stringInput = Console.ReadLine();
-            bool isNull = true;
-
-            while (isNull)
-            {
-                if (string.IsNullOrEmpty(stringInput))
-                {
-                    Console.WriteLine("Please type what did you spent for.");
-                    stringInput = Console.ReadLine();
-                }
-                else
-                {
-                    isNull = false;
-                }
-            }
-
-            return stringInput;
-        }
-
-        private static double MyParse(string value)
-        {
-            double result = 0;
-            try
-            {
-                if (value.EndsWith(","))
-                {
-                    // Show message box with info.
-                    /// MessageBox.Show("Add more numbers.", "Tip");
-                    Console.WriteLine("Add more numbers.");
-                }
-                else
-                {
-                    result = Convert.ToDouble(value);
-                }
-            }
-            catch (FormatException)
-            {
-                if (value.EndsWith("."))
-                {
-                    Console.WriteLine("Use , instead of .");
-                }
-                else if (string.IsNullOrEmpty(value))
-                {
-                    // Show message box with info.
-                    Console.WriteLine("Don't leave empty fields");
-                }
-                else
-                {
-                    Console.WriteLine("Use only numbers, or Use , instead of .");
-                }
-            }
-            catch (OverflowException)
-            {
-                Console.WriteLine("'{0}' is outside the range of a Double.", value);
-            }
-
-            return result;
-        }
-
-
-
+        /// <summary>
+        /// Export the strings into encrypted files.
+        /// </summary>
         private static void ExitAndSaveProgram()
         {
             Console.WriteLine("Bye bye");
-
-            /// Use if you want to export
-            /// Readable for humans            
-            ////using (StreamWriter outputFile = new StreamWriter(Paths))
-            ////{
-            ////    outputFile.WriteLine("Here is your summary: ");
-
-            ////    for (int i = 0; i < lineCount; i++)
-            ////    {
-            ////        outputFile.WriteLine(myInputItem[i] + " " + myInputCost[i]);
-            ////    }
-
-            ////    double result = 0;
-            ////    for (int i = 0; i < lineCount; i++)
-            ////    {
-            ////        result += myInputCost[i];
-            ////    }
-
-            ////    outputFile.WriteLine("Your spendings are: " + result);
-            ////}
 
             // Used for import
             using (StreamWriter outputFile = new StreamWriter(Costs))
@@ -335,6 +260,30 @@ namespace MoneyExperiment
                     var encryptedString = AesOperation.EncryptString(UserKey, myInputItem[i].ToString());
                     outputFile.WriteLine(encryptedString);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Use if you want to export in txt readable for humans.
+        /// </summary>
+        private static void ExportReadable()
+        {
+            using (StreamWriter outputFile = new StreamWriter(Paths))
+            {
+                outputFile.WriteLine("Here is your summary: ");
+
+                for (int i = 0; i < lineCount; i++)
+                {
+                    outputFile.WriteLine(myInputItem[i] + " " + myInputCost[i]);
+                }
+
+                double result = 0;
+                for (int i = 0; i < lineCount; i++)
+                {
+                    result += myInputCost[i];
+                }
+
+                outputFile.WriteLine("Your spendings are: " + result);
             }
         }
     }

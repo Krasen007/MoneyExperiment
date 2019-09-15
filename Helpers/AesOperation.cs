@@ -1,4 +1,6 @@
-﻿namespace MoneyExperiment
+﻿// Krasen Ivanov 2019
+
+namespace MoneyExperiment.Helpers
 {
     using System;
     using System.IO;
