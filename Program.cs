@@ -6,6 +6,7 @@ namespace MoneyExperiment
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
 
     public class Program
     {
@@ -37,18 +38,58 @@ namespace MoneyExperiment
         private static void Login()
         {
             Console.WriteLine("Please enter a secret key for the symmetric algorithm.");
-            var key = Console.ReadLine();
-            if (key.Length <= 2)
+
+            StringBuilder passwordInput = new StringBuilder();
+            StringBuilder temp = new StringBuilder();
+            while (true)
             {
-                Console.WriteLine("Wrong password!");
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.Clear();
+                    break;
+                }
+                else
+                {
+                    Console.Clear();
+                    temp.Append("*");
+                    Console.Write(temp.ToString());
+                }
+
+                if (key.Key == ConsoleKey.Backspace && passwordInput.Length > 0)
+                {
+                    Console.Clear();
+                    temp.Remove(passwordInput.Length - 1, 2);
+
+                    Console.Write(temp.ToString());
+                    passwordInput.Remove(passwordInput.Length - 1, 1);
+                }
+                else if (key.Key != ConsoleKey.Backspace)
+                {
+                    passwordInput.Append(key.KeyChar);
+                }
+            }
+
+            if (passwordInput.ToString().Length <= 31)
+            {
+                StringBuilder builder = new StringBuilder(passwordInput.ToString());
+
+                for (int i = 31; i >= passwordInput.ToString().Length; i--)
+                {
+                    builder.Append("-");
+                }
+
+                UserKey = builder.ToString();
+            }
+            else if (passwordInput.ToString().Length >= 33)
+            {
+                Console.WriteLine("Your password is too long");
                 Login();
             }
             else
             {
-                UserKey = key;
+                UserKey = passwordInput.ToString();
             }
-
-
         }
 
         private static void CheckForMissingFiles()
@@ -93,7 +134,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("costs file was missing so we created one for you");
                 File.Create(Costs).Dispose();
-                
+
             }
             else
             {
@@ -137,13 +178,14 @@ namespace MoneyExperiment
         private static void AddToList()
         {
             Console.WriteLine("Do you want to add another?, y/n, type 'e' for exit and save");
-            var userInput = Console.ReadLine();
+            var userInput = Console.ReadKey(true);
 
-            if (userInput == "y")
+
+            if (userInput.Key == ConsoleKey.Y)
             {
                 UpdateList();
             }
-            else if (userInput == "e")
+            else if (userInput.Key == ConsoleKey.E)
             {
                 ExitAndSaveProgram();
             }
@@ -157,10 +199,10 @@ namespace MoneyExperiment
         private static void UpdateList()
         {
             Console.Write("For what did you spend: ");
-            var stringInput = Console.ReadLine();
+            string stringInput = CheckStringInput();
 
             Console.Write("How much did it cost: ");
-            double costInput = Convert.ToDouble(Console.ReadLine());
+            double costInput = MyParse(Console.ReadLine()); // Convert.ToDouble(Console.ReadLine());
 
             bool dublicate = false;
             for (int i = 0; i < lineCount; i++)
@@ -187,6 +229,69 @@ namespace MoneyExperiment
             Console.Clear();
             ListSummary();
         }
+
+        private static string CheckStringInput()
+        {
+            var stringInput = Console.ReadLine();
+            bool isNull = true;
+
+            while (isNull)
+            {
+                if (string.IsNullOrEmpty(stringInput))
+                {
+                    Console.WriteLine("Please type what did you spent for.");
+                    stringInput = Console.ReadLine();
+                }
+                else
+                {
+                    isNull = false;
+                }
+            }
+
+            return stringInput;
+        }
+
+        private static double MyParse(string value)
+        {
+            double result = 0;
+            try
+            {
+                if (value.EndsWith(","))
+                {
+                    // Show message box with info.
+                    /// MessageBox.Show("Add more numbers.", "Tip");
+                    Console.WriteLine("Add more numbers.");
+                }
+                else
+                {
+                    result = Convert.ToDouble(value);
+                }
+            }
+            catch (FormatException)
+            {
+                if (value.EndsWith("."))
+                {
+                    Console.WriteLine("Use , instead of .");
+                }
+                else if (string.IsNullOrEmpty(value))
+                {
+                    // Show message box with info.
+                    Console.WriteLine("Don't leave empty fields");
+                }
+                else
+                {
+                    Console.WriteLine("Use only numbers, or Use , instead of .");
+                }
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("'{0}' is outside the range of a Double.", value);
+            }
+
+            return result;
+        }
+
+
 
         private static void ExitAndSaveProgram()
         {
