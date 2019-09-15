@@ -38,7 +38,7 @@ namespace MoneyExperiment
         {
             Console.WriteLine("Please enter a secret key for the symmetric algorithm.");
             var key = Console.ReadLine();
-            if (key.Length <= 31)
+            if (key.Length <= 2)
             {
                 Console.WriteLine("Wrong password!");
                 Login();
@@ -62,7 +62,7 @@ namespace MoneyExperiment
             if (!File.Exists(Items))
             {
                 Console.WriteLine("items file was missing so we created one for you");
-                File.Create(Items);
+                File.Create(Items).Dispose();
                 lineCount = 0;
             }
             else
@@ -92,7 +92,8 @@ namespace MoneyExperiment
             if (!File.Exists(Costs))
             {
                 Console.WriteLine("costs file was missing so we created one for you");
-                File.Create(Costs);
+                File.Create(Costs).Dispose();
+                
             }
             else
             {
