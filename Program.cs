@@ -5,6 +5,7 @@ namespace MoneyExperiment
     using MoneyExperiment.Helpers;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Security;
@@ -93,13 +94,17 @@ namespace MoneyExperiment
         {
             if (!Directory.Exists("database"))
             {
-                Console.WriteLine("database folder was missing so we created one for you");
+                Console.WriteLine("Database folder was missing so we created one for you");
                 Directory.CreateDirectory("database");
+            }
+            else
+            {
+                PullDatabase();
             }
 
             if (!File.Exists(Items))
             {
-                Console.WriteLine("items file was missing so we created one for you");
+                Console.WriteLine("Items file was missing so we created one for you");
                 File.Create(Items).Dispose();
                 lineCount = 0;
             }
@@ -129,9 +134,8 @@ namespace MoneyExperiment
 
             if (!File.Exists(Costs))
             {
-                Console.WriteLine("costs file was missing so we created one for you");
+                Console.WriteLine("Costs file was missing so we created one for you");
                 File.Create(Costs).Dispose();
-
             }
             else
             {
@@ -153,7 +157,7 @@ namespace MoneyExperiment
                     Console.WriteLine(e.Message);
                 }
             }
-        }
+        }        
 
         private static void ListDataBaseSummary()
         {
@@ -167,6 +171,7 @@ namespace MoneyExperiment
             }
 
             Console.WriteLine("Your spendings are: " + result);
+            Console.WriteLine();
 
             // Start
             AddToList();
@@ -174,8 +179,11 @@ namespace MoneyExperiment
 
         private static void AddToList()
         {
-            Console.WriteLine("Do you want to add another?, type 'y'to add, type 'e' for exit, \n" +
-                "type 'x' to export database in readable form");
+            Console.WriteLine("Do you want to add another?\n" +
+                "type 'y' to add entry, \n" +
+                "type 'e' for exit, \n" +
+                "type 'x' to export database in readable form, \n" +
+                "type 'u' to upload database online.");
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.Y)
@@ -184,12 +192,18 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.E)
             {
-                ExitAndSaveProgram();
+                Console.WriteLine("Exiting...");
+                SaveDatabase();
             }
             else if (userInput.Key == ConsoleKey.X)
             {
                 Console.WriteLine("View your summary in database/Summary.txt");
                 ExportReadable();
+            }
+            else if (userInput.Key == ConsoleKey.U)
+            {
+                Console.WriteLine("Uploading...");
+                UploadOnline();
             }
             else
             {
@@ -238,10 +252,8 @@ namespace MoneyExperiment
         /// <summary>
         /// Export the strings into encrypted files.
         /// </summary>
-        private static void ExitAndSaveProgram()
+        private static void SaveDatabase()
         {
-            Console.WriteLine("Bye bye");
-
             // Used for import
             using (StreamWriter outputFile = new StreamWriter(Costs))
             {
@@ -268,6 +280,8 @@ namespace MoneyExperiment
         /// </summary>
         private static void ExportReadable()
         {
+            SaveDatabase();
+
             using (StreamWriter outputFile = new StreamWriter(Paths))
             {
                 outputFile.WriteLine("Here is your summary: ");
@@ -285,6 +299,34 @@ namespace MoneyExperiment
 
                 outputFile.WriteLine("Your spendings are: " + result);
             }
+        }
+
+        private static void UploadOnline()
+        {
+            SaveDatabase();
+
+            const string CreateDB = @"CreateDB.bat";
+            const string UpdateDB = @"UpdateDB.bat";
+
+            if (Directory.Exists(@".git"))
+            {
+                var process = Process.Start(UpdateDB);
+                process.WaitForExit();
+            }
+            else
+            {
+                var process = Process.Start(CreateDB);
+                process.WaitForExit();
+            }
+        }
+
+        private static void PullDatabase()
+        {
+            const string PullDB = @"PullDB.bat";
+
+            var process = Process.Start(PullDB);            
+            process.WaitForExit();
+            Console.Clear();
         }
     }
 }
