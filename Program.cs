@@ -94,13 +94,17 @@ namespace MoneyExperiment
         {
             if (!Directory.Exists("database"))
             {
-                Console.WriteLine("database folder was missing so we created one for you");
+                Console.WriteLine("Database folder was missing so we created one for you");
                 Directory.CreateDirectory("database");
+            }
+            else
+            {
+                PullDatabase();
             }
 
             if (!File.Exists(Items))
             {
-                Console.WriteLine("items file was missing so we created one for you");
+                Console.WriteLine("Items file was missing so we created one for you");
                 File.Create(Items).Dispose();
                 lineCount = 0;
             }
@@ -130,9 +134,8 @@ namespace MoneyExperiment
 
             if (!File.Exists(Costs))
             {
-                Console.WriteLine("costs file was missing so we created one for you");
+                Console.WriteLine("Costs file was missing so we created one for you");
                 File.Create(Costs).Dispose();
-
             }
             else
             {
@@ -156,6 +159,13 @@ namespace MoneyExperiment
             }
         }
 
+        private static void PullDatabase()
+        {
+            const string PullDB = @"PullDB.bat";
+
+            Process.Start(PullDB);
+        }
+
         private static void ListDataBaseSummary()
         {
             Console.WriteLine("Here is your summary: ");
@@ -168,6 +178,7 @@ namespace MoneyExperiment
             }
 
             Console.WriteLine("Your spendings are: " + result);
+            Console.WriteLine();
 
             // Start
             AddToList();
@@ -175,8 +186,11 @@ namespace MoneyExperiment
 
         private static void AddToList()
         {
-            Console.WriteLine("Do you want to add another?, type 'y'to add, type 'e' for exit, \n" +
-                "type 'x' to export database in readable form");
+            Console.WriteLine("Do you want to add another?\n" +
+                "type 'y' to add entry, \n" +
+                "type 'e' for exit, \n" +
+                "type 'x' to export database in readable form, \n" +
+                "type 'u' to upload database online.");
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.Y)
@@ -185,12 +199,18 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.E)
             {
+                Console.WriteLine("Exiting...");
                 ExitAndSaveProgram();
             }
             else if (userInput.Key == ConsoleKey.X)
             {
                 Console.WriteLine("View your summary in database/Summary.txt");
                 ExportReadable();
+            }
+            else if (userInput.Key == ConsoleKey.U)
+            {
+                Console.WriteLine("Uploading...");
+                UploadOnline();
             }
             else
             {
@@ -241,8 +261,6 @@ namespace MoneyExperiment
         /// </summary>
         private static void ExitAndSaveProgram()
         {
-            Console.WriteLine("Bye bye");
-
             // Used for import
             using (StreamWriter outputFile = new StreamWriter(Costs))
             {
@@ -286,35 +304,21 @@ namespace MoneyExperiment
 
                 outputFile.WriteLine("Your spendings are: " + result);
             }
-            //const string Git = @"PortableGit\git-cmd.exe";
-            const string Git = @"script.bat";
+        }
 
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = Git;
+        private static void UploadOnline()
+        {
+            const string CreateDB = @"CreateDB.bat";
+            const string UpdateDB = @"UpdateDB.bat";
 
-            ////startInfo.Arguments = @"C:\etc\desktop\file.spp C:\etc\desktop\file.txt";
-            Process.Start(Git);
-
-                       
-
-            //Process myProcess = new Process();
-
-            //myProcess.StartInfo.FileName = Git;
-            //myProcess.StartInfo.UseShellExecute = false;
-            //myProcess.StartInfo.RedirectStandardOutput = true;
-            //myProcess.StartInfo.RedirectStandardInput = true;
-
-            //myProcess.Start();
-
-            //string redirectedOutput = string.Empty;
-            //while ((redirectedOutput += (char)myProcess.StandardOutput.Read()) != "Enter File Name:") ;
-
-            //myProcess.StandardInput.WriteLine("passedFileName.txt");
-
-            //myProcess.WaitForExit();
-
-            ////verifying that the job was successfull or not?!
-            //Process.Start(Git, "passedFileName.txt");
+            if (Directory.Exists(@".git"))
+            {
+                Process.Start(UpdateDB);
+            }
+            else
+            {
+                Process.Start(CreateDB);
+            }
         }
     }
 }
