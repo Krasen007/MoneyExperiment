@@ -157,14 +157,7 @@ namespace MoneyExperiment
                     Console.WriteLine(e.Message);
                 }
             }
-        }
-
-        private static void PullDatabase()
-        {
-            const string PullDB = @"PullDB.bat";
-
-            Process.Start(PullDB);
-        }
+        }        
 
         private static void ListDataBaseSummary()
         {
@@ -200,7 +193,7 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.E)
             {
                 Console.WriteLine("Exiting...");
-                ExitAndSaveProgram();
+                SaveDatabase();
             }
             else if (userInput.Key == ConsoleKey.X)
             {
@@ -259,7 +252,7 @@ namespace MoneyExperiment
         /// <summary>
         /// Export the strings into encrypted files.
         /// </summary>
-        private static void ExitAndSaveProgram()
+        private static void SaveDatabase()
         {
             // Used for import
             using (StreamWriter outputFile = new StreamWriter(Costs))
@@ -287,6 +280,8 @@ namespace MoneyExperiment
         /// </summary>
         private static void ExportReadable()
         {
+            SaveDatabase();
+
             using (StreamWriter outputFile = new StreamWriter(Paths))
             {
                 outputFile.WriteLine("Here is your summary: ");
@@ -308,17 +303,30 @@ namespace MoneyExperiment
 
         private static void UploadOnline()
         {
+            SaveDatabase();
+
             const string CreateDB = @"CreateDB.bat";
             const string UpdateDB = @"UpdateDB.bat";
 
             if (Directory.Exists(@".git"))
             {
-                Process.Start(UpdateDB);
+                var process = Process.Start(UpdateDB);
+                process.WaitForExit();
             }
             else
             {
-                Process.Start(CreateDB);
+                var process = Process.Start(CreateDB);
+                process.WaitForExit();
             }
+        }
+
+        private static void PullDatabase()
+        {
+            const string PullDB = @"PullDB.bat";
+
+            var process = Process.Start(PullDB);            
+            process.WaitForExit();
+            Console.Clear();
         }
     }
 }
