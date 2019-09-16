@@ -5,6 +5,7 @@ namespace MoneyExperiment
     using MoneyExperiment.Helpers;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Security;
@@ -285,6 +286,35 @@ namespace MoneyExperiment
 
                 outputFile.WriteLine("Your spendings are: " + result);
             }
+            //const string Git = @"PortableGit\git-cmd.exe";
+            const string Git = @"script.bat";
+
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = Git;
+
+            ////startInfo.Arguments = @"C:\etc\desktop\file.spp C:\etc\desktop\file.txt";
+            Process.Start(Git);
+
+                       
+
+            //Process myProcess = new Process();
+
+            //myProcess.StartInfo.FileName = Git;
+            //myProcess.StartInfo.UseShellExecute = false;
+            //myProcess.StartInfo.RedirectStandardOutput = true;
+            //myProcess.StartInfo.RedirectStandardInput = true;
+
+            //myProcess.Start();
+
+            //string redirectedOutput = string.Empty;
+            //while ((redirectedOutput += (char)myProcess.StandardOutput.Read()) != "Enter File Name:") ;
+
+            //myProcess.StandardInput.WriteLine("passedFileName.txt");
+
+            //myProcess.WaitForExit();
+
+            ////verifying that the job was successfull or not?!
+            //Process.Start(Git, "passedFileName.txt");
         }
     }
 }
