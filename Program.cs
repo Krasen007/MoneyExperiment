@@ -112,9 +112,8 @@ namespace MoneyExperiment
             {
                 lineCount = File.ReadLines(Items).Count();
                 try
-                {   // Open the text file using a stream reader.
+                {
                     using StreamReader srItems = new StreamReader(Items);
-                    // Read the stream to a string, and write the string to the console.
                     for (int i = 0; i < lineCount; i++)
                     {
                         var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
@@ -123,10 +122,10 @@ namespace MoneyExperiment
                     srItems.Close();
 
                 }
-                catch (IOException e)
+                catch (IOException error)
                 {
                     Console.WriteLine("The file could not be read:");
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine(error.Message);
                 }
             }
 
@@ -147,44 +146,44 @@ namespace MoneyExperiment
                     }
                     srCosts.Close();
                 }
-                catch (IOException e)
+                catch (IOException error)
                 {
                     Console.WriteLine("The file could not be read:");
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine(error.Message);
                 }
             }
-        }        
+        }
 
         private static void ListDataBaseSummary()
         {
             Console.WriteLine("Here is your summary: ");
 
-            double result = 0;
+            double totalCosts = 0;
             for (int i = 0; i < lineCount; i++)
             {
                 Console.WriteLine(myInputItem[i] + " " + myInputCost[i]);
-                result += myInputCost[i];
+                totalCosts += myInputCost[i];
             }
 
-            Console.WriteLine("Your spendings are: " + result);
+            Console.WriteLine("Your spendings are: " + totalCosts);
             Console.WriteLine();
 
             // Start
-            AddToList();
+            ShowMenu();
         }
 
-        private static void AddToList()
+        private static void ShowMenu()
         {
             Console.WriteLine("Do you want to add another?\n" +
-                "type 'y' to add entry, \n" +
-                "type 'e' for exit, \n" +
+                "type 'y' to add new entry, \n" +
+                "type 'e' to exit without uploading online, \n" +
                 "type 'x' to export database in readable form, \n" +
-                "type 'u' to upload database online.");
+                "type 'u' to exit and upload the database online.");
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.Y)
             {
-                UpdateList();
+                AddOrUpdateList();
             }
             else if (userInput.Key == ConsoleKey.E)
             {
@@ -208,7 +207,7 @@ namespace MoneyExperiment
             }
         }
 
-        private static void UpdateList()
+        private static void AddOrUpdateList()
         {
             Console.Write("For what did you spend: ");
             string itemInput = ParseHelper.ParseStringInput();
@@ -217,24 +216,19 @@ namespace MoneyExperiment
             double costInput = ParseHelper.ParseDouble(Console.ReadLine());
 
             // Check if item is already in the database
-            bool dublicateItem = false;
+            bool isDublicateItem = false;
             for (int i = 0; i < lineCount; i++)
             {
                 if (itemInput == myInputItem[i])
                 {
-                    dublicateItem = true;
+                    isDublicateItem = true;
 
                     // Only increase the cost if item is in the database
                     myInputCost[i] += costInput;
                 }
             }
 
-            if (dublicateItem)
-            {
-                //
-                /// Do not add item
-            }
-            else
+            if (!isDublicateItem)
             {
                 myInputItem.Add(itemInput);
                 myInputCost.Add(costInput);
@@ -293,6 +287,7 @@ namespace MoneyExperiment
             }
 
             outputFile.WriteLine("Your spendings are: " + result);
+            outputFile.Dispose();
         }
 
         private static void UploadOnline()
@@ -318,7 +313,7 @@ namespace MoneyExperiment
         {
             const string PullDB = @"Scripts\PullDB.bat";
 
-            var process = Process.Start(PullDB);            
+            var process = Process.Start(PullDB);
             process.WaitForExit();
             Console.Clear();
         }
