@@ -17,9 +17,9 @@ namespace MoneyExperiment
         {
         }
 
-        private const string Paths = @"database\Summary.txt";
-        private const string Items = @"database\items.krs";
-        private const string Costs = @"database\costs.krs";
+        private const string Paths = @"Database\Summary.txt";
+        private const string Items = @"Database\Items.krs";
+        private const string Costs = @"Database\Costs.krs";
 
         private static readonly List<string> myInputItem = new List<string>();
         private static readonly List<double> myInputCost = new List<double>();
