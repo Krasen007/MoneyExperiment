@@ -299,8 +299,8 @@ namespace MoneyExperiment
         {
             SaveDatabase();
 
-            const string CreateDB = @"CreateDB.bat";
-            const string UpdateDB = @"UpdateDB.bat";
+            const string CreateDB = @"Scripts\CreateDB.bat";
+            const string UpdateDB = @"Scripts\UpdateDB.bat";
 
             if (Directory.Exists(@".git"))
             {
@@ -316,7 +316,7 @@ namespace MoneyExperiment
 
         private static void PullDatabase()
         {
-            const string PullDB = @"PullDB.bat";
+            const string PullDB = @"Scripts\PullDB.bat";
 
             var process = Process.Start(PullDB);            
             process.WaitForExit();

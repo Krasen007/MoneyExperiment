@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="CreateDB.bat">
+    <None Update="Scripts\CreateDB.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="database\costs.krs">
@@ -18,10 +18,10 @@
     <None Update="database\Summary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="PullDB.bat">
+    <None Update="Scripts\PullDB.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="UpdateDB.bat">
+    <None Update="Scripts\UpdateDB.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
