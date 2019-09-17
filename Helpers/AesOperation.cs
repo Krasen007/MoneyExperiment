@@ -131,9 +131,11 @@ namespace MoneyExperiment.Helpers
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipherText);
 
-            using AesManaged aes = new AesManaged();
-            aes.Key = Encoding.UTF8.GetBytes(key);
-            aes.IV = iv;
+            using AesManaged aes = new AesManaged
+            {
+                Key = Encoding.UTF8.GetBytes(key),
+                IV = iv
+            };
 
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 

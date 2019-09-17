@@ -1,3 +1,3 @@
-echo off
+@echo off
 git pull
-echo Retrieving database
+echo *** Retrieving database ***

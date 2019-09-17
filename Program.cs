@@ -113,16 +113,14 @@ namespace MoneyExperiment
                 lineCount = File.ReadLines(Items).Count();
                 try
                 {   // Open the text file using a stream reader.
-                    using (StreamReader srItems = new StreamReader(Items))
+                    using StreamReader srItems = new StreamReader(Items);
+                    // Read the stream to a string, and write the string to the console.
+                    for (int i = 0; i < lineCount; i++)
                     {
-                        // Read the stream to a string, and write the string to the console.
-                        for (int i = 0; i < lineCount; i++)
-                        {
-                            var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
-                            myInputItem.Add(decryptedString);
-                        }
-                        srItems.Close();
+                        var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
+                        myInputItem.Add(decryptedString);
                     }
+                    srItems.Close();
 
                 }
                 catch (IOException e)
@@ -141,15 +139,13 @@ namespace MoneyExperiment
             {
                 try
                 {
-                    using (StreamReader srCosts = new StreamReader(Costs))
+                    using StreamReader srCosts = new StreamReader(Costs);
+                    for (int i = 0; i < lineCount; i++)
                     {
-                        for (int i = 0; i < lineCount; i++)
-                        {
-                            var decryptedString = AesOperation.DecryptString(UserKey, srCosts.ReadLine());
-                            myInputCost.Add(Convert.ToDouble(decryptedString));
-                        }
-                        srCosts.Close();
+                        var decryptedString = AesOperation.DecryptString(UserKey, srCosts.ReadLine());
+                        myInputCost.Add(Convert.ToDouble(decryptedString));
                     }
+                    srCosts.Close();
                 }
                 catch (IOException e)
                 {
@@ -282,23 +278,21 @@ namespace MoneyExperiment
         {
             SaveDatabase();
 
-            using (StreamWriter outputFile = new StreamWriter(Paths))
+            using StreamWriter outputFile = new StreamWriter(Paths);
+            outputFile.WriteLine("Here is your summary: ");
+
+            for (int i = 0; i < lineCount; i++)
             {
-                outputFile.WriteLine("Here is your summary: ");
-
-                for (int i = 0; i < lineCount; i++)
-                {
-                    outputFile.WriteLine(myInputItem[i] + " " + myInputCost[i]);
-                }
-
-                double result = 0;
-                for (int i = 0; i < lineCount; i++)
-                {
-                    result += myInputCost[i];
-                }
-
-                outputFile.WriteLine("Your spendings are: " + result);
+                outputFile.WriteLine(myInputItem[i] + " " + myInputCost[i]);
             }
+
+            double result = 0;
+            for (int i = 0; i < lineCount; i++)
+            {
+                result += myInputCost[i];
+            }
+
+            outputFile.WriteLine("Your spendings are: " + result);
         }
 
         private static void UploadOnline()
