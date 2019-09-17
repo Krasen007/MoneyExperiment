@@ -20,9 +20,13 @@ namespace MoneyExperiment
         private const string Paths = @"Database\Summary.txt";
         private const string Items = @"Database\Items.krs";
         private const string Costs = @"Database\Costs.krs";
+        private const string Budget = @"Database\Budget.krs";
+
 
         private static readonly List<string> myInputItem = new List<string>();
         private static readonly List<double> myInputCost = new List<double>();
+        private static double myBudget;
+
         private static int lineCount;
         private static string UserKey;
 
@@ -92,6 +96,28 @@ namespace MoneyExperiment
 
         private static void DecryptDataBaseFiles()
         {
+            if (!File.Exists(Budget))
+            {
+                Console.Write("Set budget: ");
+                myBudget = ParseHelper.ParseDouble(Console.ReadLine());
+                File.Create(Budget).Dispose();
+
+            }
+            else
+            {
+                try
+                {
+                    using StreamReader srCosts = new StreamReader(Budget);
+                    myBudget = ParseHelper.ParseDouble(srCosts.ReadLine());
+                    srCosts.Close();
+                }
+                catch (IOException error)
+                {
+                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine(error.Message);
+                }
+            }
+
             if (!Directory.Exists("database"))
             {
                 Console.WriteLine("Database folder was missing so we created one for you");
@@ -166,6 +192,7 @@ namespace MoneyExperiment
             }
 
             Console.WriteLine("Your spendings are: " + totalCosts);
+            Console.WriteLine("Your amount left on budget is: " + (myBudget - totalCosts));
             Console.WriteLine();
 
             // Start
@@ -244,7 +271,6 @@ namespace MoneyExperiment
         /// </summary>
         private static void SaveDatabase()
         {
-            // Used for import
             using (StreamWriter outputFile = new StreamWriter(Costs))
             {
                 for (int i = 0; i < lineCount; i++)
@@ -254,7 +280,6 @@ namespace MoneyExperiment
                 }
             }
 
-            // Used for import
             using (StreamWriter outputFile = new StreamWriter(Items))
             {
                 for (int i = 0; i < lineCount; i++)
@@ -262,6 +287,12 @@ namespace MoneyExperiment
                     var encryptedString = AesOperation.EncryptString(UserKey, myInputItem[i].ToString());
                     outputFile.WriteLine(encryptedString);
                 }
+            }
+
+            // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
+            using (StreamWriter outputFile = new StreamWriter(Budget))
+            {
+                outputFile.WriteLine(myBudget);
             }
         }
 
