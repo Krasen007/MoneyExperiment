@@ -32,7 +32,7 @@ namespace MoneyExperiment
 
         private static void Main()
         {
-            Console.WriteLine("Welcome!");
+            Console.WriteLine("*********** Welcome! ***********");
 
             Login();
 
@@ -182,7 +182,7 @@ namespace MoneyExperiment
 
         private static void ListDataBaseSummary()
         {
-            Console.WriteLine("Here is your summary: ");
+            Console.WriteLine("*********** Summary: **********");
 
             double totalCosts = 0;
             for (int i = 0; i < lineCount; i++)

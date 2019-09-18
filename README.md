@@ -13,3 +13,7 @@
 * You are done! Enjoy your console .net core budgeting app.
 * Optional: Repeat on any other PC you want to use the app and synchronize your settings.
 
+### Credits:
+
+* Main coding: Krasen Ivanov
+* Icon made by Freepik from www.flaticon.com
