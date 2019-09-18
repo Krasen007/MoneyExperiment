@@ -201,6 +201,7 @@ namespace MoneyExperiment
 
         private static void ShowMenu()
         {
+            System.Console.WriteLine("*********** Menu: ***********");
             Console.WriteLine("Do you want to add another?\n" +
                 "type 'y' to add new entry, \n" +
                 "type 'e' to exit without uploading online, \n" +
@@ -304,7 +305,7 @@ namespace MoneyExperiment
             SaveDatabase();
 
             using StreamWriter outputFile = new StreamWriter(Paths);
-            outputFile.WriteLine("Here is your summary: ");
+            outputFile.WriteLine("*********** Summary: **********");
 
             for (int i = 0; i < lineCount; i++)
             {
