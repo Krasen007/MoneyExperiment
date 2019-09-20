@@ -4,12 +4,8 @@ namespace MoneyExperiment.Helpers
 {
     using System;
 
-    public class ParseHelper
+    public static class ParseHelper
     {
-        protected ParseHelper()
-        {
-        }
-
         public static string ParseStringInput()
         {
             var stringInput = Console.ReadLine();

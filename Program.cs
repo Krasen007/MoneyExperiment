@@ -8,7 +8,6 @@ namespace MoneyExperiment
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Security;
     using System.Text;
 
     public class Program
@@ -21,6 +20,7 @@ namespace MoneyExperiment
         private const string Items = @"Database\Items.krs";
         private const string Costs = @"Database\Costs.krs";
         private const string Budget = @"Database\Budget.krs";
+        private const string Database = @"Database";
 
 
         private static readonly List<string> myInputItem = new List<string>();
@@ -98,10 +98,9 @@ namespace MoneyExperiment
         {
             if (!File.Exists(Budget))
             {
-                Console.Write("Set budget: ");
+                Console.Write("Set your spending budget: ");
                 myBudget = ParseHelper.ParseDouble(Console.ReadLine());
                 File.Create(Budget).Dispose();
-
             }
             else
             {
@@ -118,10 +117,10 @@ namespace MoneyExperiment
                 }
             }
 
-            if (!Directory.Exists("database"))
+            if (!Directory.Exists(Database))
             {
-                Console.WriteLine("Database folder was missing so we created one for you");
-                Directory.CreateDirectory("database");
+                Console.WriteLine("Database folder was missing so we created one for you.");
+                Directory.CreateDirectory(Database);
             }
             else
             {
@@ -130,7 +129,7 @@ namespace MoneyExperiment
 
             if (!File.Exists(Items))
             {
-                Console.WriteLine("Items file was missing so we created one for you");
+                Console.WriteLine("Items file was missing so we created one for you.");
                 File.Create(Items).Dispose();
                 lineCount = 0;
             }
@@ -150,14 +149,14 @@ namespace MoneyExperiment
                 }
                 catch (IOException error)
                 {
-                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine("The file could not be read: ");
                     Console.WriteLine(error.Message);
                 }
             }
 
             if (!File.Exists(Costs))
             {
-                Console.WriteLine("Costs file was missing so we created one for you");
+                Console.WriteLine("Costs file was missing so we created one for you.");
                 File.Create(Costs).Dispose();
             }
             else
@@ -220,7 +219,7 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.X)
             {
-                Console.WriteLine("View your summary in database/Summary.txt");
+                Console.WriteLine("View your summary in Database/Summary.txt");
                 ExportReadable();
             }
             else if (userInput.Key == ConsoleKey.U)
