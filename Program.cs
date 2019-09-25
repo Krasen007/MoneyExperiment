@@ -41,7 +41,7 @@ namespace MoneyExperiment
             ListDataBaseSummary();
         }
 
-        private static void Login()
+        public static void Login()
         {
             Console.Write("Please enter your password: ");
 
@@ -136,16 +136,16 @@ namespace MoneyExperiment
             else
             {
                 lineCount = File.ReadLines(Items).Count();
+
+                using StreamReader srItems = new StreamReader(Items);
                 try
                 {
-                    using StreamReader srItems = new StreamReader(Items);
                     for (int i = 0; i < lineCount; i++)
                     {
                         var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
                         myInputItem.Add(decryptedString);
                     }
                     srItems.Close();
-
                 }
                 catch (IOException error)
                 {
@@ -161,9 +161,9 @@ namespace MoneyExperiment
             }
             else
             {
+                using StreamReader srCosts = new StreamReader(Costs);
                 try
                 {
-                    using StreamReader srCosts = new StreamReader(Costs);
                     for (int i = 0; i < lineCount; i++)
                     {
                         var decryptedString = AesOperation.DecryptString(UserKey, srCosts.ReadLine());
@@ -176,6 +176,7 @@ namespace MoneyExperiment
                     Console.WriteLine("The file could not be read:");
                     Console.WriteLine(error.Message);
                 }
+
             }
         }
 

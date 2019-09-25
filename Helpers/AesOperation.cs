@@ -142,7 +142,23 @@ namespace MoneyExperiment.Helpers
             using MemoryStream memoryStream = new MemoryStream(buffer);
             using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using StreamReader streamReader = new StreamReader(cryptoStream);
-            return streamReader.ReadToEnd();
+            {
+                try
+                {
+                    return streamReader.ReadToEnd();
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Wrong paassword.");
+                    return "a";
+                }
+                finally
+                {
+                    Program.Login();
+                }
+                
+
+            }
         }
     }
 }

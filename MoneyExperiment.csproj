@@ -5,10 +5,18 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Authors>Krasen Ivanov</Authors>
-    <Copyright>Krasen Ivanov</Copyright>
+    <Copyright>Krasen Ivanov 2019</Copyright>
+    <Version>1.0.2-beta1</Version>
+    <AssemblyName>Money Experiment</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Update=".gitattributes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update=".gitignore">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Database\Budget.krs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
