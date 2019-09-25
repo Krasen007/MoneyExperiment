@@ -10,12 +10,8 @@ namespace MoneyExperiment
     using System.Linq;
     using System.Text;
 
-    public class Program
+    public static class Program
     {
-        protected Program()
-        {
-        }
-
         private const string Paths = @"Database\Summary.txt";
         private const string Items = @"Database\Items.krs";
         private const string Costs = @"Database\Costs.krs";
@@ -34,38 +30,16 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** Welcome! ***********");
             Start();
-            Console.WriteLine("Start method completed");
-            Console.ReadKey();
         }
 
         public static void Start()
         {
-            try
-            {
                 Login();
-                Console.WriteLine("Login success");
-                Console.ReadKey();
 
-                if (!DecryptDataBaseFiles())
+                if (DecryptDataBaseFiles())
                 {
-                    Console.WriteLine("DDBFiles failed");
-                    Console.ReadKey();
-                    return;
+                ListDataBaseSummary();                
                 }
-                else
-                {
-                    ListDataBaseSummary();
-                    Console.WriteLine("LDBS success.");
-                    Console.ReadKey();
-                }
-            }
-            catch (System.Exception)
-            {
-                Console.WriteLine("Error on start.");
-                // Start();
-                Console.ReadKey();
-                throw;
-            }
         }
 
         private static void Login()
@@ -133,9 +107,9 @@ namespace MoneyExperiment
             {
                 try
                 {
-                    using StreamReader srCosts = new StreamReader(Budget);
-                    myBudget = ParseHelper.ParseDouble(srCosts.ReadLine());
-                    srCosts.Close();
+                    using StreamReader srBudget = new StreamReader(Budget);
+                    myBudget = ParseHelper.ParseDouble(srBudget.ReadLine());
+                    srBudget.Close();
                 }
                 catch (IOException error)
                 {
@@ -177,10 +151,8 @@ namespace MoneyExperiment
                     }
                     srItems.Close();
                 }
-                catch (IOException error)
+                catch (IOException)
                 {
-                    Console.WriteLine("The items file could not be read: ");
-                    Console.WriteLine(error.Message);
                     srItems.Dispose();
                     return false;
                 }
@@ -204,10 +176,8 @@ namespace MoneyExperiment
                     }
                     srCosts.Close();
                 }
-                catch (IOException error)
+                catch (IOException)
                 {
-                    Console.WriteLine("The costs file could not be read: ");
-                    Console.WriteLine(error.Message);
                     srCosts.Dispose();
                     return false;
                 }
