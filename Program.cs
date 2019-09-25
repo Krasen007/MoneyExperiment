@@ -34,15 +34,38 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** Welcome! ***********");
             Start();
+            Console.WriteLine("Start method completed");
+            Console.ReadKey();
         }
 
         public static void Start()
         {
-            Login();
+            try
+            {
+                Login();
+                Console.WriteLine("Login success");
+                Console.ReadKey();
 
-            DecryptDataBaseFiles();
-
-            ListDataBaseSummary();
+                if (!DecryptDataBaseFiles())
+                {
+                    Console.WriteLine("DDBFiles failed");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
+                    ListDataBaseSummary();
+                    Console.WriteLine("LDBS success.");
+                    Console.ReadKey();
+                }
+            }
+            catch (System.Exception)
+            {
+                Console.WriteLine("Error on start.");
+                // Start();
+                Console.ReadKey();
+                throw;
+            }
         }
 
         private static void Login()
@@ -98,7 +121,7 @@ namespace MoneyExperiment
             }
         }
 
-        private static void DecryptDataBaseFiles()
+        private static bool DecryptDataBaseFiles()
         {
             if (!File.Exists(Budget))
             {
@@ -116,11 +139,13 @@ namespace MoneyExperiment
                 }
                 catch (IOException error)
                 {
-                    Console.WriteLine("The file could not be read: ");
+                    Console.WriteLine("The budget file could not be read: ");
                     Console.WriteLine(error.Message);
+                    return false;
                 }
             }
 
+            // Database folder
             if (!Directory.Exists(Database))
             {
                 Console.WriteLine("Database folder was missing so we created one for you.");
@@ -131,6 +156,7 @@ namespace MoneyExperiment
                 PullDatabase();
             }
 
+            // Items
             if (!File.Exists(Items))
             {
                 Console.WriteLine("Items file was missing so we created one for you.");
@@ -153,11 +179,14 @@ namespace MoneyExperiment
                 }
                 catch (IOException error)
                 {
-                    Console.WriteLine("The file could not be read: ");
+                    Console.WriteLine("The items file could not be read: ");
                     Console.WriteLine(error.Message);
+                    srItems.Dispose();
+                    return false;
                 }
             }
 
+            // Costs
             if (!File.Exists(Costs))
             {
                 Console.WriteLine("Costs file was missing so we created one for you.");
@@ -177,11 +206,14 @@ namespace MoneyExperiment
                 }
                 catch (IOException error)
                 {
-                    Console.WriteLine("The file could not be read: ");
+                    Console.WriteLine("The costs file could not be read: ");
                     Console.WriteLine(error.Message);
+                    srCosts.Dispose();
+                    return false;
                 }
-
             }
+
+            return true;
         }
 
         private static void ListDataBaseSummary()

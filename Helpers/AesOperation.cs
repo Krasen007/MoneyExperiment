@@ -158,6 +158,8 @@ namespace MoneyExperiment.Helpers
                 {
                     if (isWrongPassword)
                     {
+                        memoryStream.Dispose();
+                        cryptoStream.Dispose();
                         streamReader.Dispose();
                         Program.Start();
                     }
