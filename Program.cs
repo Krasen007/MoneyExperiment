@@ -34,12 +34,12 @@ namespace MoneyExperiment
 
         public static void Start()
         {
-                Login();
+            Login();
 
-                if (DecryptDataBaseFiles())
-                {
-                ListDataBaseSummary();                
-                }
+            if (DecryptDataBaseFiles())
+            {
+                ListDataBaseSummary();
+            }
         }
 
         private static void Login()
@@ -97,6 +97,18 @@ namespace MoneyExperiment
 
         private static bool DecryptDataBaseFiles()
         {
+            // Database folder
+            if (!Directory.Exists(Database))
+            {
+                Console.WriteLine("Database folder was missing so we created one for you.");
+                Directory.CreateDirectory(Database);
+            }
+            else
+            {
+                PullDatabase();
+            }
+
+            // Budget file
             if (!File.Exists(Budget))
             {
                 Console.Write("Set your spending budget: ");
@@ -119,18 +131,7 @@ namespace MoneyExperiment
                 }
             }
 
-            // Database folder
-            if (!Directory.Exists(Database))
-            {
-                Console.WriteLine("Database folder was missing so we created one for you.");
-                Directory.CreateDirectory(Database);
-            }
-            else
-            {
-                PullDatabase();
-            }
-
-            // Items
+            // Items file
             if (!File.Exists(Items))
             {
                 Console.WriteLine("Items file was missing so we created one for you.");
@@ -146,19 +147,21 @@ namespace MoneyExperiment
                 {
                     for (int i = 0; i < lineCount; i++)
                     {
+                        // here breaks i think
                         var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
                         myInputItem.Add(decryptedString);
                     }
                     srItems.Close();
                 }
-                catch (IOException)
+                catch (IOException error)
                 {
+                    Console.WriteLine(error.Message);
                     srItems.Dispose();
                     return false;
                 }
             }
 
-            // Costs
+            // Costs file
             if (!File.Exists(Costs))
             {
                 Console.WriteLine("Costs file was missing so we created one for you.");
@@ -166,6 +169,8 @@ namespace MoneyExperiment
             }
             else
             {
+                /// if (AesOperation.IsWrongPassword)
+
                 using StreamReader srCosts = new StreamReader(Costs);
                 try
                 {
@@ -176,13 +181,15 @@ namespace MoneyExperiment
                     }
                     srCosts.Close();
                 }
-                catch (IOException)
+                catch (IOException error)
                 {
+                    Console.WriteLine(error.Message);
                     srCosts.Dispose();
                     return false;
                 }
             }
 
+            // Succesfully read needed files
             return true;
         }
 
@@ -269,6 +276,7 @@ namespace MoneyExperiment
                 lineCount++;
             }
 
+            SaveDatabase();
             Console.Clear();
             ListDataBaseSummary();
         }
