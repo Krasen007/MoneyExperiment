@@ -143,7 +143,7 @@ namespace MoneyExperiment.Helpers
             using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using StreamReader streamReader = new StreamReader(cryptoStream);
             {
-                bool fail = false;
+                bool isWrongPassword = false;
                 try
                 {
                     return streamReader.ReadToEnd();
@@ -151,12 +151,12 @@ namespace MoneyExperiment.Helpers
                 catch (Exception)
                 {
                     Console.WriteLine("Wrong paassword.");
-                    fail = true;
+                    isWrongPassword = true;
                     return "Wrong paassword, from decryptor.";
                 }
                 finally
                 {
-                    if (fail)
+                    if (isWrongPassword)
                     {
                         streamReader.Dispose();
                         Program.Start();

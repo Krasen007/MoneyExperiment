@@ -32,13 +32,12 @@ namespace MoneyExperiment
 
         private static void Main()
         {
+            Console.WriteLine("*********** Welcome! ***********");
             Start();
         }
 
         public static void Start()
         {
-            Console.WriteLine("*********** Welcome! ***********");
-
             Login();
 
             DecryptDataBaseFiles();
@@ -90,7 +89,7 @@ namespace MoneyExperiment
             }
             else if (passwordInput.ToString().Length >= 33)
             {
-                Console.WriteLine("Your password is too long");
+                Console.WriteLine("Your password is too long.");
                 Login();
             }
             else
@@ -117,7 +116,7 @@ namespace MoneyExperiment
                 }
                 catch (IOException error)
                 {
-                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine("The file could not be read: ");
                     Console.WriteLine(error.Message);
                 }
             }
@@ -178,7 +177,7 @@ namespace MoneyExperiment
                 }
                 catch (IOException error)
                 {
-                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine("The file could not be read: ");
                     Console.WriteLine(error.Message);
                 }
 
@@ -225,7 +224,7 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.X)
             {
-                Console.WriteLine("View your summary in Database/Summary.txt");
+                Console.WriteLine("View your summary in " + Paths);
                 ExportReadable();
             }
             else if (userInput.Key == ConsoleKey.U)
