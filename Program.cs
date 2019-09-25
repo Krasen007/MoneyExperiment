@@ -32,6 +32,11 @@ namespace MoneyExperiment
 
         private static void Main()
         {
+            Start();
+        }
+
+        public static void Start()
+        {
             Console.WriteLine("*********** Welcome! ***********");
 
             Login();
@@ -41,7 +46,7 @@ namespace MoneyExperiment
             ListDataBaseSummary();
         }
 
-        public static void Login()
+        private static void Login()
         {
             Console.Write("Please enter your password: ");
 
