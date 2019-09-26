@@ -76,7 +76,6 @@ namespace MoneyExperiment.Helpers
                         memoryStream.Dispose();
                         cryptoStream.Dispose();
                         streamReader.Dispose();
-                        Program.Start();
                     }
                 }
             }

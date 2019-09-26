@@ -40,6 +40,12 @@ namespace MoneyExperiment
             {
                 ListDataBaseSummary();
             }
+            else
+            {
+                // Try again.
+                AesOperation.IsWrongPassword = false;
+                Start();
+            }
         }
 
         private static void Login()
@@ -148,8 +154,15 @@ namespace MoneyExperiment
                     for (int i = 0; i < lineCount; i++)
                     {
                         // here breaks i think
-                        var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
-                        myInputItem.Add(decryptedString);
+                        if (AesOperation.IsWrongPassword)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
+                            myInputItem.Add(decryptedString);
+                        }
                     }
                     srItems.Close();
                 }
@@ -176,8 +189,15 @@ namespace MoneyExperiment
                 {
                     for (int i = 0; i < lineCount; i++)
                     {
-                        var decryptedString = AesOperation.DecryptString(UserKey, srCosts.ReadLine());
-                        myInputCost.Add(Convert.ToDouble(decryptedString));
+                        if (AesOperation.IsWrongPassword)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            var decryptedString = AesOperation.DecryptString(UserKey, srCosts.ReadLine());
+                            myInputCost.Add(Convert.ToDouble(decryptedString));
+                        }
                     }
                     srCosts.Close();
                 }
@@ -190,7 +210,14 @@ namespace MoneyExperiment
             }
 
             // Succesfully read needed files
-            return true;
+            if (AesOperation.IsWrongPassword)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private static void ListDataBaseSummary()
