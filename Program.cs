@@ -153,14 +153,13 @@ namespace MoneyExperiment
                 {
                     for (int i = 0; i < lineCount; i++)
                     {
-                        // here breaks i think
+                        var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
                         if (AesOperation.IsWrongPassword)
                         {
                             break;
                         }
                         else
                         {
-                            var decryptedString = AesOperation.DecryptString(UserKey, srItems.ReadLine());
                             myInputItem.Add(decryptedString);
                         }
                     }
@@ -182,20 +181,18 @@ namespace MoneyExperiment
             }
             else
             {
-                /// if (AesOperation.IsWrongPassword)
-
                 using StreamReader srCosts = new StreamReader(Costs);
                 try
                 {
                     for (int i = 0; i < lineCount; i++)
                     {
+                        var decryptedString = AesOperation.DecryptString(UserKey, srCosts.ReadLine());
                         if (AesOperation.IsWrongPassword)
                         {
                             break;
                         }
                         else
                         {
-                            var decryptedString = AesOperation.DecryptString(UserKey, srCosts.ReadLine());
                             myInputCost.Add(Convert.ToDouble(decryptedString));
                         }
                     }
@@ -212,6 +209,7 @@ namespace MoneyExperiment
             // Succesfully read needed files
             if (AesOperation.IsWrongPassword)
             {
+                Console.WriteLine("Wrong password.");
                 return false;
             }
             else
@@ -353,13 +351,15 @@ namespace MoneyExperiment
                 outputFile.WriteLine(myInputItem[i] + " " + myInputCost[i]);
             }
 
-            double result = 0;
+            double totalCosts = 0;
             for (int i = 0; i < lineCount; i++)
             {
-                result += myInputCost[i];
+                totalCosts += myInputCost[i];
             }
 
-            outputFile.WriteLine("Your spendings are: " + result);
+            outputFile.WriteLine("Your spendings are: " + totalCosts);
+            outputFile.WriteLine("Your amount left on budget is: " + (myBudget - totalCosts));
+
             outputFile.Dispose();
         }
 

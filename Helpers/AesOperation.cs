@@ -65,9 +65,8 @@ namespace MoneyExperiment.Helpers
                 }
                 catch (CryptographicException)
                 {
-                    Console.WriteLine("Wrong password.");
                     IsWrongPassword = true;
-                    return "Wrong password, from decryptor.";
+                    return "";
                 }
                 finally
                 {
