@@ -6,7 +6,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Authors>Krasen Ivanov</Authors>
     <Copyright>Krasen Ivanov 2019</Copyright>
-    <Version>1.0.8-beta1</Version>
+    <Version>1.0.100-beta1</Version>
     <AssemblyName>Money Experiment</AssemblyName>
   </PropertyGroup>
 
@@ -23,7 +23,7 @@
     <None Update="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Scripts\CloneDB.bat">
+    <None Update="CloneDB.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\CreateDB.bat">
