@@ -245,7 +245,8 @@ namespace MoneyExperiment
                 "type 'y' to add new entry, \n" +
                 "type 'e' to exit without uploading online, \n" +
                 "type 'x' to export database in readable form, \n" +
-                "type 'u' to exit and upload the database online.");
+                "type 'u' to exit and upload the database online, \n" +
+                "type 'r' to remove item from list.");
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.Y)
@@ -267,11 +268,48 @@ namespace MoneyExperiment
                 Console.WriteLine("Uploading...");
                 UploadOnline();
             }
+            else if (userInput.Key == ConsoleKey.R)
+            {
+                Console.WriteLine("Removing...");
+                RemoveItem();
+            }
             else
             {
                 Console.Clear();
                 ListDataBaseSummary();
             }
+        }
+
+        private static void RemoveItem()
+        {
+            for (int i = 0; i < myInputItem.Count; i++)
+            {
+                Console.WriteLine(i + ": " + myInputItem[i]);
+            }
+            Console.WriteLine(myInputItem.Count + ": Abort.");
+
+            Console.Write("Enter the number of the item you want to remove: ");
+            var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
+
+
+            for (int i = 0; i < myInputItem.Count; i++)
+            {
+                if (deleteItem == i)
+                {
+                    myInputItem.Remove(myInputItem[i]);
+                    myInputCost.Remove(myInputCost[i]);
+                    lineCount--;
+                    break;
+                }
+                else if (deleteItem == myInputItem.Count)
+                {
+                    break;
+                }
+            }
+
+            Console.Clear();
+            SaveDatabase();
+            ListDataBaseSummary();
         }
 
         private static void AddOrUpdateList()
