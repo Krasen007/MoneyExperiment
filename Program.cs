@@ -12,7 +12,7 @@ namespace MoneyExperiment
 
     public static class Program
     {
-        private const string Paths = @"Database\Summary.txt";
+        private const string Summary = @"Database\Summary.txt";
         private const string Items = @"Database\Items.krs";
         private const string Costs = @"Database\Costs.krs";
         private const string Budget = @"Database\Budget.krs";
@@ -28,6 +28,7 @@ namespace MoneyExperiment
 
         private static void Main()
         {
+            Console.Title = "Money Experiment";
             Console.WriteLine("*********** Welcome! ***********");
             Start();
         }
@@ -258,7 +259,7 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.X)
             {
-                Console.WriteLine("View your summary in " + Paths);
+                Console.WriteLine("View your summary in " + Summary);
                 ExportReadable();
             }
             else if (userInput.Key == ConsoleKey.U)
@@ -343,7 +344,7 @@ namespace MoneyExperiment
         {
             SaveDatabase();
 
-            using StreamWriter outputFile = new StreamWriter(Paths);
+            using StreamWriter outputFile = new StreamWriter(Summary);
             outputFile.WriteLine("*********** Summary: **********");
 
             for (int i = 0; i < lineCount; i++)
@@ -367,17 +368,17 @@ namespace MoneyExperiment
         {
             SaveDatabase();
 
-            const string CreateDB = @"Scripts\CreateDB.bat";
-            const string UpdateDB = @"Scripts\UpdateDB.bat";
+            const string InitCreateDB = @"Scripts\InitCreateDB.bat";
+            const string PushUpdateDB = @"Scripts\PushUpdateDB.bat";
 
             if (Directory.Exists(@".git"))
             {
-                var process = Process.Start(UpdateDB);
+                var process = Process.Start(PushUpdateDB);
                 process.WaitForExit();
             }
             else
             {
-                var process = Process.Start(CreateDB);
+                var process = Process.Start(InitCreateDB);
                 process.WaitForExit();
             }
         }
