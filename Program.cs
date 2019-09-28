@@ -28,7 +28,7 @@ namespace MoneyExperiment
 
         private static void Main()
         {
-            Console.Title = "Money Experiment";
+            Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             Console.WriteLine("*********** Welcome! ***********");
             Start();
         }
@@ -219,6 +219,45 @@ namespace MoneyExperiment
             }
         }
 
+
+        /// <summary>
+        /// This method imports budget.csv file that is based only with 2 items and is split by ','
+        /// </summary>
+        private static void ImportCSV()
+        {
+            List<string> csvItems = new List<string>();
+
+            try
+            {
+                var csvTotalLines = File.ReadLines("budget.csv").Count();
+
+                using StreamReader srBudgetItems = new StreamReader("budget.csv");
+                {
+                    for (int i = 0; i < csvTotalLines; i++)
+                    {
+                        csvItems.Add(srBudgetItems.ReadLine());
+
+                        string itemName = csvItems[i].Remove(csvItems[i].IndexOf(','));
+                        string itemCost = csvItems[i].Remove(0, csvItems[i].IndexOf(',') + 1);
+
+                        myInputItem.Add(itemName);
+                        myInputCost.Add(Convert.ToDouble(itemCost));
+                        lineCount++;
+                    }
+
+                }
+                srBudgetItems.Dispose();
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine("You need to add budget.csv in the main folder");
+            }
+
+            SaveDatabase();
+            ListDataBaseSummary();
+        }
+
         private static void ListDataBaseSummary()
         {
             Console.WriteLine("*********** Summary: **********");
@@ -246,7 +285,9 @@ namespace MoneyExperiment
                 "type 'e' to exit without uploading online, \n" +
                 "type 'x' to export database in readable form, \n" +
                 "type 'u' to exit and upload the database online, \n" +
-                "type 'r' to remove item from list.");
+                "type 'r' to remove item from list, \n" +
+                "type 'i' to import csv file.");
+
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.Y)
@@ -272,6 +313,11 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("Removing...");
                 RemoveItem();
+            }
+            else if (userInput.Key == ConsoleKey.I)
+            {
+                Console.WriteLine("Importing...");
+                ImportCSV();
             }
             else
             {
