@@ -7,23 +7,18 @@ namespace MoneyExperiment.Helpers
     using System.Security.Cryptography;
     using System.Text;
 
-    public class AesOperation
+    public static class AesOperation
     {
         public static bool IsWrongPassword { get; set; }
 
-        protected AesOperation()
-        {
-
-        }
-
-        public static string EncryptString(string key, string plainText)
+        public static string EncryptString(string password, string plainText)
         {
             byte[] iv = new byte[16];
             byte[] encrypted;
 
             using (AesManaged aes = new AesManaged())
             {
-                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.Key = Encoding.UTF8.GetBytes(password);
                 aes.IV = iv;
 
                 ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
@@ -41,14 +36,14 @@ namespace MoneyExperiment.Helpers
             return Convert.ToBase64String(encrypted);
         }
 
-        public static string DecryptString(string key, string cipherText)
+        public static string DecryptString(string password, string cipherText)
         {
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipherText);
 
             using AesManaged aes = new AesManaged
             {
-                Key = Encoding.UTF8.GetBytes(key),
+                Key = Encoding.UTF8.GetBytes(password),
                 IV = iv
             };
 

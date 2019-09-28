@@ -101,6 +101,10 @@ namespace MoneyExperiment
             }
         }
 
+        /// <summary>
+        /// Decrypts the user database with the provided password.
+        /// </summary>
+        /// <returns>Return true on succesful decrypt.</returns>
         private static bool DecryptDataBaseFiles()
         {
             // Database folder
@@ -234,19 +238,17 @@ namespace MoneyExperiment
             Console.WriteLine();
 
             // Start
-            ShowMenu();
+            ShowMainMenu();
         }
 
-        private static void ShowMenu()
+        private static void ShowMainMenu()
         {
-            System.Console.WriteLine("*********** Menu: ***********");
+            Console.WriteLine("*********** Menu: ***********");
             Console.WriteLine("Do you want to add another?\n" +
                 "type 'y' to add new entry, \n" +
-                "type 'e' to exit without uploading online, \n" +
-                "type 'x' to export database in readable form, \n" +
-                "type 'u' to exit and upload the database online, \n" +
-                "type 'r' to remove item from list, \n" +
-                "type 'i' to import csv file.");
+                "type 'e' to save and exit without uploading online, \n" +
+                "type 'u' to save and exit and upload the database online, \n" +
+                "type 'o' for other options.");
 
             var userInput = Console.ReadKey(true);
 
@@ -259,15 +261,37 @@ namespace MoneyExperiment
                 Console.WriteLine("Exiting...");
                 SaveDatabase();
             }
-            else if (userInput.Key == ConsoleKey.X)
-            {
-                Console.WriteLine("View your summary in " + SummaryPath);
-                ExportReadable();
-            }
             else if (userInput.Key == ConsoleKey.U)
             {
                 Console.WriteLine("Uploading...");
                 UploadOnline();
+            }
+            else if (userInput.Key == ConsoleKey.O)
+            {
+                Console.Clear();
+                ShowOptionsMenu();
+            }
+            else
+            {
+                Console.Clear();
+                ListDataBaseSummary();
+            }
+        }
+
+        private static void ShowOptionsMenu()
+        {
+            Console.WriteLine("*********** Options: ***********");
+            Console.WriteLine("type 'x' to export database in readable form, \n" +
+                "type 'r' to remove item from list, \n" +
+                "type 'i' to import csv file, \n" +
+                "press ESC to return to the main menu.");
+
+            var userInput = Console.ReadKey(true);
+
+            if (userInput.Key == ConsoleKey.X)
+            {
+                Console.WriteLine("View your summary in " + SummaryPath);
+                ExportReadable();
             }
             else if (userInput.Key == ConsoleKey.R)
             {
@@ -279,10 +303,15 @@ namespace MoneyExperiment
                 Console.WriteLine("Importing...");
                 ImportCSV();
             }
-            else
+            else if (userInput.Key == ConsoleKey.Escape)
             {
                 Console.Clear();
                 ListDataBaseSummary();
+            }
+            else
+            {
+                Console.Clear();
+                ShowOptionsMenu();
             }
         }
 
@@ -350,7 +379,7 @@ namespace MoneyExperiment
         }
 
         /// <summary>
-        /// Use if you want to export in txt readable for humans.
+        /// Use if you want to export in txt readable for humans (not encrypted).
         /// </summary>
         private static void ExportReadable()
         {
