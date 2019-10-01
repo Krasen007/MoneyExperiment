@@ -25,6 +25,7 @@
 * When you are done you can save your current account database on your PC, or you can upload it to your git repo.
 * If you want to use the app on another PC, install git and run CloneDB.bat after you set your git repo in the file as explained above.
 * It should automatically sync your database. Remember to use the same password or you will not be able to open the database.
+* In the options menu you have the ability to export the database to readable txt table, or import a budget.csv with "item, cost" format for example: "food, 50".
 
 ### Credits:
 

@@ -22,7 +22,7 @@ namespace MoneyExperiment
         private static readonly List<double> userInputCost = new List<double>();
         private static double myBudget;
 
-        private static int lineCount;
+        private static int fileLineCount;
         private static string userPassword;
 
         private static void Main()
@@ -146,16 +146,16 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("Items file was missing so we created one for you.");
                 File.Create(ItemsPath).Dispose();
-                lineCount = 0;
+                fileLineCount = 0;
             }
             else
             {
-                lineCount = File.ReadLines(ItemsPath).Count();
+                fileLineCount = File.ReadLines(ItemsPath).Count();
 
                 using StreamReader srItems = new StreamReader(ItemsPath);
                 try
                 {
-                    for (int i = 0; i < lineCount; i++)
+                    for (int i = 0; i < fileLineCount; i++)
                     {
                         var decryptedString = AesOperation.DecryptString(userPassword, srItems.ReadLine());
                         if (AesOperation.IsWrongPassword)
@@ -188,7 +188,7 @@ namespace MoneyExperiment
                 using StreamReader srCosts = new StreamReader(CostsPath);
                 try
                 {
-                    for (int i = 0; i < lineCount; i++)
+                    for (int i = 0; i < fileLineCount; i++)
                     {
                         var decryptedString = AesOperation.DecryptString(userPassword, srCosts.ReadLine());
                         if (AesOperation.IsWrongPassword)
@@ -227,7 +227,7 @@ namespace MoneyExperiment
             Console.WriteLine("*********** Budget Summary: **********");
 
             double totalCosts = 0;
-            for (int i = 0; i < lineCount; i++)
+            for (int i = 0; i < fileLineCount; i++)
             {
                 Console.WriteLine(userInputItem[i] + " " + userInputCost[i]);
                 totalCosts += userInputCost[i];
@@ -325,7 +325,7 @@ namespace MoneyExperiment
 
             // Check if item is already in the database
             bool isDublicateItem = false;
-            for (int i = 0; i < lineCount; i++)
+            for (int i = 0; i < fileLineCount; i++)
             {
                 if (itemInput == userInputItem[i])
                 {
@@ -340,7 +340,7 @@ namespace MoneyExperiment
             {
                 userInputItem.Add(itemInput);
                 userInputCost.Add(costInput);
-                lineCount++;
+                fileLineCount++;
             }
 
             SaveDatabase();
@@ -355,7 +355,7 @@ namespace MoneyExperiment
         {
             using (StreamWriter outputFile = new StreamWriter(CostsPath))
             {
-                for (int i = 0; i < lineCount; i++)
+                for (int i = 0; i < fileLineCount; i++)
                 {
                     var encryptedString = AesOperation.EncryptString(userPassword, userInputCost[i].ToString());
                     outputFile.WriteLine(encryptedString);
@@ -364,7 +364,7 @@ namespace MoneyExperiment
 
             using (StreamWriter outputFile = new StreamWriter(ItemsPath))
             {
-                for (int i = 0; i < lineCount; i++)
+                for (int i = 0; i < fileLineCount; i++)
                 {
                     var encryptedString = AesOperation.EncryptString(userPassword, userInputItem[i].ToString());
                     outputFile.WriteLine(encryptedString);
@@ -388,13 +388,13 @@ namespace MoneyExperiment
             using StreamWriter outputFile = new StreamWriter(SummaryPath);
             outputFile.WriteLine("*********** Summary: **********");
 
-            for (int i = 0; i < lineCount; i++)
+            for (int i = 0; i < fileLineCount; i++)
             {
                 outputFile.WriteLine(userInputItem[i] + " " + userInputCost[i]);
             }
 
             double totalCosts = 0;
-            for (int i = 0; i < lineCount; i++)
+            for (int i = 0; i < fileLineCount; i++)
             {
                 totalCosts += userInputCost[i];
             }
@@ -437,7 +437,7 @@ namespace MoneyExperiment
         {
             for (int i = 0; i < userInputItem.Count; i++)
             {
-                Console.WriteLine(i + ": " + userInputItem[i]);
+                Console.WriteLine(i + ": " + userInputItem[i] + " " + userInputCost[i]);
             }
             Console.WriteLine(userInputItem.Count + ": Abort.");
 
@@ -451,7 +451,7 @@ namespace MoneyExperiment
                 {
                     userInputItem.Remove(userInputItem[i]);
                     userInputCost.Remove(userInputCost[i]);
-                    lineCount--;
+                    fileLineCount--;
                     break;
                 }
                 else if (deleteItem == userInputItem.Count)
@@ -487,7 +487,7 @@ namespace MoneyExperiment
 
                         userInputItem.Add(itemName);
                         userInputCost.Add(Convert.ToDouble(itemCost));
-                        lineCount++;
+                        fileLineCount++;
                     }
 
                 }

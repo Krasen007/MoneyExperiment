@@ -41,11 +41,18 @@ namespace MoneyExperiment.Helpers
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipherText);
 
-            using AesManaged aes = new AesManaged
+            using AesManaged aes = new AesManaged();
             {
-                Key = Encoding.UTF8.GetBytes(password),
-                IV = iv
-            };
+                try
+                {
+                    aes.Key = Encoding.UTF8.GetBytes(password);
+                    aes.IV = iv;
+                }
+                catch (CryptographicException)
+                {
+                    IsWrongPassword = true;
+                }
+            }
 
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
@@ -53,6 +60,7 @@ namespace MoneyExperiment.Helpers
             using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using StreamReader streamReader = new StreamReader(cryptoStream);
             {
+
                 IsWrongPassword = false;
                 try
                 {
