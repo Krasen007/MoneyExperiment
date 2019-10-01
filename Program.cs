@@ -20,8 +20,9 @@ namespace MoneyExperiment
 
         private static readonly List<string> userInputItem = new List<string>();
         private static readonly List<double> userInputCost = new List<double>();
-        private static double myBudget;
-
+        private static double budgetAmount;
+        private static string budgetName;
+        
         private static int fileLineCount;
         private static string userPassword;
 
@@ -121,16 +122,21 @@ namespace MoneyExperiment
             // Budget file
             if (!File.Exists(BudgetPath))
             {
+                Console.Write("Enter the name of your budget: ");
+                budgetName = Console.ReadLine();
+
                 Console.Write("Set your spending budget: ");
-                myBudget = ParseHelper.ParseDouble(Console.ReadLine());
+                budgetAmount = ParseHelper.ParseDouble(Console.ReadLine());
                 File.Create(BudgetPath).Dispose();
             }
             else
             {
                 try
                 {
+                    // To work the file should contain first the budget Amount and on the second line the name of the budget.
                     using StreamReader srBudget = new StreamReader(BudgetPath);
-                    myBudget = ParseHelper.ParseDouble(srBudget.ReadLine());
+                    budgetAmount = ParseHelper.ParseDouble(srBudget.ReadLine());
+                    budgetName = srBudget.ReadLine();
                     srBudget.Close();
                 }
                 catch (IOException error)
@@ -224,17 +230,47 @@ namespace MoneyExperiment
 
         private static void ListDataBaseSummary()
         {
-            Console.WriteLine("*********** Budget Summary: **********");
+            Console.WriteLine("*********** {0} **********", budgetName);
 
             double totalCosts = 0;
             for (int i = 0; i < fileLineCount; i++)
             {
-                Console.WriteLine(userInputItem[i] + " " + userInputCost[i]);
+                string separator;
+                if (userInputCost[i].ToString().Length == 1)
+                {
+                    separator = "       ";
+                }
+                else if (userInputCost[i].ToString().Length == 2)
+                {
+                    separator = "      ";
+                }
+                else if (userInputCost[i].ToString().Length == 3)
+                {
+                    separator = "     ";
+                }
+                else if (userInputCost[i].ToString().Length == 4)
+                {
+                    separator = "    ";
+                }
+                else if (userInputCost[i].ToString().Length == 5)
+                {
+                    separator = "   ";
+                }
+                else if (userInputCost[i].ToString().Length == 6)
+                {
+                    separator = "  ";
+                }
+                else
+                {
+                    separator = " ";
+                }
+
+                Console.WriteLine(separator + userInputCost[i] + " " + userInputItem[i]);
                 totalCosts += userInputCost[i];
             }
 
             Console.WriteLine("\nYour spendings are: " + totalCosts);
-            Console.WriteLine("Your budget of " + myBudget + " is now left with total: " + (myBudget - totalCosts));
+            Console.WriteLine("Your budget of " + budgetAmount + " is now left with total: " + (budgetAmount - totalCosts));
             Console.WriteLine();
 
             // Start
@@ -243,7 +279,7 @@ namespace MoneyExperiment
 
         private static void ShowMainMenu()
         {
-            Console.WriteLine("*********** Menu: ***********");
+            Console.WriteLine("*********** Menu ***********");
             Console.WriteLine("Do you want to add another?\n" +
                 "type 'y' to add new entry, \n" +
                 "type 'e' to save and exit without uploading online, \n" +
@@ -254,7 +290,7 @@ namespace MoneyExperiment
 
             if (userInput.Key == ConsoleKey.Y)
             {
-                AddOrUpdateList();
+                AddOrUpdateItemList();
             }
             else if (userInput.Key == ConsoleKey.E)
             {
@@ -280,10 +316,11 @@ namespace MoneyExperiment
 
         private static void ShowOptionsMenu()
         {
-            Console.WriteLine("*********** Options: ***********");
+            Console.WriteLine("*********** Options ***********");
             Console.WriteLine("type 'x' to export database in readable form, \n" +
                 "type 'r' to remove item from list, \n" +
                 "type 'i' to import csv file, \n" +
+                "type 'o' to change the budget name and amount, \n" +
                 "press ESC to return to the main menu.");
 
             var userInput = Console.ReadKey(true);
@@ -303,6 +340,17 @@ namespace MoneyExperiment
                 Console.WriteLine("Importing...");
                 ImportCSV();
             }
+            else if (userInput.Key == ConsoleKey.O)
+            {
+                Console.Write("Enter new name for the budget: ");
+                budgetName = Console.ReadLine();
+                Console.Write("Set your new budget: ");
+                budgetAmount = ParseHelper.ParseDouble(Console.ReadLine());
+
+                Console.Clear();
+                SaveDatabase();
+                ListDataBaseSummary();
+            }
             else if (userInput.Key == ConsoleKey.Escape)
             {
                 Console.Clear();
@@ -315,13 +363,13 @@ namespace MoneyExperiment
             }
         }
 
-        private static void AddOrUpdateList()
+        private static void AddOrUpdateItemList()
         {
-            Console.Write("For what did you spend: ");
-            string itemInput = ParseHelper.ParseStringInput();
-
-            Console.Write("How much did it cost: ");
+            Console.Write("How much did you spend: ");
             double costInput = ParseHelper.ParseDouble(Console.ReadLine());
+
+            Console.Write("What did you spend on: ");
+            string itemInput = ParseHelper.ParseStringInput();                      
 
             // Check if item is already in the database
             bool isDublicateItem = false;
@@ -374,7 +422,8 @@ namespace MoneyExperiment
             // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
             using (StreamWriter outputFile = new StreamWriter(BudgetPath))
             {
-                outputFile.WriteLine(myBudget);
+                outputFile.WriteLine(budgetAmount);
+                outputFile.WriteLine(budgetName);
             }
         }
 
@@ -383,10 +432,11 @@ namespace MoneyExperiment
         /// </summary>
         private static void ExportReadable()
         {
+            // Fix method to use already established method of reading the list
             SaveDatabase();
 
             using StreamWriter outputFile = new StreamWriter(SummaryPath);
-            outputFile.WriteLine("*********** Summary: **********");
+            outputFile.WriteLine("*********** {0} **********", budgetName);
 
             for (int i = 0; i < fileLineCount; i++)
             {
@@ -399,8 +449,8 @@ namespace MoneyExperiment
                 totalCosts += userInputCost[i];
             }
 
-            outputFile.WriteLine("Your spendings are: " + totalCosts);
-            outputFile.WriteLine("Your amount left on budget is: " + (myBudget - totalCosts));
+            outputFile.WriteLine("\nYour spendings are: " + totalCosts);
+            outputFile.WriteLine("Your amount left on budget is: " + (budgetAmount - totalCosts));
 
             outputFile.Dispose();
         }
