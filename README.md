@@ -1,8 +1,9 @@
 # MoneyExperiment
- Experimental budgeting app.
- Sync a budget between PCs with the help of public Git repo.
- The trick is that your database of items is encrypted even if its in a public repo.
- ![Main view of the app.](Resources/MainView.png)
+![App icon](icon.ico)
+Experimental budgeting app.
+Sync a budget between PCs with the help of public Git repo.
+The trick is that your database of items is encrypted even if its in a public repo.
+![Main view of the app.](Resources/MainView.png)
 
 
 ### How to Run:

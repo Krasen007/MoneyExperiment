@@ -22,7 +22,7 @@ namespace MoneyExperiment
         private static readonly List<double> userInputCost = new List<double>();
         private static double budgetAmount;
         private static string budgetName;
-        
+
         private static int fileLineCount;
         private static string userPassword;
 
@@ -321,6 +321,7 @@ namespace MoneyExperiment
                 "type 'r' to remove item from list, \n" +
                 "type 'i' to import csv file, \n" +
                 "type 'o' to change the budget name and amount, \n" +
+                "type 'd' to DELETE ALL DATABASE, \n" +
                 "press ESC to return to the main menu.");
 
             var userInput = Console.ReadKey(true);
@@ -351,6 +352,25 @@ namespace MoneyExperiment
                 SaveDatabase();
                 ListDataBaseSummary();
             }
+            else if (userInput.Key == ConsoleKey.D)
+            {
+                Console.WriteLine("WARNING: THIS WILL DELETE ALL OF YOUR DATABASE!\n" +
+                "TYPE 'DELETE' IF YOU WANT TO CONTINUE?, TYPE 'abort' TO CANCEL");
+                var textInput = Console.ReadLine();
+
+                if (textInput == "DELETE")
+                {
+                    Console.WriteLine("Deleting all database...");
+                    Directory.Delete(DatabaseFolderPath, true);
+                    Start();
+                }
+                else
+                {
+                    Console.WriteLine("Aborting...");
+                    Console.Clear();
+                    ListDataBaseSummary();
+                }
+            }
             else if (userInput.Key == ConsoleKey.Escape)
             {
                 Console.Clear();
@@ -369,7 +389,7 @@ namespace MoneyExperiment
             double costInput = ParseHelper.ParseDouble(Console.ReadLine());
 
             Console.Write("What did you spend on: ");
-            string itemInput = ParseHelper.ParseStringInput();                      
+            string itemInput = ParseHelper.ParseStringInput();
 
             // Check if item is already in the database
             bool isDublicateItem = false;
