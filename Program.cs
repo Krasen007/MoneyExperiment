@@ -355,13 +355,14 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.D)
             {
                 Console.WriteLine("WARNING: THIS WILL DELETE ALL OF YOUR DATABASE!\n" +
-                "TYPE 'DELETE' IF YOU WANT TO CONTINUE?, TYPE 'abort' TO CANCEL");
+                "TYPE 'Delete' IF YOU WANT TO CONTINUE?, TYPE 'abort' TO CANCEL");
                 var textInput = Console.ReadLine();
 
-                if (textInput == "DELETE")
+                if (textInput == "Delete")
                 {
                     Console.WriteLine("Deleting all database...");
                     Directory.Delete(DatabaseFolderPath, true);
+                    Console.WriteLine("***************");
                     Start();
                 }
                 else

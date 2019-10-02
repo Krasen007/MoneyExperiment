@@ -1,5 +1,5 @@
 # MoneyExperiment
-![App icon](icon.ico)
+![App icon](icon.ico =128x)
 Experimental budgeting app.
 Sync a budget between PCs with the help of public Git repo.
 The trick is that your database of items is encrypted even if its in a public repo.
@@ -35,5 +35,4 @@ The trick is that your database of items is encrypted even if its in a public re
 
 #### TODO:
 
-* Fix global git.user and git.email
-* Add option to delete the database
+* Fix global git.user and git.email for first time install
