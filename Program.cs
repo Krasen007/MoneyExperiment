@@ -230,11 +230,12 @@ namespace MoneyExperiment
 
         private static void ListDataBaseSummary()
         {
-            Console.WriteLine("*********** {0} **********", budgetName);
+            Console.WriteLine("*********** {0} **********\n", budgetName);
 
             double totalCosts = 0;
             for (int i = 0; i < fileLineCount; i++)
             {
+                // This is used to add space between the amount of the item so they appear level.
                 string separator;
                 if (userInputCost[i].ToString().Length == 1)
                 {

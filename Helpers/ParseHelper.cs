@@ -15,9 +15,10 @@ namespace MoneyExperiment.Helpers
             {
                 if (string.IsNullOrEmpty(stringInput))
                 {
-                    Console.WriteLine("Please type what did you spent for.");
+                    Console.Write("Please type what did you spent for: ");
                     stringInput = Console.ReadLine();
-                } else if (stringInput.EndsWith(" "))
+                }
+                else if (stringInput.EndsWith(" "))
                 {
                     stringInput = stringInput.Remove(stringInput.Length - 1);
                 }
@@ -38,7 +39,7 @@ namespace MoneyExperiment.Helpers
                 {
                     // Show message box with info.
                     /// MessageBox.Show("Add more numbers.", "Tip");
-                    Console.WriteLine("Add more numbers.");
+                    Console.Write("Add more numbers: ");
                 }
                 else
                 {
@@ -49,20 +50,19 @@ namespace MoneyExperiment.Helpers
             {
                 if (value.EndsWith("."))
                 {
-                    Console.WriteLine("Use , instead of .");
+                    Console.Write("Use ',' instead of '.' : ");
                     value = Console.ReadLine();
                     ParseDouble(value);
                 }
                 else if (string.IsNullOrEmpty(value))
                 {
-                    // Show message box with info.
-                    Console.WriteLine("Don't leave empty fields");
+                    Console.Write("Don't leave empty fields: ");
                     value = Console.ReadLine();
                     ParseDouble(value);
                 }
                 else
                 {
-                    Console.WriteLine("Use only numbers, or Use , instead of .");
+                    Console.Write("Use only numbers, or Use ',' instead of '.' : ");
                     value = Console.ReadLine();
                     ParseDouble(value);
                 }
