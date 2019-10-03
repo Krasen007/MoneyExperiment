@@ -1,4 +1,6 @@
 @echo off
+git config user.name "Krasen Ivanov"
+git config user.email "krasen007@gmail.com"
 git init --quiet
 git add .
 git commit -m "Create database"
