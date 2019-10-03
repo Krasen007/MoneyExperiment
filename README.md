@@ -3,6 +3,7 @@
 Experimental budgeting app.
 Sync a budget between PCs with the help of public Git repo.
 The trick is that your database of items is always encrypted even if its in a public repo.
+
 ![Main view of the app.](Resources/MainView.png)
 
 
@@ -35,5 +36,3 @@ If you forget your password you will have to delete the Database folder.
 
 * Main coding: Krasen Ivanov 2019
 * Icon made by Freepik from www.flaticon.com
-
-#### TODO:
