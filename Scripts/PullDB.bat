@@ -1,3 +1,3 @@
 @echo off
-git pull --quiet
+git pull
 echo *** Retrieving database ***
