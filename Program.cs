@@ -14,10 +14,6 @@ namespace MoneyExperiment
     public static class Program
     {
         private const string DatabaseFolderPath = @"Database";
-        private static string SummaryPath = string.Empty;
-        private static string ItemsPath = string.Empty;
-        private static string CostsPath = string.Empty;
-        private static string BudgetPath = string.Empty;
 
         /// Add option to add multiple budgets
         private static readonly List<Budget> budgetList = new List<Budget>();
@@ -30,14 +26,7 @@ namespace MoneyExperiment
         private static void Main()
         {
             // Prep
-            Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-
-            SummaryPath = @"Database\Summary" + defaultBudget.BudgetName + ".txt";
-            ItemsPath = @"Database\Items" + defaultBudget.BudgetName + ".krs";
-            CostsPath = @"Database\Costs" + defaultBudget.BudgetName + ".krs";
-            BudgetPath = @"Database\Budget" + defaultBudget.BudgetName + ".krs";
-
-            budgetList.Add(defaultBudget);
+            Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;            
 
             // Start with defaults
             Console.WriteLine("*********** Welcome! ***********");
@@ -131,23 +120,24 @@ namespace MoneyExperiment
             }
 
             // Budget file
-            if (!File.Exists(BudgetPath))
+            if (!File.Exists(selectedBudget.BudgetPath))
             {
                 Console.Write("Enter the name of your budget: ");
-                selectedBudget.BudgetName = Console.ReadLine();
+                selectedBudget.Name = Console.ReadLine();
 
                 Console.Write("Set your spending budget: ");
-                selectedBudget.BudgetAmount = ParseHelper.ParseDouble(Console.ReadLine());
-                File.Create(BudgetPath).Dispose();
+                selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+
+                File.Create(selectedBudget.BudgetPath).Dispose();
             }
             else
             {
                 try
                 {
                     // To work the file should contain first the budget Amount and on the second line the name of the budget.
-                    using StreamReader srBudget = new StreamReader(BudgetPath);
-                    selectedBudget.BudgetAmount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
-                    selectedBudget.BudgetName = srBudget.ReadLine()!;
+                    using StreamReader srBudget = new StreamReader(selectedBudget.BudgetPath);
+                    selectedBudget.Amount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
+                    selectedBudget.Name = srBudget.ReadLine()!;
                     srBudget.Close();
                 }
                 catch (IOException error)
@@ -159,17 +149,17 @@ namespace MoneyExperiment
             }
 
             // Items file
-            if (!File.Exists(ItemsPath))
+            if (!File.Exists(selectedBudget.ItemsPath))
             {
                 Console.WriteLine("Items file was missing so we created one for you.");
-                File.Create(ItemsPath).Dispose();
+                File.Create(selectedBudget.ItemsPath).Dispose();
                 fileLineCount = 0;
             }
             else
             {
-                fileLineCount = File.ReadLines(ItemsPath).Count();
+                fileLineCount = File.ReadLines(selectedBudget.ItemsPath).Count();
 
-                using StreamReader srItems = new StreamReader(ItemsPath);
+                using StreamReader srItems = new StreamReader(selectedBudget.ItemsPath);
                 try
                 {
                     for (int i = 0; i < fileLineCount; i++)
@@ -195,14 +185,14 @@ namespace MoneyExperiment
             }
 
             // Costs file
-            if (!File.Exists(CostsPath))
+            if (!File.Exists(selectedBudget.CostsPath))
             {
                 Console.WriteLine("Costs file was missing so we created one for you.");
-                File.Create(CostsPath).Dispose();
+                File.Create(selectedBudget.CostsPath).Dispose();
             }
             else
             {
-                using StreamReader srCosts = new StreamReader(CostsPath);
+                using StreamReader srCosts = new StreamReader(selectedBudget.CostsPath);
                 try
                 {
                     for (int i = 0; i < fileLineCount; i++)
@@ -241,7 +231,7 @@ namespace MoneyExperiment
 
         private static void ListDataBaseSummary(Budget selectedBudget)
         {
-            Console.WriteLine("*********** {0} **********\n", selectedBudget.BudgetName);
+            Console.WriteLine("*********** {0} **********\n", selectedBudget.Name);
 
             double totalCosts = 0;
             for (int i = 0; i < fileLineCount; i++)
@@ -282,7 +272,7 @@ namespace MoneyExperiment
             }
 
             Console.WriteLine("\nYour spendings are: " + totalCosts);
-            Console.WriteLine("Your budget of " + selectedBudget.BudgetAmount + " is now left with total: " + (selectedBudget.BudgetAmount - totalCosts));
+            Console.WriteLine("Your budget of " + selectedBudget.Amount + " is now left with total: " + (selectedBudget.Amount - totalCosts));
             Console.WriteLine();
 
             // Start
@@ -341,7 +331,7 @@ namespace MoneyExperiment
 
             if (userInput.Key == ConsoleKey.X)
             {
-                Console.WriteLine("View your summary in " + SummaryPath);
+                Console.WriteLine("View your summary in " + selectedBudget.SummaryPath);
                 ExportReadable(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.R)
@@ -357,9 +347,9 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.O)
             {
                 Console.Write("Enter new name for the budget: ");
-                selectedBudget.BudgetName = Console.ReadLine();
+                selectedBudget.Name = Console.ReadLine();
                 Console.Write("Set your new budget: ");
-                selectedBudget.BudgetAmount = ParseHelper.ParseDouble(Console.ReadLine());
+                selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
                 Console.Clear();
                 SaveDatabase(selectedBudget);
@@ -408,7 +398,7 @@ namespace MoneyExperiment
         {
             for (int i = 0; i < budgetList.Count; i++)
             {
-                Console.WriteLine(i + ": " + budgetList[i].BudgetName);
+                Console.WriteLine(i + ": " + budgetList[i].Name);
             }
             Console.WriteLine(budgetList.Count + ": Abort.");
 
@@ -429,9 +419,9 @@ namespace MoneyExperiment
                 }
             }
 
-            //Console.Clear();
-            //SaveDatabase(selectedBudget);
-            //ListDataBaseSummary(selectedBudget);
+            ///Console.Clear();
+            ///SaveDatabase(selectedBudget);
+            ///ListDataBaseSummary(selectedBudget);
         }
 
         private static void AddOrUpdateItemList(Budget selectedBudget)
@@ -472,7 +462,7 @@ namespace MoneyExperiment
         /// </summary>
         private static void SaveDatabase(Budget selectedBudget)
         {
-            using (StreamWriter outputFile = new StreamWriter(CostsPath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.CostsPath))
             {
                 for (int i = 0; i < fileLineCount; i++)
                 {
@@ -481,7 +471,7 @@ namespace MoneyExperiment
                 }
             }
 
-            using (StreamWriter outputFile = new StreamWriter(ItemsPath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.ItemsPath))
             {
                 for (int i = 0; i < fileLineCount; i++)
                 {
@@ -491,10 +481,10 @@ namespace MoneyExperiment
             }
 
             // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(BudgetPath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.BudgetPath))
             {
-                outputFile.WriteLine(selectedBudget.BudgetAmount);
-                outputFile.WriteLine(selectedBudget.BudgetName);
+                outputFile.WriteLine(selectedBudget.Amount);
+                outputFile.WriteLine(selectedBudget.Name);
             }
         }
 
@@ -506,8 +496,8 @@ namespace MoneyExperiment
             // Fix method to use already established method of reading the list
             SaveDatabase(selectedBudget);
 
-            using StreamWriter outputFile = new StreamWriter(SummaryPath);
-            outputFile.WriteLine("*********** {0} **********", selectedBudget.BudgetName);
+            using StreamWriter outputFile = new StreamWriter(selectedBudget.SummaryPath);
+            outputFile.WriteLine("*********** {0} **********", selectedBudget.Name);
 
             for (int i = 0; i < fileLineCount; i++)
             {
@@ -521,7 +511,7 @@ namespace MoneyExperiment
             }
 
             outputFile.WriteLine("\nYour spendings are: " + totalCosts);
-            outputFile.WriteLine("Your amount left on budget is: " + (selectedBudget.BudgetAmount - totalCosts));
+            outputFile.WriteLine("Your amount left on budget is: " + (selectedBudget.Amount - totalCosts));
 
             outputFile.Dispose();
         }
