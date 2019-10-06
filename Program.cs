@@ -18,8 +18,6 @@ namespace MoneyExperiment
         /// Add option to add multiple budgets
         private static readonly List<Budget> budgetList = new List<Budget>();
 
-        private static readonly Budget defaultBudget = new Budget();
-
         private static int fileLineCount;
         private static string userPassword = string.Empty;
 
@@ -30,74 +28,37 @@ namespace MoneyExperiment
 
             // Start with defaults
             Console.WriteLine("*********** Welcome! ***********");
-
-
-            //LoadAllBudgets();
-
-            Console.WriteLine("What buget to load?");
-            defaultBudget.Name = Console.ReadLine();
-            defaultBudget.BudgetPath = @"Database\" + defaultBudget.Name + "\\Budget" + defaultBudget.Name + ".krs";
-            defaultBudget.ItemsPath = @"Database\" + defaultBudget.Name + "\\Items" + defaultBudget.Name + ".krs";
-            defaultBudget.CostsPath = @"Database\" + defaultBudget.Name + "\\Costs" + defaultBudget.Name + ".krs";
-
-            Start(defaultBudget);
-
-
-
+            LoadBudget(null);
         }
 
-        private static void LoadAllBudgets()
+        private static void LoadBudget(string? name)
         {
+            if (name == null)
+            {
+                Budget budgetToLoad = new Budget();
 
-            //public List<string> UserInputItem { get; set; } = new List<string>();
-            //public List<double> UserInputCost { get; set; } = new List<double>();
-            //public double Amount { get; set; } = 0;
-            //public string Name { get; set; } = "Default Budget";
-            //public string SummaryPath { get; set; } = string.Empty;
-            //public string ItemsPath { get; set; } = string.Empty;
-            //public string CostsPath { get; set; } = string.Empty;
-            //public string BudgetPath { get; set; } = string.Empty;
+                budgetToLoad.Name = "Budget";
+                budgetToLoad.BudgetPath = @"Database\" + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
+                budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
+                budgetToLoad.CostsPath = @"Database\" + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
 
+                budgetList.Add(budgetToLoad);
 
+                Start(budgetToLoad);
+            }
+            else
+            {
+                Budget budgetToLoad = new Budget();
 
-            //foreach (string file in Directory.EnumerateDirectories(DatabaseFolderPath))
-            //{
-            //    Console.WriteLine(file);
+                budgetToLoad.Name = name;
+                budgetToLoad.BudgetPath = @"Database\" + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
+                budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
+                budgetToLoad.CostsPath = @"Database\" + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
 
-            //    defaultBudget.BudgetPath
-            //}
+                budgetList.Add(budgetToLoad);
 
-
-            //int dirNumbers = Directory.GetDirectories(DatabaseFolderPath).Length;
-            //string[] contents = Directory.GetDirectories(DatabaseFolderPath);
-
-            //for (int i = 0; i < dirNumbers; i++)
-            //{
-            //    Console.WriteLine(contents[i]);
-            //}
-
-            //foreach (string file in Directory.EnumerateFiles(DatabaseFolderPath))
-            //{
-            //    string contents = File.ReadAllText(file);
-            //    Console.WriteLine(contents);
-            //}
-
-
-
-            //try
-            //{
-            //    // To work the file should contain first the budget Amount and on the second line the name of the budget.
-            //    using StreamReader srBudget = new StreamReader(selectedBudget.BudgetPath);
-            //    selectedBudget.Amount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
-            //    selectedBudget.Name = srBudget.ReadLine()!;
-            //    srBudget.Close();
-            //}
-            //catch (IOException error)
-            //{
-            //    Console.WriteLine("The budget file could not be read: ");
-            //    Console.WriteLine(error.Message);
-            //    return false;
-            //}
+                Start(budgetToLoad);
+            }
         }
 
         public static void Start(Budget selectedBudget)
@@ -189,15 +150,26 @@ namespace MoneyExperiment
             // Budget file
             if (!File.Exists(selectedBudget.BudgetPath))
             {
-                Console.Write("Enter the name of your budget: ");
-                selectedBudget.Name = Console.ReadLine();
+                if (selectedBudget.Name == "Budget")
+                {
+                    Console.Write("Set your spending budget: ");
+                    selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                Console.Write("Set your spending budget: ");
-                selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+                    Directory.CreateDirectory(@"Database\" + selectedBudget.Name);
+                    File.Create(selectedBudget.BudgetPath).Dispose();
+                }
+                else
+                {
+                    Console.Write("Enter the name of your budget: ");
+                    selectedBudget.Name = Console.ReadLine();
 
-                selectedBudget.BudgetPath = @"Database\" + selectedBudget.Name + "\\Budget" + selectedBudget.Name + ".krs";
-                Directory.CreateDirectory(@"Database\" + selectedBudget.Name);
-                File.Create(selectedBudget.BudgetPath).Dispose();
+                    Console.Write("Set your spending budget: ");
+                    selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+
+                    selectedBudget.BudgetPath = @"Database\" + selectedBudget.Name + "\\Budget" + selectedBudget.Name + ".krs";
+                    Directory.CreateDirectory(@"Database\" + selectedBudget.Name);
+                    File.Create(selectedBudget.BudgetPath).Dispose();
+                }
             }
             else
             {
@@ -470,28 +442,53 @@ namespace MoneyExperiment
         // Not working properly yet...
         private static void SwitchBudget(List<Budget> budgetList)
         {
-            for (int i = 0; i < budgetList.Count; i++)
-            {
-                Console.WriteLine(i + ": " + budgetList[i].Name);
-            }
-            Console.WriteLine(budgetList.Count + ": Abort.");
-
-            Console.Write("Enter the number of the budget you want to remove: ");
-            var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
+            Console.WriteLine("What buget to load?");
+            var name = Console.ReadLine();
+            LoadBudget(name);
 
 
-            for (int i = 0; i < budgetList.Count; i++)
-            {
-                if (deleteItem == i)
-                {
-                    budgetList.Remove(budgetList[i]);
-                    break;
-                }
-                else if (deleteItem == budgetList.Count)
-                {
-                    break;
-                }
-            }
+            ////for (int i = 0; i < budgetList.Count; i++)
+            ////{
+            ////    Console.WriteLine(i + ": " + budgetList[i].Name);
+            ////}
+            ////Console.WriteLine(budgetList.Count + ": Abort.");
+
+            ////Console.Write("Enter the number of the budget you want to load: ");
+            ////var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
+
+            ////for (int i = 0; i < budgetList.Count; i++)
+            ////{
+            ////    if (loadBudget == i)
+            ////    {
+            ////        Console.WriteLine("What buget to load?");
+            ////        var name = Console.ReadLine();
+            ////        LoadBudget(name);
+            ////        ///LoadBudget(budgetList[i]);
+            ////        break;
+            ////    }
+            ////    else if (loadBudget == budgetList.Count)
+            ////    {
+            ////        break;
+            ////    }
+            ////}
+
+            //// This is for deleting...
+            ////Console.Write("Enter the number of the budget you want to remove: ");
+            ////var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
+
+
+            ////for (int i = 0; i < budgetList.Count; i++)
+            ////{
+            ////    if (deleteItem == i)
+            ////    {
+            ////        budgetList.Remove(budgetList[i]);
+            ////        break;
+            ////    }
+            ////    else if (deleteItem == budgetList.Count)
+            ////    {
+            ////        break;
+            ////    }
+            ////}
 
             ///Console.Clear();
             ///SaveDatabase(selectedBudget);
@@ -569,6 +566,7 @@ namespace MoneyExperiment
         {
             // Fix method to use already established method of reading the list
             SaveDatabase(selectedBudget);
+            selectedBudget.SummaryPath = @"Database\" + selectedBudget.Name + "\\Summary" + selectedBudget.Name + ".txt";
 
             using StreamWriter outputFile = new StreamWriter(selectedBudget.SummaryPath);
             outputFile.WriteLine("*********** {0} **********", selectedBudget.Name);

@@ -14,10 +14,6 @@
 
         public Budget()
         {
-            SummaryPath = @"Database\" + this.Name + "\\Summary" + this.Name + ".txt";
-            //ItemsPath = @"Database\" + this.Name + "\\Items" + this.Name + ".krs";
-            //CostsPath = @"Database\" + this.Name + "\\Costs" + this.Name + ".krs";
-            //BudgetPath = @"Database\" + this.Name + "\\Budget" + this.Name + ".krs";
         }
     }
 }
