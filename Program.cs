@@ -26,11 +26,78 @@ namespace MoneyExperiment
         private static void Main()
         {
             // Prep
-            Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;            
+            Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
             // Start with defaults
             Console.WriteLine("*********** Welcome! ***********");
+
+
+            //LoadAllBudgets();
+
+            Console.WriteLine("What buget to load?");
+            defaultBudget.Name = Console.ReadLine();
+            defaultBudget.BudgetPath = @"Database\" + defaultBudget.Name + "\\Budget" + defaultBudget.Name + ".krs";
+            defaultBudget.ItemsPath = @"Database\" + defaultBudget.Name + "\\Items" + defaultBudget.Name + ".krs";
+            defaultBudget.CostsPath = @"Database\" + defaultBudget.Name + "\\Costs" + defaultBudget.Name + ".krs";
+
             Start(defaultBudget);
+
+
+
+        }
+
+        private static void LoadAllBudgets()
+        {
+
+            //public List<string> UserInputItem { get; set; } = new List<string>();
+            //public List<double> UserInputCost { get; set; } = new List<double>();
+            //public double Amount { get; set; } = 0;
+            //public string Name { get; set; } = "Default Budget";
+            //public string SummaryPath { get; set; } = string.Empty;
+            //public string ItemsPath { get; set; } = string.Empty;
+            //public string CostsPath { get; set; } = string.Empty;
+            //public string BudgetPath { get; set; } = string.Empty;
+
+
+
+            //foreach (string file in Directory.EnumerateDirectories(DatabaseFolderPath))
+            //{
+            //    Console.WriteLine(file);
+
+            //    defaultBudget.BudgetPath
+            //}
+
+
+            //int dirNumbers = Directory.GetDirectories(DatabaseFolderPath).Length;
+            //string[] contents = Directory.GetDirectories(DatabaseFolderPath);
+
+            //for (int i = 0; i < dirNumbers; i++)
+            //{
+            //    Console.WriteLine(contents[i]);
+            //}
+
+            //foreach (string file in Directory.EnumerateFiles(DatabaseFolderPath))
+            //{
+            //    string contents = File.ReadAllText(file);
+            //    Console.WriteLine(contents);
+            //}
+
+
+
+            //try
+            //{
+            //    // To work the file should contain first the budget Amount and on the second line the name of the budget.
+            //    using StreamReader srBudget = new StreamReader(selectedBudget.BudgetPath);
+            //    selectedBudget.Amount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
+            //    selectedBudget.Name = srBudget.ReadLine()!;
+            //    srBudget.Close();
+            //}
+            //catch (IOException error)
+            //{
+            //    Console.WriteLine("The budget file could not be read: ");
+            //    Console.WriteLine(error.Message);
+            //    return false;
+            //}
         }
 
         public static void Start(Budget selectedBudget)
@@ -128,6 +195,8 @@ namespace MoneyExperiment
                 Console.Write("Set your spending budget: ");
                 selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
+                selectedBudget.BudgetPath = @"Database\" + selectedBudget.Name + "\\Budget" + selectedBudget.Name + ".krs";
+                Directory.CreateDirectory(@"Database\" + selectedBudget.Name);
                 File.Create(selectedBudget.BudgetPath).Dispose();
             }
             else
@@ -151,7 +220,10 @@ namespace MoneyExperiment
             // Items file
             if (!File.Exists(selectedBudget.ItemsPath))
             {
+
                 Console.WriteLine("Items file was missing so we created one for you.");
+
+                selectedBudget.ItemsPath = @"Database\" + selectedBudget.Name + "\\Items" + selectedBudget.Name + ".krs";
                 File.Create(selectedBudget.ItemsPath).Dispose();
                 fileLineCount = 0;
             }
@@ -188,6 +260,8 @@ namespace MoneyExperiment
             if (!File.Exists(selectedBudget.CostsPath))
             {
                 Console.WriteLine("Costs file was missing so we created one for you.");
+
+                selectedBudget.CostsPath = @"Database\" + selectedBudget.Name + "\\Costs" + selectedBudget.Name + ".krs";
                 File.Create(selectedBudget.CostsPath).Dispose();
             }
             else
