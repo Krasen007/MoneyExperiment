@@ -54,6 +54,7 @@ namespace MoneyExperiment
             }
         }
 
+        #region Start
         public static void Start(Budget selectedBudget)
         {
             Login();
@@ -137,7 +138,11 @@ namespace MoneyExperiment
             }
             else
             {
-                PullDatabase();
+                const string PullDB = @"Scripts\PullDB.bat";
+
+                var process = Process.Start(PullDB);
+                process.WaitForExit();
+                Console.Clear();
             }
 
             // Budget file
@@ -318,6 +323,9 @@ namespace MoneyExperiment
             ShowMainMenu(selectedBudget);
         }
 
+        #endregion Start
+
+        #region Main menu
         private static void ShowMainMenu(Budget selectedBudget)
         {
             Console.WriteLine("*********** Menu ***********");
@@ -352,149 +360,6 @@ namespace MoneyExperiment
             {
                 Console.Clear();
                 ListDataBaseSummary(selectedBudget);
-            }
-        }
-
-        private static void ShowOptionsMenu(Budget selectedBudget)
-        {
-            Console.WriteLine("*********** Options ***********");
-            Console.WriteLine("type 'x' to export database in readable form, \n" +
-                "type 'r' to remove item from current list, \n" +
-                "type 'i' to import csv file, \n" +
-                "type 'c' to change the budget name and amount, \n" +
-                "type 's' to switch to another budget, \n" +
-                "type 'a' to delete a budget, \n" +
-                "type 'd' to DELETE ALL DATABASE, \n" +
-                "press ESC to return to the main menu.");
-
-            var userInput = Console.ReadKey(true);
-
-            if (userInput.Key == ConsoleKey.X)
-            {
-                Console.WriteLine("View your summary in " + selectedBudget.SummaryPath);
-                ExportReadable(selectedBudget);
-            }
-            else if (userInput.Key == ConsoleKey.R)
-            {
-                Console.WriteLine("Removing...");
-                RemoveItem(selectedBudget);
-            }
-            else if (userInput.Key == ConsoleKey.I)
-            {
-                Console.WriteLine("Importing...");
-                ImportCSV(selectedBudget);
-            }
-            else if (userInput.Key == ConsoleKey.C)
-            {
-                Console.Write("Enter new name for the budget: ");
-                selectedBudget.Name = Console.ReadLine();
-                Console.Write("Set your new budget: ");
-                selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
-
-                Console.Clear();
-                SaveDatabase(selectedBudget);
-                ListDataBaseSummary(selectedBudget);
-            }
-            else if (userInput.Key == ConsoleKey.S)
-            {
-                Console.WriteLine("Switching budgets...");
-                SwitchBudget();
-            }
-            else if (userInput.Key == ConsoleKey.A)
-            {
-                Console.WriteLine("Deleting budget...");
-                DeleteBudget();
-                Console.WriteLine("Loading the default budget...");
-                LoadBudget(null);
-            }
-            else if (userInput.Key == ConsoleKey.D)
-            {
-                Console.WriteLine("WARNING: THIS WILL DELETE ALL OF YOUR DATABASE!\n" +
-                "TYPE 'Delete' IF YOU WANT TO CONTINUE?, TYPE 'abort' TO CANCEL");
-                var textInput = Console.ReadLine();
-
-                if (textInput == "Delete")
-                {
-                    Console.WriteLine("Deleting all database...");
-                    Directory.Delete(DatabaseFolderPath, true);
-                    Console.WriteLine("***************");
-                    Start(selectedBudget);
-                }
-                else
-                {
-                    Console.WriteLine("Aborting...");
-                    Console.Clear();
-                    ListDataBaseSummary(selectedBudget);
-                }
-            }
-            else if (userInput.Key == ConsoleKey.Escape)
-            {
-                Console.Clear();
-                ListDataBaseSummary(selectedBudget);
-            }
-            else
-            {
-                Console.Clear();
-                ShowOptionsMenu(selectedBudget);
-            }
-        }
-
-        private static void DeleteBudget()
-        {
-            var dirList = Directory.GetDirectories(DatabaseFolderPath);
-
-            for (int i = 0; i < dirList.Length; i++)
-            {
-                Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
-            }
-            Console.WriteLine((dirList.Length) + ": Abort...");
-
-            //// This is for deleting...
-            Console.Write("Enter the number of the budget you want to remove: ");
-            var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
-
-            for (int i = 0; i < dirList.Length; i++)
-            {
-                if (deleteItem == i)
-                {
-                    Directory.Delete(dirList[i], true);
-                    Console.Clear();
-                    break;
-                }
-                else if (deleteItem == dirList.Length)
-                {
-                    break;
-                }
-            }
-
-            ///Console.Clear();
-            ///SaveDatabase(selectedBudget);
-            ///ListDataBaseSummary(selectedBudget);
-        }
-
-        // Not working properly yet...
-        private static void SwitchBudget()
-        {
-            var dirList = Directory.GetDirectories(DatabaseFolderPath);
-
-            for (int i = 0; i < dirList.Length; i++)
-            {
-                Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
-            }
-            Console.WriteLine((dirList.Length) + ": Add new budget.");
-
-
-            Console.WriteLine("What buget to load?");
-            var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
-
-            if (loadBudget == dirList.Length)
-            {
-                LoadBudget(string.Empty);
-            }
-            else
-            {
-                var name = dirList[(int)loadBudget].Substring(dirList[(int)loadBudget].IndexOf("\\") + 1);
-                LoadBudget(name);
             }
         }
 
@@ -562,6 +427,105 @@ namespace MoneyExperiment
             }
         }
 
+        private static void UploadOnline(Budget selectedBudget)
+        {
+            SaveDatabase(selectedBudget);
+
+            const string InitCreateDB = @"Scripts\InitCreateDB.bat";
+            const string PushUpdateDB = @"Scripts\PushUpdateDB.bat";
+
+            if (Directory.Exists(@".git"))
+            {
+                var process = Process.Start(PushUpdateDB);
+                process.WaitForExit();
+            }
+            else
+            {
+                var process = Process.Start(InitCreateDB);
+                process.WaitForExit();
+            }
+        }
+
+        #endregion Main menu
+
+        #region Options menu
+        private static void ShowOptionsMenu(Budget selectedBudget)
+        {
+            Console.WriteLine("*********** Options ***********");
+            Console.WriteLine("type 'x' to export database in readable form, \n" +
+                "type 'r' to remove item from current list, \n" +
+                "type 'i' to import csv file, \n" +
+                "type 'c' to change the budget name and amount, \n" +
+                "type 's' to switch to another budget, \n" +
+                "type 'a' to delete a budget, \n" +
+                "type 'd' to DELETE ALL DATABASE, \n" +
+                "press ESC to return to the main menu.");
+
+            var userInput = Console.ReadKey(true);
+
+            if (userInput.Key == ConsoleKey.X)
+            {
+                Console.WriteLine("View your summary in " + selectedBudget.SummaryPath);
+                ExportReadable(selectedBudget);
+            }
+            else if (userInput.Key == ConsoleKey.R)
+            {
+                Console.WriteLine("Removing...");
+                RemoveItem(selectedBudget);
+            }
+            else if (userInput.Key == ConsoleKey.I)
+            {
+                Console.WriteLine("Importing...");
+                ImportCSV(selectedBudget);
+            }
+            else if (userInput.Key == ConsoleKey.C)
+            {
+                ChangeNameAndAmount(selectedBudget);
+            }
+            else if (userInput.Key == ConsoleKey.S)
+            {
+                Console.WriteLine("Switching budgets...");
+                SwitchBudget();
+            }
+            else if (userInput.Key == ConsoleKey.A)
+            {
+                Console.WriteLine("Deleting budget...");
+                DeleteBudget();
+                Console.WriteLine("Loading the default budget...");
+                LoadBudget(null);
+            }
+            else if (userInput.Key == ConsoleKey.D)
+            {
+                Console.WriteLine("WARNING: THIS WILL DELETE ALL OF YOUR DATABASE!\n" +
+                "TYPE 'Delete' IF YOU WANT TO CONTINUE?, TYPE 'abort' TO CANCEL");
+                var textInput = Console.ReadLine();
+
+                if (textInput == "Delete")
+                {
+                    Console.WriteLine("Deleting all database...");
+                    Directory.Delete(DatabaseFolderPath, true);
+                    Console.WriteLine("***************");
+                    Start(selectedBudget);
+                }
+                else
+                {
+                    Console.WriteLine("Aborting...");
+                    Console.Clear();
+                    ListDataBaseSummary(selectedBudget);
+                }
+            }
+            else if (userInput.Key == ConsoleKey.Escape)
+            {
+                Console.Clear();
+                ListDataBaseSummary(selectedBudget);
+            }
+            else
+            {
+                Console.Clear();
+                ShowOptionsMenu(selectedBudget);
+            }
+        }
+
         /// <summary>
         /// Use if you want to export in txt readable for humans (not encrypted).
         /// </summary>
@@ -589,34 +553,6 @@ namespace MoneyExperiment
             outputFile.WriteLine("Your amount left on budget is: " + (selectedBudget.Amount - totalCosts));
 
             outputFile.Dispose();
-        }
-
-        private static void PullDatabase()
-        {
-            const string PullDB = @"Scripts\PullDB.bat";
-
-            var process = Process.Start(PullDB);
-            process.WaitForExit();
-            Console.Clear();
-        }
-
-        private static void UploadOnline(Budget selectedBudget)
-        {
-            SaveDatabase(selectedBudget);
-
-            const string InitCreateDB = @"Scripts\InitCreateDB.bat";
-            const string PushUpdateDB = @"Scripts\PushUpdateDB.bat";
-
-            if (Directory.Exists(@".git"))
-            {
-                var process = Process.Start(PushUpdateDB);
-                process.WaitForExit();
-            }
-            else
-            {
-                var process = Process.Start(InitCreateDB);
-                process.WaitForExit();
-            }
         }
 
         private static void RemoveItem(Budget selectedBudget)
@@ -695,5 +631,73 @@ namespace MoneyExperiment
                 ListDataBaseSummary(selectedBudget);
             }
         }
+
+        private static void ChangeNameAndAmount(Budget selectedBudget)
+        {
+            Console.Write("Enter new name for the budget: ");
+            selectedBudget.Name = Console.ReadLine();
+            Console.Write("Set your new budget: ");
+            selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+
+            Console.Clear();
+            SaveDatabase(selectedBudget);
+            ListDataBaseSummary(selectedBudget);
+        }
+
+        private static void SwitchBudget()
+        {
+            var dirList = Directory.GetDirectories(DatabaseFolderPath);
+
+            for (int i = 0; i < dirList.Length; i++)
+            {
+                Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
+            }
+            Console.WriteLine((dirList.Length) + ": Add new budget.");
+
+
+            Console.WriteLine("What buget to load?");
+            var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
+
+            if (loadBudget == dirList.Length)
+            {
+                LoadBudget(string.Empty);
+            }
+            else
+            {
+                var name = dirList[(int)loadBudget].Substring(dirList[(int)loadBudget].IndexOf("\\") + 1);
+                LoadBudget(name);
+            }
+        }
+
+        private static void DeleteBudget()
+        {
+            var dirList = Directory.GetDirectories(DatabaseFolderPath);
+
+            for (int i = 0; i < dirList.Length; i++)
+            {
+                Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
+            }
+            Console.WriteLine((dirList.Length) + ": Abort...");
+
+            //// This is for deleting...
+            Console.Write("Enter the number of the budget you want to remove: ");
+            var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
+
+            for (int i = 0; i < dirList.Length; i++)
+            {
+                if (deleteItem == i)
+                {
+                    Directory.Delete(dirList[i], true);
+                    Console.Clear();
+                    break;
+                }
+                else if (deleteItem == dirList.Length)
+                {
+                    break;
+                }
+            }
+        }
+
+        #endregion Options menu
     }
 }
