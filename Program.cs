@@ -13,20 +13,15 @@ namespace MoneyExperiment
 
     public static class Program
     {
-        private const string DatabaseFolderPath = @"Database";
-
-        /// Add option to add multiple budgets
-        private static readonly List<Budget> budgetList = new List<Budget>();
+        private const string DatabaseFolderPath = @"Database\";
 
         private static int fileLineCount;
         private static string userPassword = string.Empty;
 
         private static void Main()
         {
-            // Prep
             Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
-            // Start with defaults
             Console.WriteLine("*********** Welcome! ***********");
             LoadBudget(null);
         }
@@ -35,27 +30,25 @@ namespace MoneyExperiment
         {
             if (name == null)
             {
-                Budget budgetToLoad = new Budget();
-
-                budgetToLoad.Name = "Budget";
+                Budget budgetToLoad = new Budget
+                {
+                    Name = "Budget"
+                };
                 budgetToLoad.BudgetPath = @"Database\" + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
                 budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
                 budgetToLoad.CostsPath = @"Database\" + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
-
-                budgetList.Add(budgetToLoad);
 
                 Start(budgetToLoad);
             }
             else
             {
-                Budget budgetToLoad = new Budget();
-
-                budgetToLoad.Name = name;
+                Budget budgetToLoad = new Budget
+                {
+                    Name = name
+                };
                 budgetToLoad.BudgetPath = @"Database\" + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
                 budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
                 budgetToLoad.CostsPath = @"Database\" + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
-
-                budgetList.Add(budgetToLoad);
 
                 Start(budgetToLoad);
             }
@@ -192,7 +185,6 @@ namespace MoneyExperiment
             // Items file
             if (!File.Exists(selectedBudget.ItemsPath))
             {
-
                 Console.WriteLine("Items file was missing so we created one for you.");
 
                 selectedBudget.ItemsPath = @"Database\" + selectedBudget.Name + "\\Items" + selectedBudget.Name + ".krs";
@@ -271,6 +263,7 @@ namespace MoneyExperiment
             }
             else
             {
+                SaveDatabase(selectedBudget);
                 return true;
             }
         }
@@ -368,7 +361,7 @@ namespace MoneyExperiment
             Console.WriteLine("type 'x' to export database in readable form, \n" +
                 "type 'r' to remove item from list, \n" +
                 "type 'i' to import csv file, \n" +
-                "type 'o' to change the budget name and amount, \n" +
+                "type 'c' to change the budget name and amount, \n" +
                 "type 's' to switch to another budget, \n" +
                 "type 'd' to DELETE ALL DATABASE, \n" +
                 "press ESC to return to the main menu.");
@@ -390,7 +383,7 @@ namespace MoneyExperiment
                 Console.WriteLine("Importing...");
                 ImportCSV(selectedBudget);
             }
-            else if (userInput.Key == ConsoleKey.O)
+            else if (userInput.Key == ConsoleKey.C)
             {
                 Console.Write("Enter new name for the budget: ");
                 selectedBudget.Name = Console.ReadLine();
@@ -405,7 +398,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("Switching budgets...");
                 // Probably add List<Budgets> selected budgts?
-                SwitchBudget(budgetList);
+                SwitchBudget();
             }
             else if (userInput.Key == ConsoleKey.D)
             {
@@ -440,37 +433,29 @@ namespace MoneyExperiment
         }
 
         // Not working properly yet...
-        private static void SwitchBudget(List<Budget> budgetList)
+        private static void SwitchBudget()
         {
+            var dirList = Directory.GetDirectories(DatabaseFolderPath);
+
+            for (int i = 0; i < dirList.Length; i++)
+            {
+                Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
+            }
+            Console.WriteLine((dirList.Length) + ": Add new budget.");
+
+
             Console.WriteLine("What buget to load?");
-            var name = Console.ReadLine();
-            LoadBudget(name);
+            var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
 
-
-            ////for (int i = 0; i < budgetList.Count; i++)
-            ////{
-            ////    Console.WriteLine(i + ": " + budgetList[i].Name);
-            ////}
-            ////Console.WriteLine(budgetList.Count + ": Abort.");
-
-            ////Console.Write("Enter the number of the budget you want to load: ");
-            ////var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
-
-            ////for (int i = 0; i < budgetList.Count; i++)
-            ////{
-            ////    if (loadBudget == i)
-            ////    {
-            ////        Console.WriteLine("What buget to load?");
-            ////        var name = Console.ReadLine();
-            ////        LoadBudget(name);
-            ////        ///LoadBudget(budgetList[i]);
-            ////        break;
-            ////    }
-            ////    else if (loadBudget == budgetList.Count)
-            ////    {
-            ////        break;
-            ////    }
-            ////}
+            if (loadBudget == dirList.Length)
+            {
+                LoadBudget(string.Empty);
+            }
+            else
+            {
+                var name = dirList[(int)loadBudget].Substring(dirList[(int)loadBudget].IndexOf("\\") + 1);
+                LoadBudget(name);
+            }
 
             //// This is for deleting...
             ////Console.Write("Enter the number of the budget you want to remove: ");

@@ -46,6 +46,7 @@ namespace MoneyExperiment.Helpers
                     result = Convert.ToDouble(value);
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (FormatException)
             {
                 if (value.EndsWith("."))
@@ -67,10 +68,13 @@ namespace MoneyExperiment.Helpers
                     ParseDouble(value);
                 }
             }
+#pragma warning restore CA1031 // Do not catch general exception types
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (OverflowException)
             {
                 Console.WriteLine("'{0}' is outside the range of a Double.", value);
             }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             return result;
         }
