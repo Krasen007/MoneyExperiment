@@ -359,10 +359,11 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** Options ***********");
             Console.WriteLine("type 'x' to export database in readable form, \n" +
-                "type 'r' to remove item from list, \n" +
+                "type 'r' to remove item from current list, \n" +
                 "type 'i' to import csv file, \n" +
                 "type 'c' to change the budget name and amount, \n" +
                 "type 's' to switch to another budget, \n" +
+                "type 'a' to delete a budget, \n" +
                 "type 'd' to DELETE ALL DATABASE, \n" +
                 "press ESC to return to the main menu.");
 
@@ -397,8 +398,14 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.S)
             {
                 Console.WriteLine("Switching budgets...");
-                // Probably add List<Budgets> selected budgts?
                 SwitchBudget();
+            }
+            else if (userInput.Key == ConsoleKey.A)
+            {
+                Console.WriteLine("Deleting budget...");
+                DeleteBudget();
+                Console.WriteLine("Loading the default budget...");
+                LoadBudget(null);
             }
             else if (userInput.Key == ConsoleKey.D)
             {
@@ -432,6 +439,39 @@ namespace MoneyExperiment
             }
         }
 
+        private static void DeleteBudget()
+        {
+            var dirList = Directory.GetDirectories(DatabaseFolderPath);
+
+            for (int i = 0; i < dirList.Length; i++)
+            {
+                Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
+            }
+            Console.WriteLine((dirList.Length) + ": Abort...");
+
+            //// This is for deleting...
+            Console.Write("Enter the number of the budget you want to remove: ");
+            var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
+
+            for (int i = 0; i < dirList.Length; i++)
+            {
+                if (deleteItem == i)
+                {
+                    Directory.Delete(dirList[i], true);
+                    Console.Clear();
+                    break;
+                }
+                else if (deleteItem == dirList.Length)
+                {
+                    break;
+                }
+            }
+
+            ///Console.Clear();
+            ///SaveDatabase(selectedBudget);
+            ///ListDataBaseSummary(selectedBudget);
+        }
+
         // Not working properly yet...
         private static void SwitchBudget()
         {
@@ -456,28 +496,6 @@ namespace MoneyExperiment
                 var name = dirList[(int)loadBudget].Substring(dirList[(int)loadBudget].IndexOf("\\") + 1);
                 LoadBudget(name);
             }
-
-            //// This is for deleting...
-            ////Console.Write("Enter the number of the budget you want to remove: ");
-            ////var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
-
-
-            ////for (int i = 0; i < budgetList.Count; i++)
-            ////{
-            ////    if (deleteItem == i)
-            ////    {
-            ////        budgetList.Remove(budgetList[i]);
-            ////        break;
-            ////    }
-            ////    else if (deleteItem == budgetList.Count)
-            ////    {
-            ////        break;
-            ////    }
-            ////}
-
-            ///Console.Clear();
-            ///SaveDatabase(selectedBudget);
-            ///ListDataBaseSummary(selectedBudget);
         }
 
         private static void AddOrUpdateItemList(Budget selectedBudget)
