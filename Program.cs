@@ -262,7 +262,7 @@ namespace MoneyExperiment
                     srCosts.Dispose();
                     return false;
                 }
-            }            
+            }
 
             // All transactions file
             if (!File.Exists(selectedBudget.AllTransactionsPath))
@@ -288,7 +288,7 @@ namespace MoneyExperiment
                         }
                         else
                         {
-                            selectedBudget.AllTransactions.Add(trReader.ReadLine()!);
+                            selectedBudget.AllUserTransactionFile.Add(trReader.ReadLine()!);
                         }
                     }
                     trReader.Close();
@@ -436,7 +436,7 @@ namespace MoneyExperiment
 
             }
 
-            selectedBudget.AllTransactions.Add(Budget.BudgetItem(costInput, itemInput, DateTime.Now.ToString()));
+            selectedBudget.AllUserTransactionFile.Add(costInput + " " + itemInput + " " + DateTime.Now.ToString());
             allTransactionsLineCount++;
 
             SaveDatabase(selectedBudget);
@@ -475,7 +475,7 @@ namespace MoneyExperiment
                 {
                     ///var encryptedString = AesOperation.EncryptString(userPassword, Budget.BudgetItem(selectedBudget.UserInputItem[i], selectedBudget.UserInputCost[i], selectedBudget.TranasctionTime[i]));
 
-                    var encryptedString = selectedBudget.AllTransactions[i];
+                    var encryptedString = selectedBudget.AllUserTransactionFile[i];
                     outputFile.WriteLine(encryptedString);
                 }
             }

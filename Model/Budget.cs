@@ -11,18 +11,12 @@
         public string ItemsPath { get; set; } = string.Empty;
         public string CostsPath { get; set; } = string.Empty;
         public string BudgetPath { get; set; } = string.Empty;
-        //public string CurrentTransactionPath { get; set; } = string.Empty;
         public string AllTransactionsPath { get; set; } = string.Empty;
+        public List<string> AllUserTransactionFile { get; set; } = new List<string>();
         public List<string> TranasctionTime { get; set; } = new List<string>();
-        public List<string> AllTransactions { get; set; } = new List<string>();
 
         public Budget()
         {
-        }
-
-        public static string BudgetItem(double UserInputCost, string UserInputItem, string Time)
-        {
-            return UserInputCost + " " + UserInputItem + " " + Time;
         }
     }
 }
