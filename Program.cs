@@ -16,6 +16,8 @@ namespace MoneyExperiment
         private const string DatabaseFolderPath = @"Database\";
 
         private static int fileLineCount;
+        private static int allTransactionsLineCount;
+
         private static string userPassword = string.Empty;
 
         private static void Main()
@@ -37,6 +39,7 @@ namespace MoneyExperiment
                 budgetToLoad.BudgetPath = @"Database\" + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
                 budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
                 budgetToLoad.CostsPath = @"Database\" + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
+                budgetToLoad.AllTransactionsPath = @"Database\" + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
 
                 Start(budgetToLoad);
             }
@@ -49,6 +52,7 @@ namespace MoneyExperiment
                 budgetToLoad.BudgetPath = @"Database\" + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
                 budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
                 budgetToLoad.CostsPath = @"Database\" + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
+                budgetToLoad.AllTransactionsPath = @"Database\" + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
 
                 Start(budgetToLoad);
             }
@@ -258,7 +262,45 @@ namespace MoneyExperiment
                     srCosts.Dispose();
                     return false;
                 }
+            }            
+
+            // All transactions file
+            if (!File.Exists(selectedBudget.AllTransactionsPath))
+            {
+                Console.WriteLine("CurrentTransaction file was missing so we created one for you.");
+
+                selectedBudget.AllTransactionsPath = @"Database\" + selectedBudget.Name + "\\AllTransactions" + selectedBudget.Name + ".krs";
+                File.Create(selectedBudget.AllTransactionsPath).Dispose();
+                allTransactionsLineCount = 0;
             }
+            else
+            {
+                allTransactionsLineCount = File.ReadLines(selectedBudget.AllTransactionsPath).Count();
+
+                using StreamReader trReader = new StreamReader(selectedBudget.AllTransactionsPath);
+                try
+                {
+                    for (int i = 0; i < allTransactionsLineCount; i++)
+                    {
+                        if (AesOperation.IsWrongPassword)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            selectedBudget.AllTransactions.Add(trReader.ReadLine()!);
+                        }
+                    }
+                    trReader.Close();
+                }
+                catch (IOException error)
+                {
+                    Console.WriteLine(error.Message);
+                    trReader.Dispose();
+                    return false;
+                }
+            }
+
 
             // Succesfully read needed files
             if (AesOperation.IsWrongPassword)
@@ -320,6 +362,7 @@ namespace MoneyExperiment
             Console.WriteLine();
 
             // Start
+            ///ShowLastTransactions(selectedBudget);
             ShowMainMenu(selectedBudget);
         }
 
@@ -388,8 +431,13 @@ namespace MoneyExperiment
             {
                 selectedBudget.UserInputItem.Add(itemInput);
                 selectedBudget.UserInputCost.Add(costInput);
+                selectedBudget.TranasctionTime.Add(DateTime.Now.ToString());
                 fileLineCount++;
+
             }
+
+            selectedBudget.AllTransactions.Add(Budget.BudgetItem(costInput, itemInput, DateTime.Now.ToString()));
+            allTransactionsLineCount++;
 
             SaveDatabase(selectedBudget);
             Console.Clear();
@@ -415,6 +463,19 @@ namespace MoneyExperiment
                 for (int i = 0; i < fileLineCount; i++)
                 {
                     var encryptedString = AesOperation.EncryptString(userPassword, selectedBudget.UserInputItem[i].ToString());
+                    outputFile.WriteLine(encryptedString);
+                }
+            }
+
+
+            // Not encrypted yet
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.AllTransactionsPath))
+            {
+                for (int i = 0; i < allTransactionsLineCount; i++)
+                {
+                    ///var encryptedString = AesOperation.EncryptString(userPassword, Budget.BudgetItem(selectedBudget.UserInputItem[i], selectedBudget.UserInputCost[i], selectedBudget.TranasctionTime[i]));
+
+                    var encryptedString = selectedBudget.AllTransactions[i];
                     outputFile.WriteLine(encryptedString);
                 }
             }
