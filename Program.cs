@@ -282,13 +282,14 @@ namespace MoneyExperiment
                 {
                     for (int i = 0; i < allTransactionsLineCount; i++)
                     {
+                        var decryptedString = AesOperation.DecryptString(userPassword, trReader.ReadLine()!);
                         if (AesOperation.IsWrongPassword)
                         {
                             break;
                         }
                         else
                         {
-                            selectedBudget.AllUserTransactionFile.Add(trReader.ReadLine()!);
+                            selectedBudget.AllUserTransactionFile.Add(decryptedString);
                         }
                     }
                     trReader.Close();
@@ -300,7 +301,6 @@ namespace MoneyExperiment
                     return false;
                 }
             }
-
 
             // Succesfully read needed files
             if (AesOperation.IsWrongPassword)
@@ -361,9 +361,30 @@ namespace MoneyExperiment
             Console.WriteLine("Your budget of " + selectedBudget.Amount + " is now left with total: " + (selectedBudget.Amount - totalCosts));
             Console.WriteLine();
 
-            // Start
-            ///ShowLastTransactions(selectedBudget);
+            // Start            
             ShowMainMenu(selectedBudget);
+        }
+
+        private static void ShowLastTransactions(Budget selectedBudget)
+        {
+            System.Console.WriteLine("*********** List of recent transactions ***********");
+
+            if (selectedBudget.AllUserTransactionFile.Count <= 10)
+            {
+                for (int i = 0; i < selectedBudget.AllUserTransactionFile.Count; i++)
+                {
+                    System.Console.WriteLine(selectedBudget.AllUserTransactionFile[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 10; i++) //selectedBudget.AllUserTransactionFile.Count
+                {
+                    System.Console.WriteLine(selectedBudget.AllUserTransactionFile[selectedBudget.AllUserTransactionFile.Count-1 - i]);
+                }
+            }
+
+            System.Console.WriteLine();
         }
 
         #endregion Start
@@ -376,8 +397,11 @@ namespace MoneyExperiment
                 "type 'y' to add new entry, \n" +
                 "type 'e' to save and exit without uploading online, \n" +
                 "type 'u' to save and exit and upload the database online, \n" +
-                "type 'o' for other options.");
+                "type 'o' for other options. \n");
 
+            ShowLastTransactions(selectedBudget);
+
+            Console.WriteLine("Enter your choice: ");
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.Y)
@@ -433,7 +457,6 @@ namespace MoneyExperiment
                 selectedBudget.UserInputCost.Add(costInput);
                 selectedBudget.TranasctionTime.Add(DateTime.Now.ToString());
                 fileLineCount++;
-
             }
 
             selectedBudget.AllUserTransactionFile.Add(costInput + " " + itemInput + " " + DateTime.Now.ToString());
@@ -467,15 +490,12 @@ namespace MoneyExperiment
                 }
             }
 
-
             // Not encrypted yet
             using (StreamWriter outputFile = new StreamWriter(selectedBudget.AllTransactionsPath))
             {
                 for (int i = 0; i < allTransactionsLineCount; i++)
                 {
-                    ///var encryptedString = AesOperation.EncryptString(userPassword, Budget.BudgetItem(selectedBudget.UserInputItem[i], selectedBudget.UserInputCost[i], selectedBudget.TranasctionTime[i]));
-
-                    var encryptedString = selectedBudget.AllUserTransactionFile[i];
+                    var encryptedString = AesOperation.EncryptString(userPassword, selectedBudget.AllUserTransactionFile[i]);
                     outputFile.WriteLine(encryptedString);
                 }
             }
@@ -522,6 +542,7 @@ namespace MoneyExperiment
                 "type 'd' to DELETE ALL DATABASE, \n" +
                 "press ESC to return to the main menu.");
 
+            System.Console.WriteLine("Enter your choice: ");
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.X)
