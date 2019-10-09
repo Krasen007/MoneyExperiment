@@ -30,42 +30,42 @@ namespace MoneyExperiment.Helpers
 
             return stringInput;
         }
+
         public static double ParseDouble(string value)
         {
             double result = 0;
             try
             {
-                if (value.EndsWith(","))
-                {
-                    // Show message box with info.
-                    /// MessageBox.Show("Add more numbers.", "Tip");
-                    Console.Write("Add more numbers: ");
-                }
-                else
-                {
-                    result = Convert.ToDouble(value);
-                }
+                result = Convert.ToDouble(value);
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (FormatException)
             {
-                if (value.EndsWith("."))
+                if (value.EndsWith(","))
                 {
-                    Console.Write("Use ',' instead of '.' : ");
+                    // Show message box with info.
+                    /// MessageBox.Show("Add more numbers.", "Tip");
+                    Console.Write("Add more numbers \nHow much did you spend: ");
                     value = Console.ReadLine();
-                    ParseDouble(value);
+                    return ParseDouble(value);
+                }
+                else if (value.EndsWith("."))
+                {
+                    Console.Write("Don't end on '.' \nHow much did you spend: ");
+                    value = Console.ReadLine();
+                    return ParseDouble(value);
                 }
                 else if (string.IsNullOrEmpty(value))
                 {
-                    Console.Write("Don't leave empty fields: ");
+                    Console.Write("Don't leave empty fields. \nHow much did you spend: ");
                     value = Console.ReadLine();
-                    ParseDouble(value);
+                    return ParseDouble(value);
                 }
                 else
                 {
-                    Console.Write("Use only numbers, or Use ',' instead of '.' : ");
+                    Console.Write("Use only numbers, or Use ',' instead of '.' \nHow much did you spend: ");
                     value = Console.ReadLine();
-                    ParseDouble(value);
+                    return ParseDouble(value);
                 }
             }
 #pragma warning restore CA1031 // Do not catch general exception types

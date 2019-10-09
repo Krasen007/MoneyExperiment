@@ -463,7 +463,38 @@ namespace MoneyExperiment
                 fileLineCount++;
             }
 
-            selectedBudget.AllUserTransactionFile.Add(costInput + " " + itemInput + " " + DateTime.Now.ToString());
+            // This is used to add space between the amount of the item so they appear level.
+            string separator;
+            if (costInput.ToString().Length == 1)
+            {
+                separator = "       ";
+            }
+            else if (costInput.ToString().Length == 2)
+            {
+                separator = "      ";
+            }
+            else if (costInput.ToString().Length == 3)
+            {
+                separator = "     ";
+            }
+            else if (costInput.ToString().Length == 4)
+            {
+                separator = "    ";
+            }
+            else if (costInput.ToString().Length == 5)
+            {
+                separator = "   ";
+            }
+            else if (costInput.ToString().Length == 6)
+            {
+                separator = "  ";
+            }
+            else
+            {
+                separator = " ";
+            }
+
+            selectedBudget.AllUserTransactionFile.Add(separator + costInput + " " + itemInput + " " + DateTime.Now.ToString());
             allTransactionsLineCount++;
 
             SaveDatabase(selectedBudget);
@@ -494,7 +525,6 @@ namespace MoneyExperiment
                 }
             }
 
-            // Not encrypted yet
             using (StreamWriter outputFile = new StreamWriter(selectedBudget.AllTransactionsPath))
             {
                 for (int i = 0; i < allTransactionsLineCount; i++)
@@ -655,7 +685,7 @@ namespace MoneyExperiment
             {
                 if (deleteItem == i)
                 {
-                    selectedBudget.AllUserTransactionFile.Add("Deleted: " + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i] + " " + DateTime.Now.ToString());
+                    selectedBudget.AllUserTransactionFile.Add(selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i] + " " + DateTime.Now.ToString() + " Deleted. ");
                     allTransactionsLineCount++;
                     selectedBudget.UserInputItem.Remove(selectedBudget.UserInputItem[i]);
                     selectedBudget.UserInputCost.Remove(selectedBudget.UserInputCost[i]);
