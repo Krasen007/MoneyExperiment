@@ -369,7 +369,9 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** List of recent transactions ***********");
 
-            if (selectedBudget.AllUserTransactionFile.Count <= 10)
+            const int displayedItems = 6;
+
+            if (selectedBudget.AllUserTransactionFile.Count <= displayedItems)
             {
                 for (int i = 0; i < selectedBudget.AllUserTransactionFile.Count; i++)
                 {
@@ -378,7 +380,7 @@ namespace MoneyExperiment
             }
             else
             {
-                for (int i = 0; i < 10; i++) //selectedBudget.AllUserTransactionFile.Count
+                for (int i = 0; i < displayedItems; i++) //selectedBudget.AllUserTransactionFile.Count
                 {
                     Console.WriteLine(selectedBudget.AllUserTransactionFile[selectedBudget.AllUserTransactionFile.Count - 1 - i]);
                 }

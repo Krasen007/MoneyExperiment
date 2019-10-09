@@ -38,8 +38,22 @@ namespace MoneyExperiment.Helpers
 
         public static string DecryptString(string password, string cipherText)
         {
-            byte[] iv = new byte[16];
-            byte[] buffer = Convert.FromBase64String(cipherText);
+            byte[] iv;
+            byte[] buffer;
+
+            IsWrongPassword = false;
+            try
+            {
+                iv = new byte[16];
+                buffer = Convert.FromBase64String(cipherText);
+            }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (FormatException)
+            {
+                IsWrongPassword = true;
+                return "";
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             using AesManaged aes = new AesManaged();
             {
@@ -48,10 +62,12 @@ namespace MoneyExperiment.Helpers
                     aes.Key = Encoding.UTF8.GetBytes(password);
                     aes.IV = iv;
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (CryptographicException)
                 {
                     IsWrongPassword = true;
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
             }
 
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
@@ -66,11 +82,13 @@ namespace MoneyExperiment.Helpers
                 {
                     return streamReader.ReadToEnd();
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (CryptographicException)
                 {
                     IsWrongPassword = true;
                     return "";
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
                 finally
                 {
                     if (IsWrongPassword)

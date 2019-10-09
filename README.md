@@ -36,3 +36,6 @@ If you forget your password you will have to delete the Database folder.
 
 * Main coding: Krasen Ivanov 2019
 * Icon made by Freepik from www.flaticon.com
+
+#### TODO:
+Add 'deleted' to list of recent transactions
