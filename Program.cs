@@ -367,24 +367,24 @@ namespace MoneyExperiment
 
         private static void ShowLastTransactions(Budget selectedBudget)
         {
-            System.Console.WriteLine("*********** List of recent transactions ***********");
+            Console.WriteLine("*********** List of recent transactions ***********");
 
             if (selectedBudget.AllUserTransactionFile.Count <= 10)
             {
                 for (int i = 0; i < selectedBudget.AllUserTransactionFile.Count; i++)
                 {
-                    System.Console.WriteLine(selectedBudget.AllUserTransactionFile[i]);
+                    Console.WriteLine(selectedBudget.AllUserTransactionFile[i]);
                 }
             }
             else
             {
                 for (int i = 0; i < 10; i++) //selectedBudget.AllUserTransactionFile.Count
                 {
-                    System.Console.WriteLine(selectedBudget.AllUserTransactionFile[selectedBudget.AllUserTransactionFile.Count-1 - i]);
+                    Console.WriteLine(selectedBudget.AllUserTransactionFile[selectedBudget.AllUserTransactionFile.Count - 1 - i]);
                 }
             }
 
-            System.Console.WriteLine();
+            Console.WriteLine();
         }
 
         #endregion Start
@@ -542,7 +542,7 @@ namespace MoneyExperiment
                 "type 'd' to DELETE ALL DATABASE, \n" +
                 "press ESC to return to the main menu.");
 
-            System.Console.WriteLine("Enter your choice: ");
+            Console.WriteLine("Enter your choice: ");
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.X)
