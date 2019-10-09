@@ -23,7 +23,7 @@ git config user.email "krasen007@gmail.com" and git remote add origin https://gi
 ### How to use:
 
 * After starting, the app will ask you to set a password. Remember this. It's used to encrypt your database.
-If you forget your password you will have to delete the Database folder.
+If you forget your password you will have to delete the Database folder containing all of the entries.
 * After that, it will ask you to set a name and amount of the budget. For example: name - Monthly Budget, amount - 1000, or Wedding Expenses 12500.
 * The menu will appear. Use "y" to add entries. Enter how much you spent and on what.
 * You can add new items and their balance will increase automatically if you add the same item. Use -amount to decrease costs of already added item. 
@@ -36,6 +36,3 @@ If you forget your password you will have to delete the Database folder.
 
 * Main coding: Krasen Ivanov 2019
 * Icon made by Freepik from www.flaticon.com
-
-#### TODO:
-Add 'deleted' to list of recent transactions

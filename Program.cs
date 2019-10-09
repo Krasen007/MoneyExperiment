@@ -40,6 +40,7 @@ namespace MoneyExperiment
                 budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
                 budgetToLoad.CostsPath = @"Database\" + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
                 budgetToLoad.AllTransactionsPath = @"Database\" + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
+                budgetToLoad.SummaryPath = @"Database\" + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
 
                 Start(budgetToLoad);
             }
@@ -53,6 +54,7 @@ namespace MoneyExperiment
                 budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
                 budgetToLoad.CostsPath = @"Database\" + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
                 budgetToLoad.AllTransactionsPath = @"Database\" + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
+                budgetToLoad.SummaryPath = @"Database\" + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
 
                 Start(budgetToLoad);
             }
@@ -403,7 +405,7 @@ namespace MoneyExperiment
 
             ShowLastTransactions(selectedBudget);
 
-            Console.WriteLine("Enter your choice: ");
+            Console.Write("Enter your choice: ");
             var userInput = Console.ReadKey(true);
 
             if (userInput.Key == ConsoleKey.Y)
@@ -434,7 +436,7 @@ namespace MoneyExperiment
 
         private static void AddOrUpdateItemList(Budget selectedBudget)
         {
-            Console.Write("How much did you spend: ");
+            Console.Write("\nHow much did you spend: ");
             double costInput = ParseHelper.ParseDouble(Console.ReadLine());
 
             Console.Write("What did you spend on: ");
@@ -487,7 +489,7 @@ namespace MoneyExperiment
             {
                 for (int i = 0; i < fileLineCount; i++)
                 {
-                    var encryptedString = AesOperation.EncryptString(userPassword, selectedBudget.UserInputItem[i].ToString());
+                    var encryptedString = AesOperation.EncryptString(userPassword, selectedBudget.UserInputItem[i]);
                     outputFile.WriteLine(encryptedString);
                 }
             }
@@ -517,7 +519,7 @@ namespace MoneyExperiment
             const string InitCreateDB = @"Scripts\InitCreateDB.bat";
             const string PushUpdateDB = @"Scripts\PushUpdateDB.bat";
 
-            if (Directory.Exists(@".git"))
+            if (Directory.Exists(path: ".git"))
             {
                 var process = Process.Start(PushUpdateDB);
                 process.WaitForExit();
@@ -617,7 +619,6 @@ namespace MoneyExperiment
         {
             // Fix method to use already established method of reading the list
             SaveDatabase(selectedBudget);
-            selectedBudget.SummaryPath = @"Database\" + selectedBudget.Name + "\\Summary" + selectedBudget.Name + ".txt";
 
             using StreamWriter outputFile = new StreamWriter(selectedBudget.SummaryPath);
             outputFile.WriteLine("*********** {0} **********", selectedBudget.Name);
@@ -650,11 +651,12 @@ namespace MoneyExperiment
             Console.Write("Enter the number of the item you want to remove: ");
             var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
 
-
             for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
             {
                 if (deleteItem == i)
                 {
+                    selectedBudget.AllUserTransactionFile.Add("Deleted: " + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i] + " " + DateTime.Now.ToString());
+                    allTransactionsLineCount++;
                     selectedBudget.UserInputItem.Remove(selectedBudget.UserInputItem[i]);
                     selectedBudget.UserInputCost.Remove(selectedBudget.UserInputCost[i]);
                     fileLineCount--;
@@ -702,7 +704,6 @@ namespace MoneyExperiment
                             selectedBudget.UserInputCost.Add(Convert.ToDouble(itemCost));
                             fileLineCount++;
                         }
-
                     }
                     srBudgetItems.Dispose();
                 }
@@ -737,7 +738,6 @@ namespace MoneyExperiment
                 Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
             }
             Console.WriteLine((dirList.Length) + ": Add new budget.");
-
 
             Console.WriteLine("What buget to load?");
             var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());

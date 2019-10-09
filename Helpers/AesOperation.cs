@@ -76,7 +76,6 @@ namespace MoneyExperiment.Helpers
             using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using StreamReader streamReader = new StreamReader(cryptoStream);
             {
-
                 IsWrongPassword = false;
                 try
                 {
