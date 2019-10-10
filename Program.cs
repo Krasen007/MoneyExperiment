@@ -322,88 +322,58 @@ namespace MoneyExperiment
             Console.WriteLine("*********** {0} **********\n", selectedBudget.Name);
 
             double totalCosts = 0;
-            string separator = string.Empty;
             for (int i = 0; i < fileLineCount; i++)
             {
-                // This is used to add space between the amount of the item so they appear level.                
-                if (selectedBudget.UserInputCost[i].ToString().Length == 1)
-                {
-                    separator = "       ";
-                }
-                else if (selectedBudget.UserInputCost[i].ToString().Length == 2)
-                {
-                    separator = "      ";
-                }
-                else if (selectedBudget.UserInputCost[i].ToString().Length == 3)
-                {
-                    separator = "     ";
-                }
-                else if (selectedBudget.UserInputCost[i].ToString().Length == 4)
-                {
-                    separator = "    ";
-                }
-                else if (selectedBudget.UserInputCost[i].ToString().Length == 5)
-                {
-                    separator = "   ";
-                }
-                else if (selectedBudget.UserInputCost[i].ToString().Length == 6)
-                {
-                    separator = "  ";
-                }
-                else
-                {
-                    separator = " ";
-                }
-
-                Console.WriteLine(separator + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
+                // This is used to add space between the amount of the item so they appear level.     
+                Console.WriteLine(SeparatorHelper(selectedBudget.UserInputCost[i], 0) + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
                 totalCosts += selectedBudget.UserInputCost[i];
             }
 
-
-
-
-            if ((selectedBudget.Amount - totalCosts).ToString().Length == 1)
-            {
-                separator = "       ";
-            }
-            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 2)
-            {
-                separator = "      ";
-            }
-            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 3)
-            {
-                separator = "     ";
-            }
-            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 4)
-            {
-                separator = "    ";
-            }
-            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 5)
-            {
-                separator = "   ";
-            }
-            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 6)
-            {
-                separator = "  ";
-            }
-            else
-            {
-                separator = " ";
-            }
-
-            if ((selectedBudget.Amount - totalCosts) < 0)
-            {
-                Console.WriteLine("\n" + " " + separator + totalCosts + " TOTAL SPENT");
-            }
-            else
-            {
-                Console.WriteLine("\n" + separator + totalCosts + " TOTAL SPENT");
-            }
-            Console.WriteLine(separator + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
+            ///if ((selectedBudget.Amount - totalCosts) < 0)
+            ///{
+            ///    Console.WriteLine("\n " + SeparatorHelper(selectedBudget.Amount - totalCosts, 0) + totalCosts + " TOTAL SPENT");
+            ///}
+            ///else
+            ///{
+                Console.WriteLine("\n" + SeparatorHelper(selectedBudget.Amount - totalCosts, 0) + totalCosts + " TOTAL SPENT");
+            ///}
+            Console.WriteLine(SeparatorHelper(selectedBudget.Amount - totalCosts, 0) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
             Console.WriteLine();
 
             // Start            
             ShowMainMenu(selectedBudget);
+        }
+
+        private static string SeparatorHelper(double amount, int length)
+        {
+            if (amount.ToString().Length == 1 - length)
+            {
+                return "       ";
+            }
+            else if (amount.ToString().Length == 2 - length)
+            {
+                return "      ";
+            }
+            else if (amount.ToString().Length == 3 - length)
+            {
+                return "     ";
+            }
+            else if (amount.ToString().Length == 4 - length)
+            {
+                return "    ";
+            }
+            else if (amount.ToString().Length == 5 - length)
+            {
+                return "   ";
+            }
+            else if (amount.ToString().Length == 6 - length)
+            {
+                return "  ";
+            }
+            else
+            {
+                return " ";
+            }
         }
 
         private static void ShowLastTransactions(Budget selectedBudget)
@@ -503,37 +473,7 @@ namespace MoneyExperiment
             }
 
             // This is used to add space between the amount of the item so they appear level.
-            string separator;
-            if (costInput.ToString().Length == 1)
-            {
-                separator = "       ";
-            }
-            else if (costInput.ToString().Length == 2)
-            {
-                separator = "      ";
-            }
-            else if (costInput.ToString().Length == 3)
-            {
-                separator = "     ";
-            }
-            else if (costInput.ToString().Length == 4)
-            {
-                separator = "    ";
-            }
-            else if (costInput.ToString().Length == 5)
-            {
-                separator = "   ";
-            }
-            else if (costInput.ToString().Length == 6)
-            {
-                separator = "  ";
-            }
-            else
-            {
-                separator = " ";
-            }
-
-            selectedBudget.AllUserTransactionFile.Add(separator + costInput + " " + itemInput + " " + DateTime.Now.ToString());
+            selectedBudget.AllUserTransactionFile.Add(SeparatorHelper(costInput, 0) + costInput + " " + itemInput + " " + DateTime.Now.ToString());
             allTransactionsLineCount++;
 
             SaveDatabase(selectedBudget);
