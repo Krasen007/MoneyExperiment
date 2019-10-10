@@ -322,10 +322,10 @@ namespace MoneyExperiment
             Console.WriteLine("*********** {0} **********\n", selectedBudget.Name);
 
             double totalCosts = 0;
+            string separator = string.Empty;
             for (int i = 0; i < fileLineCount; i++)
             {
-                // This is used to add space between the amount of the item so they appear level.
-                string separator;
+                // This is used to add space between the amount of the item so they appear level.                
                 if (selectedBudget.UserInputCost[i].ToString().Length == 1)
                 {
                     separator = "       ";
@@ -358,9 +358,8 @@ namespace MoneyExperiment
                 Console.WriteLine(separator + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
                 totalCosts += selectedBudget.UserInputCost[i];
             }
-
-            Console.WriteLine("\nYour spendings are: " + totalCosts);
-            Console.WriteLine("Your budget of " + selectedBudget.Amount + " is now left with total: " + (selectedBudget.Amount - totalCosts));
+            Console.WriteLine("\n" + separator + totalCosts + " TOTAL");
+            Console.WriteLine(separator + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
             Console.WriteLine();
 
             // Start            
