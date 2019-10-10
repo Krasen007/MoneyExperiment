@@ -329,14 +329,7 @@ namespace MoneyExperiment
                 totalCosts += selectedBudget.UserInputCost[i];
             }
 
-            ///if ((selectedBudget.Amount - totalCosts) < 0)
-            ///{
-            ///    Console.WriteLine("\n " + SeparatorHelper(selectedBudget.Amount - totalCosts, 0) + totalCosts + " TOTAL SPENT");
-            ///}
-            ///else
-            ///{
-                Console.WriteLine("\n" + SeparatorHelper(selectedBudget.Amount - totalCosts, 0) + totalCosts + " TOTAL SPENT");
-            ///}
+            Console.WriteLine("\n" + SeparatorHelper(totalCosts, 0) + totalCosts + " TOTAL SPENT");
             Console.WriteLine(SeparatorHelper(selectedBudget.Amount - totalCosts, 0) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
             Console.WriteLine();
 
@@ -344,29 +337,44 @@ namespace MoneyExperiment
             ShowMainMenu(selectedBudget);
         }
 
-        private static string SeparatorHelper(double amount, int length)
+        private static string SeparatorHelper(double amount, int spaces)
         {
-            if (amount.ToString().Length == 1 - length)
+            ////var sb = new StringBuilder();
+
+            ////for (int i = 0; i < spaces; i++)
+            ////{
+            ////    if (amount.ToString().Length == i - spaces)
+            ////    {
+            ////        for (int j = 7; j < spaces; j--)
+            ////        {
+            ////            sb.Append(" ");
+            ////        }
+            ////    }
+            ////}
+
+            ////return sb.ToString();
+
+            if (amount.ToString().Length == 1 - spaces)
             {
                 return "       ";
             }
-            else if (amount.ToString().Length == 2 - length)
+            else if (amount.ToString().Length == 2 - spaces)
             {
                 return "      ";
             }
-            else if (amount.ToString().Length == 3 - length)
+            else if (amount.ToString().Length == 3 - spaces)
             {
                 return "     ";
             }
-            else if (amount.ToString().Length == 4 - length)
+            else if (amount.ToString().Length == 4 - spaces)
             {
                 return "    ";
             }
-            else if (amount.ToString().Length == 5 - length)
+            else if (amount.ToString().Length == 5 - spaces)
             {
                 return "   ";
             }
-            else if (amount.ToString().Length == 6 - length)
+            else if (amount.ToString().Length == 6 - spaces)
             {
                 return "  ";
             }
@@ -473,7 +481,7 @@ namespace MoneyExperiment
             }
 
             // This is used to add space between the amount of the item so they appear level.
-            selectedBudget.AllUserTransactionFile.Add(SeparatorHelper(costInput, 0) + costInput + " " + itemInput + " " + DateTime.Now.ToString());
+            selectedBudget.AllUserTransactionFile.Add(SeparatorHelper(costInput, 0) + costInput + " " + itemInput + "  " + DateTime.Now.ToString());
             allTransactionsLineCount++;
 
             SaveDatabase(selectedBudget);
@@ -790,7 +798,6 @@ namespace MoneyExperiment
                 }
             }
         }
-
         #endregion Options menu
     }
 }
