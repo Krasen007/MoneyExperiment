@@ -358,7 +358,47 @@ namespace MoneyExperiment
                 Console.WriteLine(separator + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
                 totalCosts += selectedBudget.UserInputCost[i];
             }
-            Console.WriteLine("\n" + separator + totalCosts + " TOTAL");
+
+
+
+
+            if ((selectedBudget.Amount - totalCosts).ToString().Length == 1)
+            {
+                separator = "       ";
+            }
+            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 2)
+            {
+                separator = "      ";
+            }
+            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 3)
+            {
+                separator = "     ";
+            }
+            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 4)
+            {
+                separator = "    ";
+            }
+            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 5)
+            {
+                separator = "   ";
+            }
+            else if ((selectedBudget.Amount - totalCosts).ToString().Length == 6)
+            {
+                separator = "  ";
+            }
+            else
+            {
+                separator = " ";
+            }
+
+            if ((selectedBudget.Amount - totalCosts) < 0)
+            {
+                Console.WriteLine("\n" + " " + separator + totalCosts + " TOTAL SPENT");
+            }
+            else
+            {
+                Console.WriteLine("\n" + separator + totalCosts + " TOTAL SPENT");
+            }
             Console.WriteLine(separator + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
             Console.WriteLine();
 
@@ -381,7 +421,7 @@ namespace MoneyExperiment
             }
             else
             {
-                for (int i = 0; i < displayedItems; i++) //selectedBudget.AllUserTransactionFile.Count
+                for (int i = 0; i < displayedItems; i++)
                 {
                     Console.WriteLine(selectedBudget.AllUserTransactionFile[selectedBudget.AllUserTransactionFile.Count - 1 - i]);
                 }
