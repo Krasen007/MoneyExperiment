@@ -589,7 +589,7 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.S)
             {
                 Console.WriteLine("Switching budgets...");
-                SwitchBudget();
+                SwitchBudget(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.A)
             {
@@ -747,7 +747,7 @@ namespace MoneyExperiment
             ListDataBaseSummary(selectedBudget);
         }
 
-        private static void SwitchBudget()
+        private static void SwitchBudget(Budget selectedBudget)
         {
             var dirList = Directory.GetDirectories(DatabaseFolderPath);
 
@@ -756,6 +756,7 @@ namespace MoneyExperiment
                 Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
             }
             Console.WriteLine((dirList.Length) + ": Add new budget.");
+            Console.WriteLine((dirList.Length + 1) + ": Abort.");
 
             Console.WriteLine("What buget to load?");
             var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
@@ -763,6 +764,12 @@ namespace MoneyExperiment
             if (loadBudget == dirList.Length)
             {
                 LoadBudget(string.Empty);
+            }
+            else if (loadBudget == dirList.Length + 1)
+            {
+                Console.WriteLine("Aborting...");
+                Console.Clear();
+                ShowOptionsMenu(selectedBudget);
             }
             else
             {
