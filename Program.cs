@@ -325,12 +325,12 @@ namespace MoneyExperiment
             for (int i = 0; i < fileLineCount; i++)
             {
                 // This is used to add space between the amount of the item so they appear level.     
-                Console.WriteLine(SeparatorHelper(selectedBudget.UserInputCost[i], 0) + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
+                Console.WriteLine(SeparatorHelper(selectedBudget.UserInputCost[i], 6) + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
                 totalCosts += selectedBudget.UserInputCost[i];
             }
 
-            Console.WriteLine("\n" + SeparatorHelper(totalCosts, 0) + totalCosts + " TOTAL SPENT");
-            Console.WriteLine(SeparatorHelper(selectedBudget.Amount - totalCosts, 0) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
+            Console.WriteLine("\n" + SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
+            Console.WriteLine(SeparatorHelper(selectedBudget.Amount - totalCosts, 6) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
             Console.WriteLine();
 
             // Start            
@@ -339,49 +339,50 @@ namespace MoneyExperiment
 
         private static string SeparatorHelper(double amount, int spaces)
         {
-            ////var sb = new StringBuilder();
+            var sb = new StringBuilder();
+            for (int i = 0; i < spaces; i++)
+            {
+                if (amount.ToString().Length == i)
+                {
+                    int temp = 0;
+                    while (temp <= (spaces - amount.ToString().Length))
+                    {
+                        sb.Append(" ");
+                        temp++;
+                    }
+                }
+            }
 
-            ////for (int i = 0; i < spaces; i++)
-            ////{
-            ////    if (amount.ToString().Length == i - spaces)
-            ////    {
-            ////        for (int j = 7; j < spaces; j--)
-            ////        {
-            ////            sb.Append(" ");
-            ////        }
-            ////    }
-            ////}
+            return sb.ToString();
 
-            ////return sb.ToString();
-
-            if (amount.ToString().Length == 1 - spaces)
-            {
-                return "       ";
-            }
-            else if (amount.ToString().Length == 2 - spaces)
-            {
-                return "      ";
-            }
-            else if (amount.ToString().Length == 3 - spaces)
-            {
-                return "     ";
-            }
-            else if (amount.ToString().Length == 4 - spaces)
-            {
-                return "    ";
-            }
-            else if (amount.ToString().Length == 5 - spaces)
-            {
-                return "   ";
-            }
-            else if (amount.ToString().Length == 6 - spaces)
-            {
-                return "  ";
-            }
-            else
-            {
-                return " ";
-            }
+            // // if (amount.ToString().Length == 1 - spaces)
+            // // {
+            // //     return "       ";
+            // // }
+            // // else if (amount.ToString().Length == 2 - spaces)
+            // // {
+            // //     return "      ";
+            // // }
+            // // else if (amount.ToString().Length == 3 - spaces)
+            // // {
+            // //     return "     ";
+            // // }
+            // // else if (amount.ToString().Length == 4 - spaces)
+            // // {
+            // //     return "    ";
+            // // }
+            // // else if (amount.ToString().Length == 5 - spaces)
+            // // {
+            // //     return "   ";
+            // // }
+            // // else if (amount.ToString().Length == 6 - spaces)
+            // // {
+            // //     return "  ";
+            // // }
+            // // else
+            // // {
+            // //     return " ";
+            // // }
         }
 
         private static void ShowLastTransactions(Budget selectedBudget)
@@ -481,7 +482,7 @@ namespace MoneyExperiment
             }
 
             // This is used to add space between the amount of the item so they appear level.
-            selectedBudget.AllUserTransactionFile.Add(SeparatorHelper(costInput, 0) + costInput + " " + itemInput + "  " + DateTime.Now.ToString());
+            selectedBudget.AllUserTransactionFile.Add(SeparatorHelper(costInput, 6) + costInput + " " + itemInput + "  " + DateTime.Now.ToString());
             allTransactionsLineCount++;
 
             SaveDatabase(selectedBudget);
