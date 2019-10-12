@@ -344,45 +344,14 @@ namespace MoneyExperiment
             {
                 if (amount.ToString().Length == i)
                 {
-                    int temp = 0;
-                    while (temp <= (spaces - amount.ToString().Length))
+                    for (int j = 0; j <= (spaces - amount.ToString().Length); j++)
                     {
                         sb.Append(" ");
-                        temp++;
                     }
                 }
             }
 
             return sb.ToString();
-
-            // // if (amount.ToString().Length == 1 - spaces)
-            // // {
-            // //     return "       ";
-            // // }
-            // // else if (amount.ToString().Length == 2 - spaces)
-            // // {
-            // //     return "      ";
-            // // }
-            // // else if (amount.ToString().Length == 3 - spaces)
-            // // {
-            // //     return "     ";
-            // // }
-            // // else if (amount.ToString().Length == 4 - spaces)
-            // // {
-            // //     return "    ";
-            // // }
-            // // else if (amount.ToString().Length == 5 - spaces)
-            // // {
-            // //     return "   ";
-            // // }
-            // // else if (amount.ToString().Length == 6 - spaces)
-            // // {
-            // //     return "  ";
-            // // }
-            // // else
-            // // {
-            // //     return " ";
-            // // }
         }
 
         private static void ShowLastTransactions(Budget selectedBudget)
@@ -756,7 +725,7 @@ namespace MoneyExperiment
                 Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
             }
             Console.WriteLine((dirList.Length) + ": Add new budget.");
-            Console.WriteLine((dirList.Length + 1) + ": Abort.");
+            Console.WriteLine(dirList.Length + 1 + ": Abort.");
 
             Console.WriteLine("What buget to load?");
             var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
