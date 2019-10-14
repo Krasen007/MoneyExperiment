@@ -14,10 +14,8 @@ namespace MoneyExperiment
     public static class Program
     {
         private const string DatabaseFolderPath = @"Database\";
-
         private static int fileLineCount;
         private static int allTransactionsLineCount;
-
         private static string userPassword = string.Empty;
 
         private static void Main()
