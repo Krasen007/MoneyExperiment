@@ -14,6 +14,7 @@ namespace MoneyExperiment
     public static class Program
     {
         private const string DatabaseFolderPath = @"Database\";
+        private const string DefaultBudgetName = "Budget 1";
         private static int fileLineCount;
         private static int allTransactionsLineCount;
         private static string userPassword = string.Empty;
@@ -32,7 +33,7 @@ namespace MoneyExperiment
             {
                 Budget budgetToLoad = new Budget
                 {
-                    Name = "Budget"
+                    Name = DefaultBudgetName
                 };
                 budgetToLoad.BudgetPath = @"Database\" + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
                 budgetToLoad.ItemsPath = @"Database\" + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
@@ -152,7 +153,7 @@ namespace MoneyExperiment
             // Budget file
             if (!File.Exists(selectedBudget.BudgetPath))
             {
-                if (selectedBudget.Name == "Budget")
+                if (selectedBudget.Name == DefaultBudgetName)
                 {
                     Console.Write("Set your spending budget: ");
                     selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
@@ -526,7 +527,7 @@ namespace MoneyExperiment
                 "type 'r' to remove item from current list, \n" +
                 "type 'i' to import csv file, \n" +
                 "type 'c' to change the budget name and amount, \n" +
-                "type 's' to switch to another budget, \n" +
+                "type 's' to switch to another budget, or create another one,\n" +
                 "type 'a' to delete a budget, \n" +
                 "type 'd' to DELETE ALL DATABASE, \n" +
                 "press ESC to return to the main menu.");
@@ -538,6 +539,8 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("View your summary in " + selectedBudget.SummaryPath);
                 ExportReadable(selectedBudget);
+                Console.Clear();
+                ListDataBaseSummary(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.R)
             {
@@ -555,7 +558,7 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.S)
             {
-                Console.WriteLine("Switching budgets...");
+                Console.WriteLine("Switching budgets...\n");
                 SwitchBudget(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.A)
@@ -631,7 +634,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine(i + ": " + selectedBudget.UserInputItem[i] + " " + selectedBudget.UserInputCost[i]);
             }
-            Console.WriteLine(selectedBudget.UserInputItem.Count + ": Abort.");
+            Console.WriteLine(selectedBudget.UserInputItem.Count + ": Cancel.");
 
             Console.Write("Enter the number of the item you want to remove: ");
             var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
@@ -665,7 +668,7 @@ namespace MoneyExperiment
         {
             if (!File.Exists("budget.csv"))
             {
-                Console.WriteLine("!!! budget.csv file is missing !!!\n Aborting...");
+                Console.WriteLine("!!! budget.csv file is missing !!!\n Canceling...");
                 ListDataBaseSummary(selectedBudget);
             }
             else
@@ -723,9 +726,9 @@ namespace MoneyExperiment
                 Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
             }
             Console.WriteLine((dirList.Length) + ": Add new budget.");
-            Console.WriteLine(dirList.Length + 1 + ": Abort.");
+            Console.WriteLine(dirList.Length + 1 + ": Cancel.");
 
-            Console.WriteLine("What buget to load?");
+            Console.WriteLine("Enter your choice: ");
             var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
 
             if (loadBudget == dirList.Length)
@@ -734,7 +737,7 @@ namespace MoneyExperiment
             }
             else if (loadBudget == dirList.Length + 1)
             {
-                Console.WriteLine("Aborting...");
+                Console.WriteLine("Canceling...");
                 Console.Clear();
                 ShowOptionsMenu(selectedBudget);
             }
@@ -753,7 +756,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
             }
-            Console.WriteLine((dirList.Length) + ": Abort...");
+            Console.WriteLine((dirList.Length) + ": Cancel...");
 
             //// This is for deleting...
             Console.Write("Enter the number of the budget you want to remove: ");
