@@ -383,15 +383,26 @@ namespace MoneyExperiment
         // Here
         private static void ShowMainMenu(Budget selectedBudget)
         {
+            DisplayMenuChoices();
+
+            ShowLastTransactions(selectedBudget);
+
+            AskForUserMenuChoice(selectedBudget);
+        }
+
+        // Must be used with AskForUserMenuChoice method.
+        private static void DisplayMenuChoices()
+        {
             Console.WriteLine("*********** Menu ***********");
             Console.WriteLine("Do you want to add another?\n" +
                 "type 'y' to add new entry, \n" +
                 "type 'e' to save and exit without uploading online, \n" +
                 "type 'u' to save and exit and upload the database online, \n" +
                 "type 'o' for other options. \n");
+        }
 
-            ShowLastTransactions(selectedBudget);
-
+        private static void AskForUserMenuChoice(Budget selectedBudget)
+        {
             Console.Write("Enter your choice: ");
             var userInput = Console.ReadKey(true);
 
@@ -426,7 +437,6 @@ namespace MoneyExperiment
                 ShowMainMenu(selectedBudget);
             }
         }
-
         private static void AddOrUpdateItemList(Budget selectedBudget)
         {
             Console.Write("\nHow much did you spend: ");
@@ -573,8 +583,17 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.S)
             {
                 Console.WriteLine("Switching budgets...\n");
-                // todo fix
-                SwitchBudget(selectedBudget);
+                var budgetToLoad = SwitchBudget();
+                if (budgetToLoad == "False")
+                {
+                    Console.Clear();
+                    Console.WriteLine("Aborting...");
+                    ShowOptionsMenu(selectedBudget);
+                }
+                else
+                {
+                    LoadBudget(budgetToLoad);
+                }
             }
             else if (userInput.Key == ConsoleKey.A)
             {
@@ -721,7 +740,7 @@ namespace MoneyExperiment
             selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
         }
 
-        private static void SwitchBudget(Budget selectedBudget)
+        private static string SwitchBudget()
         {
             var dirList = Directory.GetDirectories(DatabaseFolderPath);
 
@@ -737,18 +756,21 @@ namespace MoneyExperiment
 
             if (loadBudget == dirList.Length)
             {
-                LoadBudget(string.Empty);
+                return string.Empty;
+                //LoadBudget(string.Empty);
             }
             else if (loadBudget == dirList.Length + 1)
             {
-                Console.WriteLine("Canceling...");
-                Console.Clear();
-                ShowOptionsMenu(selectedBudget);
+                // Console.WriteLine("Canceling...");
+                // Console.Clear();
+                // ShowOptionsMenu(selectedBudget);
+                return "False";
             }
             else
             {
                 var name = dirList[(int)loadBudget].Substring(dirList[(int)loadBudget].IndexOf("\\") + 1);
-                LoadBudget(name);
+                //LoadBudget(name);
+                return name;
             }
         }
 
@@ -780,7 +802,7 @@ namespace MoneyExperiment
                 }
             }
         }
-        
+
         #endregion Options menu
     }
 }
