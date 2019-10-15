@@ -66,7 +66,10 @@ namespace MoneyExperiment
 
             if (DecryptDatabaseFiles(selectedBudget))
             {
+                SaveDatabase(selectedBudget);
                 ListDataBaseSummary(selectedBudget);
+                // Start            
+                ShowMainMenu(selectedBudget);
             }
             else
             {
@@ -311,7 +314,6 @@ namespace MoneyExperiment
             }
             else
             {
-                SaveDatabase(selectedBudget);
                 return true;
             }
         }
@@ -331,9 +333,6 @@ namespace MoneyExperiment
             Console.WriteLine("\n" + SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
             Console.WriteLine(SeparatorHelper(selectedBudget.Amount - totalCosts, 6) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
             Console.WriteLine();
-
-            // Start            
-            ShowMainMenu(selectedBudget);
         }
 
         private static string SeparatorHelper(double amount, int spaces)
@@ -380,6 +379,8 @@ namespace MoneyExperiment
         #endregion Start
 
         #region Main menu
+
+        // Here
         private static void ShowMainMenu(Budget selectedBudget)
         {
             Console.WriteLine("*********** Menu ***********");
@@ -397,6 +398,10 @@ namespace MoneyExperiment
             if (userInput.Key == ConsoleKey.Y)
             {
                 AddOrUpdateItemList(selectedBudget);
+                SaveDatabase(selectedBudget);
+                Console.Clear();
+                ListDataBaseSummary(selectedBudget);
+                ShowMainMenu(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.E)
             {
@@ -405,8 +410,9 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.U)
             {
+                SaveDatabase(selectedBudget);
                 Console.WriteLine("Uploading...");
-                UploadOnline(selectedBudget);
+                UploadOnline();
             }
             else if (userInput.Key == ConsoleKey.O)
             {
@@ -417,6 +423,7 @@ namespace MoneyExperiment
             {
                 Console.Clear();
                 ListDataBaseSummary(selectedBudget);
+                ShowMainMenu(selectedBudget);
             }
         }
 
@@ -452,10 +459,6 @@ namespace MoneyExperiment
             // This is used to add space between the amount of the item so they appear level.
             selectedBudget.AllUserTransactionFile.Add(SeparatorHelper(costInput, 6) + costInput + " " + itemInput + "  " + DateTime.Now.ToString());
             allTransactionsLineCount++;
-
-            SaveDatabase(selectedBudget);
-            Console.Clear();
-            ListDataBaseSummary(selectedBudget);
         }
 
         /// <summary>
@@ -498,10 +501,8 @@ namespace MoneyExperiment
             }
         }
 
-        private static void UploadOnline(Budget selectedBudget)
+        private static void UploadOnline()
         {
-            SaveDatabase(selectedBudget);
-
             const string InitCreateDB = @"Scripts\InitCreateDB.bat";
             const string PushUpdateDB = @"Scripts\PushUpdateDB.bat";
 
@@ -537,28 +538,42 @@ namespace MoneyExperiment
 
             if (userInput.Key == ConsoleKey.X)
             {
+                SaveDatabase(selectedBudget);
                 Console.WriteLine("View your summary in " + selectedBudget.SummaryPath);
                 ExportReadable(selectedBudget);
                 Console.Clear();
                 ListDataBaseSummary(selectedBudget);
+                ShowMainMenu(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.R)
             {
                 Console.WriteLine("Removing...");
                 RemoveItem(selectedBudget);
+                Console.Clear();
+                SaveDatabase(selectedBudget);
+                ListDataBaseSummary(selectedBudget);
+                ShowMainMenu(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.I)
             {
                 Console.WriteLine("Importing...");
                 ImportCSV(selectedBudget);
+                SaveDatabase(selectedBudget);
+                ListDataBaseSummary(selectedBudget);
+                ShowMainMenu(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.C)
             {
                 ChangeNameAndAmount(selectedBudget);
+                Console.Clear();
+                SaveDatabase(selectedBudget);
+                ListDataBaseSummary(selectedBudget);
+                ShowMainMenu(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.S)
             {
                 Console.WriteLine("Switching budgets...\n");
+                // todo fix
                 SwitchBudget(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.A)
@@ -586,12 +601,14 @@ namespace MoneyExperiment
                     Console.WriteLine("Aborting...");
                     Console.Clear();
                     ListDataBaseSummary(selectedBudget);
+                    ShowMainMenu(selectedBudget);
                 }
             }
             else if (userInput.Key == ConsoleKey.Escape)
             {
                 Console.Clear();
                 ListDataBaseSummary(selectedBudget);
+                ShowMainMenu(selectedBudget);
             }
             else
             {
@@ -606,8 +623,6 @@ namespace MoneyExperiment
         private static void ExportReadable(Budget selectedBudget)
         {
             // Fix method to use already established method of reading the list
-            SaveDatabase(selectedBudget);
-
             using StreamWriter outputFile = new StreamWriter(selectedBudget.SummaryPath);
             outputFile.WriteLine("*********** {0} **********", selectedBudget.Name);
 
@@ -655,10 +670,6 @@ namespace MoneyExperiment
                     break;
                 }
             }
-
-            Console.Clear();
-            SaveDatabase(selectedBudget);
-            ListDataBaseSummary(selectedBudget);
         }
 
         /// <summary>
@@ -669,7 +680,6 @@ namespace MoneyExperiment
             if (!File.Exists("budget.csv"))
             {
                 Console.WriteLine("!!! budget.csv file is missing !!!\n Canceling...");
-                ListDataBaseSummary(selectedBudget);
             }
             else
             {
@@ -700,8 +710,6 @@ namespace MoneyExperiment
                     Console.WriteLine(e.Message);
                     Console.WriteLine("You need to add budget.csv in the main folder");
                 }
-                SaveDatabase(selectedBudget);
-                ListDataBaseSummary(selectedBudget);
             }
         }
 
@@ -711,10 +719,6 @@ namespace MoneyExperiment
             selectedBudget.Name = Console.ReadLine();
             Console.Write("Set your new budget: ");
             selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
-
-            Console.Clear();
-            SaveDatabase(selectedBudget);
-            ListDataBaseSummary(selectedBudget);
         }
 
         private static void SwitchBudget(Budget selectedBudget)
@@ -776,6 +780,7 @@ namespace MoneyExperiment
                 }
             }
         }
+        
         #endregion Options menu
     }
 }
