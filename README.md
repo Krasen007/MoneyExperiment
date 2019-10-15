@@ -1,9 +1,9 @@
 # MoneyExperiment
 
 <img src="icon.ico" title="The app icon" width="64"/>
-Experimental budgeting app.\
-Sync a budget between PCs with the help of public Git repo.\
-The trick is that your database of items is always encrypted even if its in a public repo.\
+Experimental budgeting app. 
+Sync a budget between PCs with the help of public Git repo. 
+The trick is that your database of items is always encrypted even if its in a public repo. 
 
 ![Main view of the app.](Resources/MainView.png)
 
@@ -22,7 +22,7 @@ git config user.email "krasen007@gmail.com" and git remote add origin https://gi
 
 ### How to use:
 
-* After starting, the app will ask you to set a password. Remember this. It's used to encrypt your database.\
+* After starting, the app will ask you to set a password. Remember this. It's used to encrypt your database. 
 If you forget your password you will have to delete the Database folder containing all of the entries.
 * After that, it will ask you to set a name and amount of the budget. For example: name - Monthly Budget, amount - 1000, or Wedding Expenses 12500.
 * The menu will appear. Use "y" to add entries. Enter how much you spent and on what.

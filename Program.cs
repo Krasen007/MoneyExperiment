@@ -24,10 +24,11 @@ namespace MoneyExperiment
             Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
             Console.WriteLine("*********** Welcome! ***********");
-            LoadBudget(null);
+            Login();
+            Start(LoadBudget(null));
         }
 
-        private static void LoadBudget(string? name)
+        private static Budget LoadBudget(string? name)
         {
             if (name == null)
             {
@@ -41,7 +42,7 @@ namespace MoneyExperiment
                 budgetToLoad.AllTransactionsPath = @"Database\" + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
                 budgetToLoad.SummaryPath = @"Database\" + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
 
-                Start(budgetToLoad);
+                return budgetToLoad;
             }
             else
             {
@@ -55,15 +56,13 @@ namespace MoneyExperiment
                 budgetToLoad.AllTransactionsPath = @"Database\" + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
                 budgetToLoad.SummaryPath = @"Database\" + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
 
-                Start(budgetToLoad);
+                return budgetToLoad;
             }
         }
 
         #region Start
         public static void Start(Budget selectedBudget)
         {
-            Login();
-
             if (DecryptDatabaseFiles(selectedBudget))
             {
                 SaveDatabase(selectedBudget);
@@ -437,6 +436,7 @@ namespace MoneyExperiment
                 ShowMainMenu(selectedBudget);
             }
         }
+
         private static void AddOrUpdateItemList(Budget selectedBudget)
         {
             Console.Write("\nHow much did you spend: ");
@@ -592,7 +592,7 @@ namespace MoneyExperiment
                 }
                 else
                 {
-                    LoadBudget(budgetToLoad);
+                    Start(LoadBudget(budgetToLoad));
                 }
             }
             else if (userInput.Key == ConsoleKey.A)
@@ -600,7 +600,7 @@ namespace MoneyExperiment
                 Console.WriteLine("Deleting budget...");
                 DeleteBudget();
                 Console.WriteLine("Loading the default budget...");
-                LoadBudget(null);
+                Start(LoadBudget(null));
             }
             else if (userInput.Key == ConsoleKey.D)
             {
@@ -757,19 +757,14 @@ namespace MoneyExperiment
             if (loadBudget == dirList.Length)
             {
                 return string.Empty;
-                //LoadBudget(string.Empty);
             }
             else if (loadBudget == dirList.Length + 1)
             {
-                // Console.WriteLine("Canceling...");
-                // Console.Clear();
-                // ShowOptionsMenu(selectedBudget);
                 return "False";
             }
             else
             {
                 var name = dirList[(int)loadBudget].Substring(dirList[(int)loadBudget].IndexOf("\\") + 1);
-                //LoadBudget(name);
                 return name;
             }
         }
