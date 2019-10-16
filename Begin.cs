@@ -413,7 +413,7 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.E)
             {
-                Console.WriteLine("Exiting...");
+                Console.WriteLine("\nExiting...");
                 SaveDatabase(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.U)
