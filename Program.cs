@@ -10,7 +10,7 @@ namespace MoneyExperiment
         {
             Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
-            new Begin();
+            _ = new Begin();
         }
     }
 }

@@ -7,9 +7,9 @@ namespace MoneyExperiment.Helpers
     using System.Security.Cryptography;
     using System.Text;
 
-    public static class AesOperation
+    public static class Encryption
     {
-        public static bool IsWrongPassword { get; set; }
+        public static bool IsPasswordWrong { get; set; }
 
         public static string EncryptString(string password, string plainText)
         {
@@ -41,7 +41,7 @@ namespace MoneyExperiment.Helpers
             byte[] iv;
             byte[] buffer;
 
-            IsWrongPassword = false;
+            IsPasswordWrong = false;
             try
             {
                 iv = new byte[16];
@@ -50,7 +50,7 @@ namespace MoneyExperiment.Helpers
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (FormatException)
             {
-                IsWrongPassword = true;
+                IsPasswordWrong = true;
                 return "";
             }
 #pragma warning restore CA1031 // Do not catch general exception types
@@ -65,7 +65,7 @@ namespace MoneyExperiment.Helpers
 #pragma warning disable CA1031 // Do not catch general exception types
                 catch (CryptographicException)
                 {
-                    IsWrongPassword = true;
+                    IsPasswordWrong = true;
                 }
 #pragma warning restore CA1031 // Do not catch general exception types
             }
@@ -76,7 +76,7 @@ namespace MoneyExperiment.Helpers
             using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using StreamReader streamReader = new StreamReader(cryptoStream);
             {
-                IsWrongPassword = false;
+                IsPasswordWrong = false;
                 try
                 {
                     return streamReader.ReadToEnd();
@@ -84,13 +84,13 @@ namespace MoneyExperiment.Helpers
 #pragma warning disable CA1031 // Do not catch general exception types
                 catch (CryptographicException)
                 {
-                    IsWrongPassword = true;
+                    IsPasswordWrong = true;
                     return "";
                 }
 #pragma warning restore CA1031 // Do not catch general exception types
                 finally
                 {
-                    if (IsWrongPassword)
+                    if (IsPasswordWrong)
                     {
                         memoryStream.Dispose();
                         cryptoStream.Dispose();
