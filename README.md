@@ -4,7 +4,7 @@
 Experimental budgeting app. </br>
 Sync a budget between PCs with the help of public Git repo. </br>
 The trick is that your database of items is always encrypted even if its in a public repo. </br>
-
+</br>
 ![Main view of the app.](Resources/MainView.png)
 
 
@@ -14,7 +14,7 @@ The trick is that your database of items is always encrypted even if its in a pu
 * If you want to build from source - Install [dotnet core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0).
 * Create an empty folder and download and extract the latest version.
 * Create a new account and/or repository in [github.com](https://github.com/) or [gitlab.com](https://gitlab.com/). 
-* Open Scripts/InitCreateDB.bat using your favorite text editor (notepad) and add change the lines of file to match your repo and credentials you used to make it, for example: git config user.name "Krasen Ivanov"
+* Open Scripts/InitCreateDB.bat using your favorite text editor (notepad) and change the lines of the file to match your repo and credentials you used to make it, for example: git config user.name "Krasen Ivanov"
 git config user.email "krasen007@gmail.com" and git remote add origin https://github.com/Krasen007/MoneyExperimentDB.git
 * If building from, source open your folder with the app and open cmd/terminal and type "dotnet run" to compile and run.
 * You are done! Enjoy your console .net core budgeting app.
