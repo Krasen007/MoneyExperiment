@@ -22,6 +22,7 @@ namespace MoneyExperiment
 
         public Begin()
         {
+            Console.WriteLine("*********** Welcome **********");
             this.Login();
             this.Start(this.LoadBudget(null));
         }
@@ -148,7 +149,7 @@ namespace MoneyExperiment
 
                 var process = Process.Start(PullDB);
                 process.WaitForExit();
-                Console.Clear();
+                this.PressEnterToContinue();
             }
 
             // Budget file
@@ -402,7 +403,7 @@ namespace MoneyExperiment
         private void AskForUserMenuChoice(Budget selectedBudget)
         {
             Console.Write("Enter your choice: ");
-            var userInput = Console.ReadKey(true);
+            var userInput = Console.ReadKey();
 
             if (userInput.Key == ConsoleKey.Y)
             {
@@ -420,8 +421,10 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.U)
             {
                 this.SaveDatabase(selectedBudget);
-                Console.WriteLine("Uploading...");
+
+                Console.WriteLine("\nUploading...");
                 this.UploadOnline();
+                this.PressEnterToContinue();
             }
             else if (userInput.Key == ConsoleKey.O)
             {
@@ -434,6 +437,13 @@ namespace MoneyExperiment
                 this.ListDataBaseSummary(selectedBudget);
                 this.ShowMainMenu(selectedBudget);
             }
+        }
+
+        private void PressEnterToContinue()
+        {
+            Console.WriteLine("Press enter to continue...");
+            Console.ReadKey(true);
+            Console.Clear();
         }
 
         private void AddOrUpdateItemList(Budget selectedBudget)
@@ -543,30 +553,36 @@ namespace MoneyExperiment
                 "press ESC to return to the main menu.");
 
             Console.WriteLine("Enter your choice: ");
-            var userInput = Console.ReadKey(true);
+            var userInput = Console.ReadKey();
 
             if (userInput.Key == ConsoleKey.X)
             {
                 this.SaveDatabase(selectedBudget);
-                Console.WriteLine("View your summary in " + selectedBudget.SummaryPath);
                 this.ExportReadable(selectedBudget);
-                Console.Clear();
+                Console.WriteLine("View your summary in " + selectedBudget.SummaryPath);
+                this.PressEnterToContinue();
+
                 this.ListDataBaseSummary(selectedBudget);
                 this.ShowMainMenu(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.R)
             {
-                Console.WriteLine("Removing...");
+                Console.Clear();
+                Console.WriteLine("Remove which item?");
                 this.RemoveItem(selectedBudget);
                 Console.Clear();
+
                 this.SaveDatabase(selectedBudget);
                 this.ListDataBaseSummary(selectedBudget);
                 this.ShowMainMenu(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.I)
             {
-                Console.WriteLine("Importing...");
+                Console.Clear();
+                Console.WriteLine("\nImporting...");
                 this.ImportCSV(selectedBudget);
+                this.PressEnterToContinue();
+
                 this.SaveDatabase(selectedBudget);
                 this.ListDataBaseSummary(selectedBudget);
                 this.ShowMainMenu(selectedBudget);
@@ -575,18 +591,19 @@ namespace MoneyExperiment
             {
                 this.ChangeNameAndAmount(selectedBudget);
                 Console.Clear();
+
                 this.SaveDatabase(selectedBudget);
                 this.ListDataBaseSummary(selectedBudget);
                 this.ShowMainMenu(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.S)
             {
-                Console.WriteLine("Switching budgets...\n");
+                Console.WriteLine("\nSwitching budgets...\n");
                 var budgetToLoad = this.SwitchBudget();
                 if (budgetToLoad == "False")
                 {
+                    Console.WriteLine("Canceling...");
                     Console.Clear();
-                    Console.WriteLine("Aborting...");
                     this.ShowOptionsMenu(selectedBudget);
                 }
                 else
@@ -596,14 +613,16 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.A)
             {
-                Console.WriteLine("Deleting budget...");
+                Console.WriteLine("\nDeleting budget...");
                 this.DeleteBudget();
+
+                Console.Clear();
                 Console.WriteLine("Loading the default budget...");
                 this.Start(this.LoadBudget(null));
             }
             else if (userInput.Key == ConsoleKey.D)
             {
-                Console.WriteLine("WARNING: THIS WILL DELETE ALL OF YOUR DATABASE!\n" +
+                Console.WriteLine("\nWARNING: THIS WILL DELETE ALL OF YOUR DATABASE!\n" +
                 "TYPE 'Delete' IF YOU WANT TO CONTINUE?, TYPE 'abort' TO CANCEL");
                 var textInput = Console.ReadLine();
 
@@ -778,7 +797,7 @@ namespace MoneyExperiment
             }
             Console.WriteLine((dirList.Length) + ": Cancel...");
 
-            //// This is for deleting...
+            // This is for deleting...
             Console.Write("Enter the number of the budget you want to remove: ");
             var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
 
@@ -787,7 +806,6 @@ namespace MoneyExperiment
                 if (deleteItem == i)
                 {
                     Directory.Delete(dirList[i], true);
-                    Console.Clear();
                     break;
                 }
                 else if (deleteItem == dirList.Length)
