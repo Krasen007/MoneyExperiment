@@ -1,6 +1,7 @@
 ﻿namespace MoneyExperiment.Model
 {
     using System.Collections.Generic;
+
     public class Budget
     {
         public List<string> UserInputItem { get; set; } = new List<string>();

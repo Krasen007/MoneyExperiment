@@ -331,7 +331,7 @@ namespace MoneyExperiment
             double totalCosts = 0;
             for (int i = 0; i < this.fileLineCount; i++)
             {
-                // This is used to add space between the amount of the item so they appear level.     
+                // This is used to add space between the amount of the item so they appear level.
                 Console.WriteLine(this.SeparatorHelper(selectedBudget.UserInputCost[i], 6) + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
                 totalCosts += selectedBudget.UserInputCost[i];
             }
@@ -547,6 +547,7 @@ namespace MoneyExperiment
         #endregion Main menu
 
         #region Options menu
+
         private void ShowOptionsMenu(Budget selectedBudget)
         {
             Console.WriteLine("*********** Options ***********");
