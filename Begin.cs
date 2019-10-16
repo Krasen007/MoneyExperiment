@@ -15,9 +15,10 @@ namespace MoneyExperiment
     {
         private const string DatabaseFolderPath = @"Database\";
         private const string DefaultBudgetName = "Budget 1";
+        private const int PasswordLength = 32;
+        private string userPassword = string.Empty;
         private int fileLineCount;
         private int allTransactionsLineCount;
-        private string userPassword = string.Empty;
 
         public Begin()
         {
@@ -64,8 +65,8 @@ namespace MoneyExperiment
             if (DecryptDatabaseFiles(selectedBudget))
             {
                 SaveDatabase(selectedBudget);
+                // Start UI
                 ListDataBaseSummary(selectedBudget);
-                // Start            
                 ShowMainMenu(selectedBudget);
             }
             else
@@ -107,18 +108,18 @@ namespace MoneyExperiment
             Console.Clear();
 
             // My check
-            if (passwordInput.ToString().Length <= 31)
+            if (passwordInput.ToString().Length <= PasswordLength - 1)
             {
                 StringBuilder builder = new StringBuilder(passwordInput.ToString());
 
-                for (int i = 31; i >= passwordInput.ToString().Length; i--)
+                for (int i = PasswordLength; i >= passwordInput.ToString().Length; i--)
                 {
                     builder.Append("-");
                 }
 
                 userPassword = builder.ToString();
             }
-            else if (passwordInput.ToString().Length >= 33)
+            else if (passwordInput.ToString().Length >= PasswordLength + 1)
             {
                 Console.WriteLine("Your password is too long.");
                 Login();
