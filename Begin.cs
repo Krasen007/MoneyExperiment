@@ -74,6 +74,7 @@ namespace MoneyExperiment
             {
                 // Try again.
                 Encryption.IsPasswordWrong = false;
+                this.Login();
                 this.Start(selectedBudget);
             }
         }
@@ -143,14 +144,6 @@ namespace MoneyExperiment
                 Console.WriteLine("Database folder was missing so we created one for you.");
                 Directory.CreateDirectory(DatabaseFolderPath);
             }
-            else
-            {
-                const string PullDB = @"Scripts\PullDB.bat";
-
-                var process = Process.Start(PullDB);
-                process.WaitForExit();
-                this.PressEnterToContinue();
-            }
 
             // Budget file
             if (!File.Exists(selectedBudget.BudgetPath))
@@ -178,6 +171,20 @@ namespace MoneyExperiment
             }
             else
             {
+                try
+                {
+                    const string PullDB = @"Scripts\PullDB.bat";
+
+                    var process = Process.Start(PullDB);
+                    process.WaitForExit();
+                    this.PressEnterToContinue();
+                }
+                catch (FileNotFoundException e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+
                 try
                 {
                     // To work the file should contain first the budget Amount and on the second line the name of the budget.
