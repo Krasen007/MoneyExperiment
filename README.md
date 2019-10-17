@@ -4,7 +4,7 @@
 Experimental budgeting app. </br>
 Sync a budget between PCs with the help of public Git repo. </br>
 The trick is that your database of items is always encrypted even if its in a public repo. </br>
-</br>
+  
 ![Main view of the app.](Resources/MainView.png)
 
 
