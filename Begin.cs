@@ -61,7 +61,7 @@ namespace MoneyExperiment
 
         #region Start
 
-        public void Start(Budget selectedBudget)
+        private void Start(Budget selectedBudget)
         {
             if (this.DecryptDatabaseFiles(selectedBudget))
             {
