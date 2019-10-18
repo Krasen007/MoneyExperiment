@@ -12,7 +12,7 @@
 .vscode/
 
 #My files
-Database/
+MoneyExperiment/Database/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
