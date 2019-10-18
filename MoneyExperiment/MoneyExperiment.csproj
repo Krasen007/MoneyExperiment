@@ -8,7 +8,7 @@
     <ApplicationIcon>Resources/icon.ico</ApplicationIcon>
     <Authors>Krasen Ivanov</Authors>
     <Copyright>Krasen Ivanov 2019</Copyright>
-    <Version>1.3.8-beta2-with-tests</Version>
+    <Version>1.3.9</Version>
     <AssemblyName>MoneyExperiment</AssemblyName>
   </PropertyGroup>
 
