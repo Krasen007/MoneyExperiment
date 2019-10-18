@@ -6,9 +6,8 @@ namespace MoneyExperiment.Helpers
 
     public static class ParseHelper
     {
-        public static string ParseStringInput()
+        public static string ParseStringInput(string stringInput)
         {
-            var stringInput = Console.ReadLine();
             bool isNull = true;
 
             while (isNull)

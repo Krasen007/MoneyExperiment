@@ -459,7 +459,7 @@ namespace MoneyExperiment
             double costInput = ParseHelper.ParseDouble(Console.ReadLine());
 
             Console.Write("What did you spend on: ");
-            string itemInput = ParseHelper.ParseStringInput();
+            string itemInput = ParseHelper.ParseStringInput(Console.ReadLine());
 
             // Check if item is already in the database
             bool isDublicateItem = false;
