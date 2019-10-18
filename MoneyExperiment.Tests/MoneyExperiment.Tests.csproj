@@ -1,7 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Authors>Krasen Ivanov</Authors>
+    <Copyright>Krasen Ivanov 2019</Copyright>
+    <Version>1.0.2</Version>
+    <AssemblyName>MoneyExperiment.Tests</AssemblyName>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>

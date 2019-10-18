@@ -23,7 +23,7 @@ namespace MoneyExperiment
         public Begin()
         {
             Console.WriteLine("*********** Welcome **********");
-            this.Login();
+            userPassword = this.Login();
             this.Start(this.LoadBudget(null));
         }
 
@@ -74,12 +74,12 @@ namespace MoneyExperiment
             {
                 // Try again.
                 Encryption.IsPasswordWrong = false;
-                this.Login();
+                this.userPassword = this.Login();
                 this.Start(selectedBudget);
             }
         }
 
-        private void Login()
+        private string Login()
         {
             Console.Write("Please enter your password: ");
 
@@ -109,7 +109,7 @@ namespace MoneyExperiment
             while (key.Key != ConsoleKey.Enter);
             Console.Clear();
 
-            // My check
+            // Save password
             if (passwordInput.ToString().Length <= PasswordLength)
             {
                 StringBuilder builder = new StringBuilder(passwordInput.ToString());
@@ -119,16 +119,16 @@ namespace MoneyExperiment
                     builder.Append("-");
                 }
 
-                this.userPassword = builder.ToString();
+                return builder.ToString();
             }
             else if (passwordInput.ToString().Length >= PasswordLength + 2)
             {
                 Console.WriteLine("Your password is too long.");
-                this.Login();
+                return this.Login();
             }
             else
             {
-                this.userPassword = passwordInput.ToString();
+                return passwordInput.ToString();
             }
         }
 

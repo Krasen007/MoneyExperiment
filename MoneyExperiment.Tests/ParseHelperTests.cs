@@ -1,8 +1,10 @@
-﻿using MoneyExperiment.Helpers;
-using Xunit;
+﻿// Krasen Ivanov 2019
 
 namespace MoneyExperiment.Tests
 {
+    using MoneyExperiment.Helpers;
+    using Xunit;
+    
     public class ParseHelperTests
     {
         [Theory]
