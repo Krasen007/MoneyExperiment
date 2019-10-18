@@ -42,3 +42,10 @@ Added option to change budget name and amount;
 Added option to delete the database;  
 Added option to create and switch between multiple budgets;  
 Added option to record all made and deleted transactions;  
+
+#### Possible features to be implemented:
+
+Create installer.
+Get it setup using git portable.
+Make 0 cancel not budget.
+Walet functionality to transfer between accounts.

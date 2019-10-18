@@ -4,7 +4,7 @@ namespace MoneyExperiment.Tests
 {
     using MoneyExperiment.Helpers;
     using Xunit;
-    
+
     public class ParseHelperTests
     {
         [Theory]

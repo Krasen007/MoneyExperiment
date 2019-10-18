@@ -16,14 +16,15 @@ namespace MoneyExperiment
         private const string DatabaseFolderPath = @"Database\";
         private const string DefaultBudgetName = "Budget 1";
         private const int PasswordLength = 31;
-        private string userPassword = string.Empty;
+        private string userPassword;
         private int fileLineCount;
         private int allTransactionsLineCount;
 
         public Begin()
         {
             Console.WriteLine("*********** Welcome **********");
-            userPassword = this.Login();
+            this.userPassword = this.AskForPassword();
+            this.PullDataBase();
             this.Start(this.LoadBudget(null));
         }
 
@@ -74,12 +75,33 @@ namespace MoneyExperiment
             {
                 // Try again.
                 Encryption.IsPasswordWrong = false;
-                this.userPassword = this.Login();
+                this.userPassword = this.AskForPassword();
                 this.Start(selectedBudget);
             }
         }
 
-        private string Login()
+        private void PullDataBase()
+        {
+            // If has files in database directory, pull updated db.
+            if (Directory.Exists(DatabaseFolderPath))
+            {
+                try
+                {
+                    const string PullDB = @"Scripts\PullDB.bat";
+
+                    var process = Process.Start(PullDB);
+                    process.WaitForExit();
+                    this.PressEnterToContinue();
+                }
+                catch (FileNotFoundException e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
+        }
+
+        private string AskForPassword()
         {
             Console.Write("Please enter your password: ");
 
@@ -124,7 +146,7 @@ namespace MoneyExperiment
             else if (passwordInput.ToString().Length >= PasswordLength + 2)
             {
                 Console.WriteLine("Your password is too long.");
-                return this.Login();
+                return this.AskForPassword();
             }
             else
             {
@@ -148,6 +170,7 @@ namespace MoneyExperiment
             // Budget file
             if (!File.Exists(selectedBudget.BudgetPath))
             {
+                // Case of first run
                 if (selectedBudget.Name == DefaultBudgetName)
                 {
                     Console.Write("Set your spending budget: ");
@@ -171,20 +194,6 @@ namespace MoneyExperiment
             }
             else
             {
-                try
-                {
-                    const string PullDB = @"Scripts\PullDB.bat";
-
-                    var process = Process.Start(PullDB);
-                    process.WaitForExit();
-                    this.PressEnterToContinue();
-                }
-                catch (FileNotFoundException e)
-                {
-                    Console.WriteLine(e.Message);
-                    throw;
-                }
-
                 try
                 {
                     // To work the file should contain first the budget Amount and on the second line the name of the budget.
@@ -616,6 +625,7 @@ namespace MoneyExperiment
                 }
                 else
                 {
+                    Console.Clear();
                     this.Start(this.LoadBudget(budgetToLoad));
                 }
             }
