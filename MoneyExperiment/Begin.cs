@@ -687,18 +687,18 @@ namespace MoneyExperiment
 
         private void RenameItem(Budget selectedBudget)
         {
+            Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
             {
-                Console.WriteLine(i + ": " + selectedBudget.UserInputItem[i] + " " + selectedBudget.UserInputCost[i]);
+                Console.WriteLine(i + 1 + ": " + selectedBudget.UserInputItem[i] + " " + selectedBudget.UserInputCost[i]);
             }
-            Console.WriteLine(selectedBudget.UserInputItem.Count + ": Cancel.");
 
             Console.Write("Enter the number of the item you want to rename: ");
             var renameItem = ParseHelper.ParseDouble(Console.ReadLine());
 
             for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
             {
-                if (renameItem == i)
+                if (renameItem == i + 1)
                 {
                     Console.WriteLine("Enter new name for this item: ");
                     selectedBudget.UserInputItem[i] = ParseHelper.ParseStringInput(Console.ReadLine());
@@ -707,6 +707,12 @@ namespace MoneyExperiment
                 else if (renameItem == selectedBudget.UserInputItem.Count)
                 {
                     break;
+                }
+                else if (renameItem > selectedBudget.UserInputItem.Count)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Wrong item selection");
+                    this.RenameItem(selectedBudget);
                 }
             }
         }
@@ -739,18 +745,18 @@ namespace MoneyExperiment
 
         private void RemoveItem(Budget selectedBudget)
         {
+            Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
             {
-                Console.WriteLine(i + ": " + selectedBudget.UserInputItem[i] + " " + selectedBudget.UserInputCost[i]);
+                Console.WriteLine(i + 1 + ": " + selectedBudget.UserInputItem[i] + " " + selectedBudget.UserInputCost[i]);
             }
-            Console.WriteLine(selectedBudget.UserInputItem.Count + ": Cancel.");
 
             Console.Write("Enter the number of the item you want to remove: ");
             var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
 
             for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
             {
-                if (deleteItem == i)
+                if (deleteItem == i + 1)
                 {
                     selectedBudget.AllUserTransactionFile.Add(selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i] + " " + DateTime.Now.ToString() + " Deleted. ");
                     this.allTransactionsLineCount++;
@@ -762,6 +768,12 @@ namespace MoneyExperiment
                 else if (deleteItem == selectedBudget.UserInputItem.Count)
                 {
                     break;
+                }
+                else if (deleteItem > selectedBudget.UserInputItem.Count)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Wrong item selection");
+                    this.RemoveItem(selectedBudget);
                 }
             }
         }
@@ -819,27 +831,35 @@ namespace MoneyExperiment
         {
             var dirList = Directory.GetDirectories(DatabaseFolderPath);
 
+            Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < dirList.Length; i++)
             {
-                Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
+                Console.WriteLine(i + 1 + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
             }
-            Console.WriteLine((dirList.Length) + ": Add new budget.");
-            Console.WriteLine(dirList.Length + 1 + ": Cancel.");
+            Console.WriteLine(dirList.Length + 1 + ": Add new budget.");
 
             Console.WriteLine("Enter your choice: ");
             var loadBudget = ParseHelper.ParseDouble(Console.ReadLine());
 
-            if (loadBudget == dirList.Length)
+            if (loadBudget == dirList.Length + 1)
             {
+                // Creates new budget
                 return string.Empty;
             }
-            else if (loadBudget == dirList.Length + 1)
+            else if (loadBudget == 0)
             {
+                // Cancel
                 return "False";
+            }
+            else if (loadBudget > dirList.Length + 1)
+            {
+                Console.Clear();
+                Console.WriteLine("Wrong item selection");
+                return this.SwitchBudget();
             }
             else
             {
-                var name = dirList[(int)loadBudget].Substring(dirList[(int)loadBudget].IndexOf("\\") + 1);
+                var name = dirList[(int)loadBudget - 1].Substring(dirList[(int)loadBudget - 1].IndexOf("\\") + 1);
                 return name;
             }
         }
@@ -848,11 +868,11 @@ namespace MoneyExperiment
         {
             var dirList = Directory.GetDirectories(DatabaseFolderPath);
 
+            Console.WriteLine(0 + ": Cancel...");
             for (int i = 0; i < dirList.Length; i++)
             {
-                Console.WriteLine(i + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
+                Console.WriteLine(i + 1 + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
             }
-            Console.WriteLine((dirList.Length) + ": Cancel...");
 
             // This is for deleting...
             Console.Write("Enter the number of the budget you want to remove: ");
@@ -860,13 +880,19 @@ namespace MoneyExperiment
 
             for (int i = 0; i < dirList.Length; i++)
             {
-                if (deleteItem == i)
+                if (deleteItem == i + 1)
                 {
                     Directory.Delete(dirList[i], true);
                     break;
                 }
-                else if (deleteItem == dirList.Length)
+                else if (deleteItem == 0)
                 {
+                    break;
+                }
+                else if (deleteItem > dirList.Length)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Wrong item selection");
                     break;
                 }
             }

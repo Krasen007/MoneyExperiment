@@ -36,7 +36,11 @@ If you forget your password you will have to delete the Database folder containi
 * Main coding: Krasen Ivanov 2019
 * Icon made by Freepik from www.flaticon.com
 
-#### Whats new in version 1.3.x:
+#### Whats new in version 1.3.9:
+
+Added option to rename items;
+
+* Whats new in version 1.3.x
 
 Added option to change budget name and amount;  
 Added option to delete the database;  
@@ -45,8 +49,7 @@ Added option to record all made and deleted transactions;
 
 #### Possible features to be implemented:
 
-Make 0 cancel not budget.
 Walet functionality to transfer between accounts.
-Add tags and/or description.
+Add description.
 Get it setup using git portable.
 Create installer.
