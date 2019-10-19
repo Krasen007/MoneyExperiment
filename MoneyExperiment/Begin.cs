@@ -28,79 +28,6 @@ namespace MoneyExperiment
             this.Start(this.LoadBudget(null));
         }
 
-        private Budget LoadBudget(string? name)
-        {
-            if (name == null)
-            {
-                Budget budgetToLoad = new Budget
-                {
-                    Name = DefaultBudgetName
-                };
-                budgetToLoad.BudgetPath = DatabaseFolderPath + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
-                budgetToLoad.ItemsPath = DatabaseFolderPath + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
-                budgetToLoad.CostsPath = DatabaseFolderPath + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
-                budgetToLoad.AllTransactionsPath = DatabaseFolderPath + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
-                budgetToLoad.SummaryPath = DatabaseFolderPath + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
-
-                return budgetToLoad;
-            }
-            else
-            {
-                Budget budgetToLoad = new Budget
-                {
-                    Name = name
-                };
-                budgetToLoad.BudgetPath = DatabaseFolderPath + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
-                budgetToLoad.ItemsPath = DatabaseFolderPath + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
-                budgetToLoad.CostsPath = DatabaseFolderPath + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
-                budgetToLoad.AllTransactionsPath = DatabaseFolderPath + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
-                budgetToLoad.SummaryPath = DatabaseFolderPath + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
-
-                return budgetToLoad;
-            }
-        }
-
-        #region Start
-
-        private void Start(Budget selectedBudget)
-        {
-            if (this.DecryptDatabaseFiles(selectedBudget))
-            {
-                this.SaveDatabase(selectedBudget);
-                // Start UI
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
-            }
-            else
-            {
-                // Try again.
-                Encryption.IsPasswordWrong = false;
-                this.userPassword = this.AskForPassword();
-                this.Start(selectedBudget);
-            }
-        }
-
-        private void PullDataBase()
-        {
-            // If has files in database directory, pull updated db.
-            if (Directory.Exists(DatabaseFolderPath))
-            {
-                try
-                {
-                    const string PullDB = @"Scripts\PullDB.bat";
-
-                    var process = Process.Start(PullDB);
-                    process.WaitForExit();
-                    this.PressEnterToContinue();
-                }
-                catch (FileNotFoundException e)
-                {
-                    Console.WriteLine(e.Message);
-                    throw;
-                }
-            }
-        }
-
         private string AskForPassword()
         {
             Console.Write("Please enter your password: ");
@@ -151,6 +78,79 @@ namespace MoneyExperiment
             else
             {
                 return passwordInput.ToString();
+            }
+        }
+
+        private void PullDataBase()
+        {
+            // If has files in database directory, pull updated db.
+            if (Directory.Exists(DatabaseFolderPath))
+            {
+                try
+                {
+                    const string PullDB = @"Scripts\PullDB.bat";
+
+                    var process = Process.Start(PullDB);
+                    process.WaitForExit();
+                    this.PressEnterToContinue();
+                }
+                catch (FileNotFoundException e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
+        }
+
+        private Budget LoadBudget(string? name)
+        {
+            if (name == null)
+            {
+                Budget budgetToLoad = new Budget
+                {
+                    Name = DefaultBudgetName
+                };
+                budgetToLoad.BudgetPath = DatabaseFolderPath + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
+                budgetToLoad.ItemsPath = DatabaseFolderPath + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
+                budgetToLoad.CostsPath = DatabaseFolderPath + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
+                budgetToLoad.AllTransactionsPath = DatabaseFolderPath + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
+                budgetToLoad.SummaryPath = DatabaseFolderPath + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
+
+                return budgetToLoad;
+            }
+            else
+            {
+                Budget budgetToLoad = new Budget
+                {
+                    Name = name
+                };
+                budgetToLoad.BudgetPath = DatabaseFolderPath + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
+                budgetToLoad.ItemsPath = DatabaseFolderPath + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
+                budgetToLoad.CostsPath = DatabaseFolderPath + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
+                budgetToLoad.AllTransactionsPath = DatabaseFolderPath + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
+                budgetToLoad.SummaryPath = DatabaseFolderPath + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
+
+                return budgetToLoad;
+            }
+        }
+
+        #region Start
+
+        private void Start(Budget selectedBudget)
+        {
+            if (this.DecryptDatabaseFiles(selectedBudget))
+            {
+                this.SaveDatabase(selectedBudget);
+                // Start UI
+                this.ListDataBaseSummary(selectedBudget);
+                this.ShowMainMenu(selectedBudget);
+            }
+            else
+            {
+                // Try again.
+                Encryption.IsPasswordWrong = false;
+                this.userPassword = this.AskForPassword();
+                this.Start(selectedBudget);
             }
         }
 
@@ -560,8 +560,10 @@ namespace MoneyExperiment
         private void ShowOptionsMenu(Budget selectedBudget)
         {
             Console.WriteLine("*********** Options ***********");
-            Console.WriteLine("type 'x' to export database in readable form, \n" +
+            Console.WriteLine(
+                "type 'x' to export database in readable form, \n" +
                 "type 'r' to remove item from current list, \n" +
+                "type 'n' to rename item from current list, \n" +
                 "type 'i' to import csv file, \n" +
                 "type 'c' to change the budget name and amount, \n" +
                 "type 's' to switch to another budget, or create another one,\n" +
@@ -587,6 +589,17 @@ namespace MoneyExperiment
                 Console.Clear();
                 Console.WriteLine("Remove which item?");
                 this.RemoveItem(selectedBudget);
+                Console.Clear();
+
+                this.SaveDatabase(selectedBudget);
+                this.ListDataBaseSummary(selectedBudget);
+                this.ShowMainMenu(selectedBudget);
+            }
+            else if (userInput.Key == ConsoleKey.N)
+            {
+                Console.Clear();
+                Console.WriteLine("Rename which item?");
+                this.RenameItem(selectedBudget);
                 Console.Clear();
 
                 this.SaveDatabase(selectedBudget);
@@ -669,6 +682,32 @@ namespace MoneyExperiment
             {
                 Console.Clear();
                 this.ShowOptionsMenu(selectedBudget);
+            }
+        }
+
+        private void RenameItem(Budget selectedBudget)
+        {
+            for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
+            {
+                Console.WriteLine(i + ": " + selectedBudget.UserInputItem[i] + " " + selectedBudget.UserInputCost[i]);
+            }
+            Console.WriteLine(selectedBudget.UserInputItem.Count + ": Cancel.");
+
+            Console.Write("Enter the number of the item you want to rename: ");
+            var renameItem = ParseHelper.ParseDouble(Console.ReadLine());
+
+            for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
+            {
+                if (renameItem == i)
+                {
+                    Console.WriteLine("Enter new name for this item: ");
+                    selectedBudget.UserInputItem[i] = ParseHelper.ParseStringInput(Console.ReadLine());
+                    break;
+                }
+                else if (renameItem == selectedBudget.UserInputItem.Count)
+                {
+                    break;
+                }
             }
         }
 
@@ -770,7 +809,7 @@ namespace MoneyExperiment
 
         private void ChangeNameAndAmount(Budget selectedBudget)
         {
-            Console.Write("Enter new name for the budget: ");
+            Console.Write("\nEnter new name for the budget: ");
             selectedBudget.Name = Console.ReadLine();
             Console.Write("Set your new budget: ");
             selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());

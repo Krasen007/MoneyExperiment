@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>Resources/icon.ico</ApplicationIcon>
+    <Authors>Krasen Ivanov</Authors>
+    <Copyright>Krasen Ivanov 2019</Copyright>
+    <Version>1.0.1</Version>
+    <AssemblyName>MoneyExperiment-Information</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="MoneyExperiment.Tests\**" />
+    <Compile Remove="MoneyExperiment\**" />
+    <EmbeddedResource Remove="MoneyExperiment.Tests\**" />
+    <EmbeddedResource Remove="MoneyExperiment\**" />
+    <None Remove="MoneyExperiment.Tests\**" />
+    <None Remove="MoneyExperiment\**" />
+  </ItemGroup>
+
+</Project>

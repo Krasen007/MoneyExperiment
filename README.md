@@ -45,7 +45,8 @@ Added option to record all made and deleted transactions;
 
 #### Possible features to be implemented:
 
-Create installer.
-Get it setup using git portable.
 Make 0 cancel not budget.
 Walet functionality to transfer between accounts.
+Add tags and/or description.
+Get it setup using git portable.
+Create installer.
