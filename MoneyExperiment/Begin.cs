@@ -822,9 +822,57 @@ namespace MoneyExperiment
         private void ChangeNameAndAmount(Budget selectedBudget)
         {
             Console.Write("\nEnter new name for the budget: ");
-            selectedBudget.Name = Console.ReadLine();
+            selectedBudget.Name = ParseHelper.ParseStringInput(Console.ReadLine());
+
             Console.Write("Set your new budget: ");
             selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+
+            ////var tempBudgetPath = DatabaseFolderPath + selectedBudget.Name + "\\Budget" + selectedBudget.Name + ".krs";
+            ////var tempItemsPath = DatabaseFolderPath + selectedBudget.Name + "\\Items" + selectedBudget.Name + ".krs";
+            ////var tempCostsPath = DatabaseFolderPath + selectedBudget.Name + "\\Costs" + selectedBudget.Name + ".krs";
+            ////var tempAllTransactionsPath = DatabaseFolderPath + selectedBudget.Name + "\\AllTransactions" + selectedBudget.Name + ".krs";
+            ////var tempSummaryPath = DatabaseFolderPath + selectedBudget.Name + "\\Summary" + selectedBudget.Name + ".txt";
+
+            ////var tempDirectory = (DatabaseFolderPath + selectedBudget.Name);
+
+            ////Console.Write("\nEnter new name for the budget: ");
+            ////selectedBudget.Name = ParseHelper.ParseStringInput(Console.ReadLine());
+
+            ////selectedBudget.BudgetPath = DatabaseFolderPath + selectedBudget.Name + "\\Budget" + selectedBudget.Name + ".krs";
+            ////selectedBudget.ItemsPath = DatabaseFolderPath + selectedBudget.Name + "\\Items" + selectedBudget.Name + ".krs";
+            ////selectedBudget.CostsPath = DatabaseFolderPath + selectedBudget.Name + "\\Costs" + selectedBudget.Name + ".krs";
+            ////selectedBudget.AllTransactionsPath = DatabaseFolderPath + selectedBudget.Name + "\\AllTransactions" + selectedBudget.Name + ".krs";
+            ////selectedBudget.SummaryPath = DatabaseFolderPath + selectedBudget.Name + "\\Summary" + selectedBudget.Name + ".txt";
+
+            ////Directory.CreateDirectory(DatabaseFolderPath + selectedBudget.Name);
+
+            ////if (File.Exists(tempBudgetPath))
+            ////{
+            ////    File.Move(tempBudgetPath, selectedBudget.BudgetPath);
+            ////}
+            ////if (File.Exists(tempItemsPath))
+            ////{
+            ////    File.Move(tempItemsPath, selectedBudget.ItemsPath);
+            ////}
+            ////if (File.Exists(tempCostsPath))
+            ////{
+            ////    File.Move(tempCostsPath, selectedBudget.CostsPath);
+            ////}
+            ////if (File.Exists(tempAllTransactionsPath))
+            ////{
+            ////    File.Move(tempAllTransactionsPath, selectedBudget.AllTransactionsPath);
+            ////}
+            ////if (File.Exists(tempSummaryPath))
+            ////{
+            ////    File.Move(tempSummaryPath, selectedBudget.SummaryPath);
+            ////}
+
+            ////Directory.Delete(tempDirectory, true);
+
+            ////Console.Write("Set your new budget: ");
+            ////selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+
+            ////return selectedBudget;
         }
 
         private string SwitchBudget()
