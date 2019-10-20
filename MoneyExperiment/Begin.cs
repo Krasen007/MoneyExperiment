@@ -409,11 +409,11 @@ namespace MoneyExperiment
         private void DisplayMenuChoices()
         {
             Console.WriteLine("*********** Menu ***********");
-            Console.WriteLine("Do you want to add another?\n" +
-                "type 'y' to add new entry, \n" +
-                "type 'e' to save and exit without uploading online, \n" +
-                "type 'u' to save and exit and upload the database online, \n" +
-                "type 'o' for other options. \n");
+            Console.WriteLine(
+                "type 'y' to add new entrY, \n" +
+                "type 'e' to save and Exit without uploading online, \n" +
+                "type 'u' to save and exit and Upload the database online, \n" +
+                "type 'o' for other Options. \n");
         }
 
         private void AskForUserMenuChoice(Budget selectedBudget)
@@ -561,13 +561,13 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** Options ***********");
             Console.WriteLine(
-                "type 'x' to export database in readable form, \n" +
-                "type 'r' to remove item from current list, \n" +
-                "type 'n' to rename item from current list, \n" +
-                "type 'i' to import csv file, \n" +
-                "type 'c' to change the budget name and amount, \n" +
-                "type 's' to switch to another budget, or create another one,\n" +
-                "type 'a' to delete a budget, \n" +
+                "type 'x' to eXport database in readable form, \n" +
+                "type 'r' to Remove item from current list, \n" +
+                "type 'n' to reName item from current list, \n" +
+                "type 'i' to Import csv file, \n" +
+                "type 'c' to Change the budget name and amount, \n" +
+                "type 's' to Switch to another budget, or create another one,\n" +
+                "type 'a' to delete A budget, \n" +
                 "type 'd' to DELETE ALL DATABASE, \n" +
                 "press ESC to return to the main menu.");
 
@@ -704,7 +704,7 @@ namespace MoneyExperiment
                     selectedBudget.UserInputItem[i] = ParseHelper.ParseStringInput(Console.ReadLine());
                     break;
                 }
-                else if (renameItem == selectedBudget.UserInputItem.Count)
+                else if (renameItem == 0)
                 {
                     break;
                 }
@@ -765,7 +765,7 @@ namespace MoneyExperiment
                     this.fileLineCount--;
                     break;
                 }
-                else if (deleteItem == selectedBudget.UserInputItem.Count)
+                else if (deleteItem == 0)
                 {
                     break;
                 }
@@ -826,6 +826,8 @@ namespace MoneyExperiment
 
             Console.Write("Set your new budget: ");
             selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+
+            //// This is going to be used for renaming folders and files when you change the budget.
 
             ////var tempBudgetPath = DatabaseFolderPath + selectedBudget.Name + "\\Budget" + selectedBudget.Name + ".krs";
             ////var tempItemsPath = DatabaseFolderPath + selectedBudget.Name + "\\Items" + selectedBudget.Name + ".krs";
