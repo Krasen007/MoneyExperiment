@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyExperiment.Tests", "Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Information", "Information.csproj", "{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MoneyExperiment.Setup", "MoneyExperiment.Setup\MoneyExperiment.Setup.vdproj", "{B2EF2758-8D1E-4C66-BF89-54DD3A1C27AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,8 @@ Global
 		{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2EF2758-8D1E-4C66-BF89-54DD3A1C27AB}.Debug|Any CPU.ActiveCfg = Debug
+		{B2EF2758-8D1E-4C66-BF89-54DD3A1C27AB}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
