@@ -61,3 +61,8 @@ Added option to record all made and deleted transactions;
 Walet functionality to transfer between accounts.
 Add description. Maybe only on AllUserTransactionFile.
 Get it setup using git portable.
+
+
+#### Known issues:
+The app may require elevated permissions if using the release versions.
+The msi package may not work at all, or only if net core 3.1 is installed.
