@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyExperiment", "MoneyExp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyExperiment.Tests", "MoneyExperiment.Tests\MoneyExperiment.Tests.csproj", "{8B9E04FD-B823-4CD3-98F3-BEFB64984651}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Information", "Information.csproj", "{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyExperiment.Information", "MoneyExperiment.Information\Information.csproj", "{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MoneyExperiment.Setup", "MoneyExperiment.Setup\MoneyExperiment.Setup.vdproj", "{B2EF2758-8D1E-4C66-BF89-54DD3A1C27AB}"
 EndProject
