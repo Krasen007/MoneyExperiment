@@ -11,17 +11,20 @@ namespace MoneyExperiment
     {
         private static void Main()
         {
+#if RELEASE
             string localVer = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version!.ToString();
             Console.Title = "Money Experiment " + localVer;
+#else
+            Console.Title = "Money Experiment " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+#endif
 
+#if RELEASE
             string remoteVer = string.Empty;
 
             try
             {
-                // using StreamReader srLocalVer = new StreamReader("localVer.txt");
-                // localVer = ParseHelper.ParseStringInput(srLocalVer.ReadLine()!);
-                // srLocalVer.Close();
-                Console.WriteLine("Your version is: " + localVer);
+
+                //Console.WriteLine("Your version is: " + localVer);           
 
                 WebClient client = new WebClient();
                 Stream stream = client.OpenRead("https://raw.githubusercontent.com/Krasen007/MoneyExperiment/master/MoneyExperiment/remoteVer.txt");
@@ -30,23 +33,47 @@ namespace MoneyExperiment
                 srRemoteVer.Close();
                 stream.Close();
                 client.Dispose();
-                Console.WriteLine("The new version avaliable is: " + remoteVer);
+
+                
+
 
             }
             catch (IOException error)
             {
                 Console.WriteLine("The version file could not be read: ");
                 Console.WriteLine(error.Message);
-            }
+            }         
+
+            // bool isElevated;	
+            // using (WindowsIdentity identity = WindowsIdentity.GetCurrent())	
+            // {	
+            //     WindowsPrincipal principal = new WindowsPrincipal(identity);	
+            //     isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);	
+            // }	
+
 
             if (localVer == remoteVer)
             {
-                _ = new Begin();
+                // do nothing.
+                _ = new Begin();	
             }
             else
             {
-                System.Console.WriteLine("There is a new version avaliable to download.");
+                Console.WriteLine("The new version avaliable to download is: " + remoteVer);
             }
+
+            // if (isElevated)	
+            // {	
+            //     _ = new Begin();	
+            // }	
+            // else	
+            // {	
+            //     Console.WriteLine("You need admin privileges to run this app.\nPress any key to exit...");	
+            //     Console.ReadKey();	
+            // }	
+#else
+            _ = new Begin();
+#endif
         }
     }
 }

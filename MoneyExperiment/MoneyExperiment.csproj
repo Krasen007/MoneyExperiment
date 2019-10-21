@@ -12,6 +12,10 @@
     <AssemblyName>MoneyExperiment</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>	
+    <PackageReference Include="System.Security.Principal.Windows" Version="4.6.0" />	
+  </ItemGroup>
+
   <ItemGroup>
     <None Update=".gitattributes">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
