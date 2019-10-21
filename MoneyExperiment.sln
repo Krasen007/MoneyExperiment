@@ -7,9 +7,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyExperiment", "MoneyExp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyExperiment.Tests", "MoneyExperiment.Tests\MoneyExperiment.Tests.csproj", "{8B9E04FD-B823-4CD3-98F3-BEFB64984651}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyExperiment.Information", "MoneyExperiment.Information\Information.csproj", "{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}"
-EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MoneyExperiment.Setup", "MoneyExperiment.Setup\MoneyExperiment.Setup.vdproj", "{B2EF2758-8D1E-4C66-BF89-54DD3A1C27AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9D216542-BF50-47AA-9EDB-E1F3D468ECC5}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +32,6 @@ Global
 		{8B9E04FD-B823-4CD3-98F3-BEFB64984651}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B9E04FD-B823-4CD3-98F3-BEFB64984651}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B9E04FD-B823-4CD3-98F3-BEFB64984651}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37277B9D-ED9B-4BD5-A864-501F4B85FA1F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B2EF2758-8D1E-4C66-BF89-54DD3A1C27AB}.Debug|Any CPU.ActiveCfg = Debug
 		{B2EF2758-8D1E-4C66-BF89-54DD3A1C27AB}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
