@@ -14,8 +14,41 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		index.html = index.html
 		LICENSE = LICENSE
 		README.md = README.md
+		Readme.url = Readme.url
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MoneyExperiment.Web", "MoneyExperiment.Web", "{830A4561-D6BA-489F-916D-B1553C9E7CF5}"
+	ProjectSection(SolutionItems) = preProject
+		MoneyExperiment.Web\android-icon-144x144.png = MoneyExperiment.Web\android-icon-144x144.png
+		MoneyExperiment.Web\android-icon-192x192.png = MoneyExperiment.Web\android-icon-192x192.png
+		MoneyExperiment.Web\android-icon-36x36.png = MoneyExperiment.Web\android-icon-36x36.png
+		MoneyExperiment.Web\android-icon-48x48.png = MoneyExperiment.Web\android-icon-48x48.png
+		MoneyExperiment.Web\android-icon-72x72.png = MoneyExperiment.Web\android-icon-72x72.png
+		MoneyExperiment.Web\android-icon-96x96.png = MoneyExperiment.Web\android-icon-96x96.png
+		MoneyExperiment.Web\apple-icon-114x114.png = MoneyExperiment.Web\apple-icon-114x114.png
+		MoneyExperiment.Web\apple-icon-120x120.png = MoneyExperiment.Web\apple-icon-120x120.png
+		MoneyExperiment.Web\apple-icon-144x144.png = MoneyExperiment.Web\apple-icon-144x144.png
+		MoneyExperiment.Web\apple-icon-152x152.png = MoneyExperiment.Web\apple-icon-152x152.png
+		MoneyExperiment.Web\apple-icon-180x180.png = MoneyExperiment.Web\apple-icon-180x180.png
+		MoneyExperiment.Web\apple-icon-57x57.png = MoneyExperiment.Web\apple-icon-57x57.png
+		MoneyExperiment.Web\apple-icon-60x60.png = MoneyExperiment.Web\apple-icon-60x60.png
+		MoneyExperiment.Web\apple-icon-72x72.png = MoneyExperiment.Web\apple-icon-72x72.png
+		MoneyExperiment.Web\apple-icon-76x76.png = MoneyExperiment.Web\apple-icon-76x76.png
+		MoneyExperiment.Web\apple-icon-precomposed.png = MoneyExperiment.Web\apple-icon-precomposed.png
+		MoneyExperiment.Web\apple-icon.png = MoneyExperiment.Web\apple-icon.png
+		MoneyExperiment.Web\browserconfig.xml = MoneyExperiment.Web\browserconfig.xml
+		MoneyExperiment.Web\favicon-16x16.png = MoneyExperiment.Web\favicon-16x16.png
+		MoneyExperiment.Web\favicon-32x32.png = MoneyExperiment.Web\favicon-32x32.png
+		MoneyExperiment.Web\favicon-96x96.png = MoneyExperiment.Web\favicon-96x96.png
+		MoneyExperiment.Web\favicon.ico = MoneyExperiment.Web\favicon.ico
+		MoneyExperiment.Web\manifest.json = MoneyExperiment.Web\manifest.json
+		MoneyExperiment.Web\ms-icon-144x144.png = MoneyExperiment.Web\ms-icon-144x144.png
+		MoneyExperiment.Web\ms-icon-150x150.png = MoneyExperiment.Web\ms-icon-150x150.png
+		MoneyExperiment.Web\ms-icon-310x310.png = MoneyExperiment.Web\ms-icon-310x310.png
+		MoneyExperiment.Web\ms-icon-70x70.png = MoneyExperiment.Web\ms-icon-70x70.png
 	EndProjectSection
 EndProject
 Global
@@ -37,6 +70,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{830A4561-D6BA-489F-916D-B1553C9E7CF5} = {9D216542-BF50-47AA-9EDB-E1F3D468ECC5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2B6956D-EBF7-4564-B58D-11327762E409}
