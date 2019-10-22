@@ -351,8 +351,5 @@ MigrationBackup/
 #MY STUFF
 Database/Summary.txt
 *.dll
-*.md
-*.txt
-*.bat
 *.exe
 *.json

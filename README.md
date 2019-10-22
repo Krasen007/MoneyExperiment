@@ -58,10 +58,10 @@ Added option to record all made and deleted transactions;
 
 #### Possible features to be implemented:
 
+Add option to show more than 5 transactions.
 Walet functionality to transfer between accounts.
 Add description. Maybe only on AllUserTransactionFile.
 Get it setup using git portable.
-
 
 #### Known issues:
 The app may require elevated permissions if using the release versions.
