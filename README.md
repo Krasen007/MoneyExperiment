@@ -4,14 +4,14 @@
 Experimental budgeting app. </br>
 Sync a budget between PCs with the help of public Git repo. </br>
 The trick is that your database of items is always encrypted even if its in a public repo. </br>
-  
+<br>
 ![Main view of the app.](MoneyExperiment/Resources/MainView.png)
 
 
 ### How to Run:
 
 * Install [git as global app](https://git-scm.com/downloads).
-* If you want to build from source - Install [dotnet core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0).
+* If you want to build from source - Install [dotnet core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1).
 * Create an empty folder and download and extract the latest version.
 * Create a new account and/or repository in [github.com](https://github.com/) or [gitlab.com](https://gitlab.com/). 
 * Open Scripts/InitCreateDB.bat using your favorite text editor (notepad) and change the lines of the file to match your repo and credentials you used to make it, for example: git config user.name "Krasen Ivanov"
@@ -58,11 +58,11 @@ Added option to record all made and deleted transactions;
 
 #### Possible features to be implemented:
 
-Add option to show more than 5 transactions.
-Walet functionality to transfer between accounts.
-Add description. Maybe only on AllUserTransactionFile.
-Get it setup using git portable.
+Add option to show more than 5 transactions.</br>
+Walet functionality to transfer between accounts.</br>
+Add description. Maybe only on AllUserTransactionFile.</br>
+Get it setup using git portable.</br>
 
 #### Known issues:
-The app may require elevated permissions if using the release versions.
+The app may require elevated permissions if using the release versions.</br>
 The msi package may not work at all, or only if net core 3.1 is installed.
