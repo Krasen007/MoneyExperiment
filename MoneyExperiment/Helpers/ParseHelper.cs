@@ -30,6 +30,11 @@ namespace MoneyExperiment.Helpers
             return stringInput;
         }
 
+        /// <summary>
+        /// Converts user input of a string to a double.
+        /// </summary>
+        /// <param name="value">The given input</param>
+        /// <returns>Returns converted string input to double.</returns>
         public static double ParseDouble(string value)
         {
             double result = 0;

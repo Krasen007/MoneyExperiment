@@ -59,7 +59,26 @@ namespace MoneyExperiment
                 Constants.PressEnterToContinue();
             }
 #else
-            if (localVer == remoteVer)
+            //1.3.10.0
+            var localVerPart = localVer.Substring(4);
+            string localVerDouble = string.Empty;
+            if (localVerPart.Contains("."))
+            {
+                var part1 = localVerPart.Substring(0, localVerPart.IndexOf("."));
+                var part2 = localVerPart.Substring(localVerPart.IndexOf(".") + 1);
+                localVerDouble = part1 + part2;
+            }
+
+            string remoteVerDouble = string.Empty;
+            var remoteVerPart = remoteVer.Substring(4);
+            if (remoteVerPart.Contains("."))
+            {
+                var part1 = remoteVerPart.Substring(0, remoteVerPart.IndexOf("."));
+                var part2 = remoteVerPart.Substring(remoteVerPart.IndexOf(".") + 1);
+                remoteVerDouble = part1 + part2;
+            }
+
+            if (ParseHelper.ParseDouble(localVerDouble) >= ParseHelper.ParseDouble(remoteVerDouble))
             {
                 _ = new Begin();
             }

@@ -25,6 +25,10 @@ namespace MoneyExperiment
             this.Start(this.LoadBudget(null));
         }
 
+        /// <summary>
+        /// Ask for user to set password.
+        /// </summary>
+        /// <returns>string of User input</returns>
         private string AskForPassword()
         {
             Console.Write("Please enter your password: ");
@@ -78,6 +82,9 @@ namespace MoneyExperiment
             }
         }
 
+        /// <summary>
+        /// Gets the updated database from remote.
+        /// </summary>
         private void PullDataBase()
         {
             // If has files in database directory, pull updated db.
@@ -99,6 +106,11 @@ namespace MoneyExperiment
             }
         }
 
+        /// <summary>
+        /// Performs a setup of a budget file.
+        /// </summary>
+        /// <param name="name">Selected budget to load.</param>
+        /// <returns>Budget item with set fields.</returns>
         private Budget LoadBudget(string? name)
         {
             if (name == null)
@@ -133,6 +145,10 @@ namespace MoneyExperiment
 
         #region Start
 
+        /// <summary>
+        /// Main logic of the program.
+        /// </summary>
+        /// <param name="selectedBudget">The Budget to operate on.</param>
         private void Start(Budget selectedBudget)
         {
             if (this.DecryptDatabaseFiles(selectedBudget))
@@ -330,6 +346,9 @@ namespace MoneyExperiment
             }
         }
 
+        /// <summary>
+        /// Displays a summary of the items.
+        /// </summary>
         private void ListDataBaseSummary(Budget selectedBudget)
         {
             Console.WriteLine("*********** {0} **********\n", selectedBudget.Name);
@@ -338,37 +357,22 @@ namespace MoneyExperiment
             for (int i = 0; i < this.fileLineCount; i++)
             {
                 // This is used to add space between the amount of the item so they appear level.
-                Console.WriteLine(this.SeparatorHelper(selectedBudget.UserInputCost[i], 6) + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
+                Console.WriteLine(Constants.SeparatorHelper(selectedBudget.UserInputCost[i], 6) + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
                 totalCosts += selectedBudget.UserInputCost[i];
             }
 
-            Console.WriteLine("\n" + this.SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
-            Console.WriteLine(this.SeparatorHelper(selectedBudget.Amount - totalCosts, 6) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
+            Console.WriteLine("\n" + Constants.SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
+            Console.WriteLine(Constants.SeparatorHelper(selectedBudget.Amount - totalCosts, 6) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
             Console.WriteLine();
         }
 
-        private string SeparatorHelper(double amount, int spaces)
-        {
-            var sb = new StringBuilder();
-            for (int i = 0; i < spaces; i++)
-            {
-                if (amount.ToString().Length == i)
-                {
-                    for (int j = 0; j <= (spaces - amount.ToString().Length); j++)
-                    {
-                        sb.Append(" ");
-                    }
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        private void ShowLastTransactions(Budget selectedBudget)
+        /// <summary>
+        /// Displays the last six transactions.
+        /// </summary>
+        /// <param name="selectedBudget"></param>
+        private void ShowLastTransactions(Budget selectedBudget, int displayedItems)
         {
             Console.WriteLine("*********** List of recent transactions ***********");
-
-            const int displayedItems = 6;
 
             if (selectedBudget.AllUserTransactionFile.Count <= displayedItems)
             {
@@ -397,7 +401,7 @@ namespace MoneyExperiment
         {
             this.DisplayMenuChoices();
 
-            this.ShowLastTransactions(selectedBudget);
+            this.ShowLastTransactions(selectedBudget, 6);
 
             this.AskForUserMenuChoice(selectedBudget);
         }
@@ -410,6 +414,7 @@ namespace MoneyExperiment
                 "type 'y' to add new entrY, \n" +
                 "type 'e' to save and Exit without uploading online, \n" +
                 "type 'u' to save and exit and Upload the database online, \n" +
+                "type 't' to show the last n-number of Transactions, \n" +
                 "type 'o' for other Options. \n");
         }
 
@@ -438,6 +443,14 @@ namespace MoneyExperiment
                 Console.WriteLine("\nUploading...");
                 this.UploadOnline();
                 Constants.PressEnterToContinue();
+            }
+            else if (userInput.Key == ConsoleKey.T)
+            {
+                Console.Clear();
+                Console.WriteLine("Show how many of the last made transactions: ");
+                this.ShowLastTransactions(selectedBudget, (int)ParseHelper.ParseDouble(Console.ReadLine()));
+                this.DisplayMenuChoices();
+                this.AskForUserMenuChoice(selectedBudget);
             }
             else if (userInput.Key == ConsoleKey.O)
             {
@@ -482,7 +495,7 @@ namespace MoneyExperiment
             }
 
             // This is used to add space between the amount of the item so they appear level.
-            selectedBudget.AllUserTransactionFile.Add(this.SeparatorHelper(costInput, 6) + costInput + " " + itemInput + "  " + DateTime.Now.ToString());
+            selectedBudget.AllUserTransactionFile.Add(Constants.SeparatorHelper(costInput, 6) + costInput + " " + itemInput + "  " + DateTime.Now.ToString());
             this.allTransactionsLineCount++;
         }
 
