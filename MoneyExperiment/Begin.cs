@@ -367,9 +367,9 @@ namespace MoneyExperiment
         }
 
         /// <summary>
-        /// Displays the last six transactions.
+        /// Displays the last n-number of transactions.
         /// </summary>
-        /// <param name="selectedBudget"></param>
+        /// <param name="displayedItems">The number of items to show.</param>
         private void ShowLastTransactions(Budget selectedBudget, int displayedItems)
         {
             Console.WriteLine("*********** List of recent transactions ***********");
@@ -396,7 +396,9 @@ namespace MoneyExperiment
 
         #region Main menu
 
-        // Here
+        /// <summary>
+        /// Displays the main menu of the program.
+        /// </summary>
         private void ShowMainMenu(Budget selectedBudget)
         {
             this.DisplayMenuChoices();
@@ -406,7 +408,7 @@ namespace MoneyExperiment
             this.AskForUserMenuChoice(selectedBudget);
         }
 
-        // Must be used with AskForUserMenuChoice method.
+        // This method must be used with AskForUserMenuChoice method.
         private void DisplayMenuChoices()
         {
             Console.WriteLine("*********** Menu ***********");
@@ -425,7 +427,7 @@ namespace MoneyExperiment
 
             if (userInput.Key == ConsoleKey.Y)
             {
-                this.AddOrUpdateItemList(selectedBudget);
+                this.AddOrUpdateBudgetItem(selectedBudget);
                 this.SaveDatabase(selectedBudget);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedBudget);
@@ -465,7 +467,7 @@ namespace MoneyExperiment
             }
         }
 
-        private void AddOrUpdateItemList(Budget selectedBudget)
+        private void AddOrUpdateBudgetItem(Budget selectedBudget)
         {
             Console.Write("\nHow much did you spend: ");
             double costInput = ParseHelper.ParseDouble(Console.ReadLine());
@@ -560,6 +562,9 @@ namespace MoneyExperiment
 
         #region Options menu
 
+        /// <summary>
+        /// Displays a menu with additional options.
+        /// </summary>
         private void ShowOptionsMenu(Budget selectedBudget)
         {
             Console.WriteLine("*********** Options ***********");
@@ -591,7 +596,7 @@ namespace MoneyExperiment
             {
                 Console.Clear();
                 Console.WriteLine("Remove which item?");
-                this.RemoveItem(selectedBudget);
+                this.RemoveItemFromBudget(selectedBudget);
                 Console.Clear();
 
                 this.SaveDatabase(selectedBudget);
@@ -602,7 +607,7 @@ namespace MoneyExperiment
             {
                 Console.Clear();
                 Console.WriteLine("Rename which item?");
-                this.RenameItem(selectedBudget);
+                this.RenameBudgetItem(selectedBudget);
                 Console.Clear();
 
                 this.SaveDatabase(selectedBudget);
@@ -622,7 +627,7 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.C)
             {
-                this.ChangeNameAndAmount(selectedBudget);
+                this.ChangeBudgetNameAndAmount(selectedBudget);
                 Console.Clear();
 
                 this.SaveDatabase(selectedBudget);
@@ -688,7 +693,7 @@ namespace MoneyExperiment
             }
         }
 
-        private void RenameItem(Budget selectedBudget)
+        private void RenameBudgetItem(Budget selectedBudget)
         {
             Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
@@ -715,7 +720,7 @@ namespace MoneyExperiment
                 {
                     Console.Clear();
                     Console.WriteLine("Wrong item selection");
-                    this.RenameItem(selectedBudget);
+                    this.RenameBudgetItem(selectedBudget);
                 }
             }
         }
@@ -746,7 +751,7 @@ namespace MoneyExperiment
             outputFile.Dispose();
         }
 
-        private void RemoveItem(Budget selectedBudget)
+        private void RemoveItemFromBudget(Budget selectedBudget)
         {
             Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
@@ -776,7 +781,7 @@ namespace MoneyExperiment
                 {
                     Console.Clear();
                     Console.WriteLine("Wrong item selection");
-                    this.RemoveItem(selectedBudget);
+                    this.RemoveItemFromBudget(selectedBudget);
                 }
             }
         }
@@ -822,7 +827,7 @@ namespace MoneyExperiment
             }
         }
 
-        private void ChangeNameAndAmount(Budget selectedBudget)
+        private void ChangeBudgetNameAndAmount(Budget selectedBudget)
         {
             Console.Write("\nEnter new name for the budget: ");
             selectedBudget.Name = ParseHelper.ParseStringInput(Console.ReadLine());
@@ -880,6 +885,10 @@ namespace MoneyExperiment
             ////return selectedBudget;
         }
 
+        /// <summary>
+        /// Gets the name of a budget from a list of the database.
+        /// </summary>
+        /// <returns>Returns a name of the budget to be loaded.</returns>
         private string SwitchBudget()
         {
             var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath);
@@ -917,6 +926,9 @@ namespace MoneyExperiment
             }
         }
 
+        /// <summary>
+        /// Deletes the directory containing the budget.
+        /// </summary>
         private void DeleteBudget()
         {
             var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath);

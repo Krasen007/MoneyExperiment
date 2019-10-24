@@ -59,26 +59,27 @@ namespace MoneyExperiment
                 Constants.PressEnterToContinue();
             }
 #else
-            //1.3.10.0
+            // Will break if version contains string I think like 10.3-beta1.
+            // Checks the remote version and the local version and coverts them to double.
             var localVerPart = localVer.Substring(4);
-            string localVerDouble = string.Empty;
+            string localVerString = string.Empty;
             if (localVerPart.Contains("."))
             {
                 var part1 = localVerPart.Substring(0, localVerPart.IndexOf("."));
                 var part2 = localVerPart.Substring(localVerPart.IndexOf(".") + 1);
-                localVerDouble = part1 + part2;
+                localVerString = part1 + part2;
             }
 
-            string remoteVerDouble = string.Empty;
+            string remoteVerString = string.Empty;
             var remoteVerPart = remoteVer.Substring(4);
             if (remoteVerPart.Contains("."))
             {
                 var part1 = remoteVerPart.Substring(0, remoteVerPart.IndexOf("."));
                 var part2 = remoteVerPart.Substring(remoteVerPart.IndexOf(".") + 1);
-                remoteVerDouble = part1 + part2;
+                remoteVerString = part1 + part2;
             }
 
-            if (ParseHelper.ParseDouble(localVerDouble) >= ParseHelper.ParseDouble(remoteVerDouble))
+            if (ParseHelper.ParseDouble(localVerString) >= ParseHelper.ParseDouble(remoteVerString))
             {
                 _ = new Begin();
             }

@@ -37,17 +37,15 @@ If you forget your password you will have to delete the Database folder containi
 * Main coding: Krasen Ivanov 2019
 * Icon made by Freepik from www.flaticon.com
 
-#### Whats new in version 1.3.9.6:
+#### Whats new in version 1.3.10:
 
-Added promt for elevated rights;
-
-* Whats new in version 1.3.9.5:
-
-Added check for new version;
-Added installer;
+Added option to display n-number of items from the last transactions made;
 
 * Whats new in version 1.3.9.x:
 
+Added promt for elevated rights;
+Added check for new version;
+Added installer;
 Added option to rename items;
 
 * Whats new in version 1.3.x
