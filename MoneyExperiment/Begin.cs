@@ -13,7 +13,9 @@ namespace MoneyExperiment
 
     public class Begin
     {
+        // Can probably be moved to separate file. Used only in decrypt db and save db.
         private string userPassword;
+
         private int fileLineCount;
         private int allTransactionsLineCount;
 

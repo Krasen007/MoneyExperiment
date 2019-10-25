@@ -26,10 +26,11 @@ namespace MoneyExperiment
                 stream.Close();
                 client.Dispose();
             }
-            catch (IOException error)
+            catch (WebException error)
             {
-                Console.WriteLine("The version file could not be read: ");
+                Console.WriteLine("The latest avaliable version could not be read.");
                 Console.WriteLine(error.Message);
+                remoteVer = localVer;
             }
 
 #if RELEASE
@@ -54,13 +55,28 @@ namespace MoneyExperiment
             }
             else
             {
-                Console.WriteLine("New version is avaliable to download: " + remoteVer);
-                Console.WriteLine("You can download it from here: " + Constants.ReleasesURL);
-                Constants.PressEnterToContinue();
+                CompareVersions(localVer, remoteVer);
             }
-#else
-            // Will break if version contains string I think like 10.3-beta1.
-            // Checks the remote version and the local version and coverts them to double.
+#else            
+            if (localVer == remoteVer)
+            {
+                _ = new Begin();
+            }
+            else
+            {
+                CompareVersions(localVer, remoteVer);
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Checks the remote version and the local version and coverts them to double.
+        /// </summary>
+        /// <param name="localVer">Current version of the app.</param>
+        /// <param name="remoteVer">The latest version avaliable of the app.</param>
+        private static void CompareVersions(string localVer, string remoteVer)
+        {
+            //Compare only the last 4 digits of the versions.
             var localVerPart = localVer.Substring(4);
             string localVerString = string.Empty;
             if (localVerPart.Contains("."))
@@ -83,13 +99,22 @@ namespace MoneyExperiment
             {
                 _ = new Begin();
             }
-            else
+            else if (ParseHelper.ParseDouble(localVerString) > ParseHelper.ParseDouble(remoteVerString) - 5) // Only the last 5 versions will work.
             {
+                Console.WriteLine("Your version is " + localVer);
                 Console.WriteLine("New version is avaliable to download: " + remoteVer);
                 Console.WriteLine("You can download it from here: " + Constants.ReleasesURL);
                 Constants.PressEnterToContinue();
+                _ = new Begin();
             }
-#endif
+            else
+            {
+                Console.WriteLine($"Your version {localVer} is outdated. \n" +
+                    $"The new version is {remoteVer}");
+                Console.WriteLine("You can download it from here: " + Constants.ReleasesURL);
+                Console.WriteLine("Program wil now terminate.");
+                Constants.PressEnterToContinue();
+            }
         }
     }
 }
