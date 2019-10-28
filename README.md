@@ -1,30 +1,3 @@
-<head>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="MoneyExperiment.Web/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="MoneyExperiment.Web/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="MoneyExperiment.Web/favicon-16x16.png">
-    <link rel="manifest" href="MoneyExperiment.Web/site.webmanifest">
-    <style>
-        .w3-sidebar a {
-            font-family: "Roboto", sans-serif
-        }
-
-        body,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        .w3-wide {
-            font-family: "Montserrat", sans-serif;
-        }
-   </style>
-</head>
-
 # MoneyExperiment
 
 <img src="MoneyExperiment/Resources/icon.ico" title="The app icon" width="64"/>
@@ -74,7 +47,7 @@ Added option to display n-number of items from the last transactions made;
 
 * Whats new in version 1.3.9.x:
 
-<del>Added promt for elevated rights;</del> Disabled for now.
+<del>Added promt for elevated rights;</del> Disabled for now.  <br>
 Added check for new version;  
 Added installer;  
 Added option to rename items;  
