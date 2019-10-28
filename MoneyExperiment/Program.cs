@@ -6,7 +6,7 @@ namespace MoneyExperiment
     using System;
     using System.IO;
     using System.Net;
-    using System.Security.Principal;
+    ///using System.Security.Principal;
 
     public static class Program
     {
@@ -15,6 +15,13 @@ namespace MoneyExperiment
             string localVer = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version!.ToString();
             Console.Title = "Money Experiment " + localVer;
 
+            // Check windows program files folder for installation of git.
+            if (!Directory.Exists(@"C:\Program Files\Git"))
+            {
+                Console.WriteLine("WARNING: Git is not installed globally.\nSome features will not work correctly.\nDownload the latest version from: https://git-scm.com/downloads");
+            }
+
+            // Retrieves the latest version number
             string remoteVer = string.Empty;
             try
             {
@@ -33,40 +40,42 @@ namespace MoneyExperiment
                 remoteVer = localVer;
             }
 
-#if RELEASE
-            bool isElevated;
-            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
-            {
-                WindowsPrincipal principal = new WindowsPrincipal(identity);
-                isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
-            }
+            // Disabled for now. It appears the app works normal without permissions.
+            // // #if RELEASE
+            // //             bool isElevated;
+            // //             using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+            // //             {
+            // //                 WindowsPrincipal principal = new WindowsPrincipal(identity);
+            // //                 isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+            // //             }
 
-            if (localVer == remoteVer)
-            {
-                if (isElevated)
-                {
-                    _ = new Begin();
-                }
-                else
-                {
-                    Console.WriteLine("You need admin privileges to run this app.");
-                    Constants.PressEnterToContinue();
-                }
-            }
-            else
-            {
-                CompareVersions(localVer, remoteVer);
-            }
-#else            
-            if (localVer == remoteVer)
+            // //             if (localVer == remoteVer)
+            // //             {
+            // //                 if (isElevated)
+            // //                 {
+            // //                     _ = new Begin();
+            // //                 }
+            // //                 else
+            // //                 {
+            // //                     Console.WriteLine("You need admin privileges to run this app.");
+            // //                     Constants.PressEnterToContinue();
+            // //                 }
+            // //             }
+            // //             else
+            // //             {
+            // //                 CompareVersions(localVer, remoteVer);
+            // //             }
+            // // #else            
+            if (CompareVersions(localVer, remoteVer))
             {
                 _ = new Begin();
             }
             else
             {
-                CompareVersions(localVer, remoteVer);
+                Console.WriteLine("Program wil now terminate.");
+                Constants.PressEnterToContinue();
             }
-#endif
+            // // #endif
         }
 
         /// <summary>
@@ -74,7 +83,7 @@ namespace MoneyExperiment
         /// </summary>
         /// <param name="localVer">Current version of the app.</param>
         /// <param name="remoteVer">The latest version avaliable of the app.</param>
-        private static void CompareVersions(string localVer, string remoteVer)
+        private static bool CompareVersions(string localVer, string remoteVer)
         {
             //Compare only the last 4 digits of the versions.
             var localVerPart = localVer.Substring(4);
@@ -97,7 +106,7 @@ namespace MoneyExperiment
 
             if (ParseHelper.ParseDouble(localVerString) >= ParseHelper.ParseDouble(remoteVerString))
             {
-                _ = new Begin();
+                return true;
             }
             else if (ParseHelper.ParseDouble(localVerString) > ParseHelper.ParseDouble(remoteVerString) - 5) // Only the last 5 versions will work.
             {
@@ -105,15 +114,14 @@ namespace MoneyExperiment
                 Console.WriteLine("New version is avaliable to download: " + remoteVer);
                 Console.WriteLine("You can download it from here: " + Constants.ReleasesURL);
                 Constants.PressEnterToContinue();
-                _ = new Begin();
+                return true;
             }
             else
             {
                 Console.WriteLine($"Your version {localVer} is outdated. \n" +
                     $"The new version is {remoteVer}");
                 Console.WriteLine("You can download it from here: " + Constants.ReleasesURL);
-                Console.WriteLine("Program wil now terminate.");
-                Constants.PressEnterToContinue();
+                return false;
             }
         }
     }

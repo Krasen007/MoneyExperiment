@@ -1,13 +1,44 @@
+<head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="MoneyExperiment.Web/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="MoneyExperiment.Web/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="MoneyExperiment.Web/favicon-16x16.png">
+    <link rel="manifest" href="MoneyExperiment.Web/site.webmanifest">
+    <style>
+        .w3-sidebar a {
+            font-family: "Roboto", sans-serif
+        }
+
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .w3-wide {
+            font-family: "Montserrat", sans-serif;
+        }
+   </style>
+</head>
+
 # MoneyExperiment
 
 <img src="MoneyExperiment/Resources/icon.ico" title="The app icon" width="64"/>
-Experimental budgeting app. </br>
-Sync a budget between PCs with the help of public Git repo. </br>
-The trick is that your database of items is always encrypted even if its in a public repo. </br>
+Experimental budgeting app. <br>
+Sync a budget between PCs with the help of public Git repo. <br>
+The trick is that your database of items is always encrypted even if its in a public repo. <br>
 
 
 ![Main view of the app.](MoneyExperiment/Resources/MainView.png)
 
+### Download:
+
+Latest release: <a href="https://github.com/Krasen007/MoneyExperiment/releases">1.3.9.6</a>.
+Repo is located here: <a href="https://github.com/Krasen007/MoneyExperiment">https://github.com/Krasen007/MoneyExperiment</a>.
 
 ### How to Run:
 
@@ -24,7 +55,7 @@ git config user.email "krasen007@gmail.com" and git remote add origin https://gi
 ### How to use:
 
 * After starting, the app will ask you to set a password. Remember this. It's used to encrypt your database. 
-If you forget your password you will have to delete the Database folder containing all of the entries. </br>
+If you forget your password you will have to delete the Database folder containing all of the entries. <br>
 * After that, it will ask you to set a name and amount of the budget. For example: name - Monthly Budget, amount - 1000, or Wedding Expenses 12500.
 * The menu will appear. Use "y" to add entries. Enter how much you spent and on what.
 * You can add new items and if you add the same item their balance will increase automatically. Use **-amount** to decrease costs of already added item.
@@ -43,10 +74,10 @@ Added option to display n-number of items from the last transactions made;
 
 * Whats new in version 1.3.9.x:
 
-Added promt for elevated rights;
-Added check for new version;
-Added installer;
-Added option to rename items;
+<del>Added promt for elevated rights;</del> Disabled for now.
+Added check for new version;  
+Added installer;  
+Added option to rename items;  
 
 * Whats new in version 1.3.x
 
@@ -57,11 +88,10 @@ Added option to record all made and deleted transactions;
 
 #### Possible features to be implemented:
 
-Add option to show more than 5 transactions.</br>
-Walet functionality to transfer between accounts.</br>
-Add description. Maybe only on AllUserTransactionFile.</br>
-Get it setup using git portable.</br>
+Walet functionality to transfer between accounts.<br>
+Add description. Maybe only on AllUserTransactionFile.<br>
+Get it setup using git portable.<br>
 
 #### Known issues:
-The app may require elevated permissions if using the release versions.</br>
+The app may require elevated permissions if using the release versions.<br>
 The msi package may not work at all, or only if net core 3.1 is installed.
