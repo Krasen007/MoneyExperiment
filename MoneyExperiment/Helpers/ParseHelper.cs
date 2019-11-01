@@ -15,7 +15,7 @@ namespace MoneyExperiment.Helpers
                 if (string.IsNullOrEmpty(stringInput))
                 {
                     Console.Write("Please type what did you spent for: ");
-                    stringInput = Console.ReadLine();
+                    return ParseStringInput(Console.ReadLine());
                 }
                 else if (stringInput.EndsWith(" "))
                 {

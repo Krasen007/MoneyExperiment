@@ -115,34 +115,30 @@ namespace MoneyExperiment
         /// <returns>Budget item with set fields.</returns>
         private Budget LoadBudget(string? name)
         {
+            Budget budgetToLoad;
+
             if (name == null)
             {
-                Budget budgetToLoad = new Budget
+                budgetToLoad = new Budget
                 {
                     Name = Constants.DefaultBudgetName
                 };
-                budgetToLoad.BudgetPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
-                budgetToLoad.ItemsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
-                budgetToLoad.CostsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
-                budgetToLoad.AllTransactionsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
-                budgetToLoad.SummaryPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
-
-                return budgetToLoad;
             }
             else
             {
-                Budget budgetToLoad = new Budget
+                budgetToLoad = new Budget
                 {
                     Name = name
                 };
-                budgetToLoad.BudgetPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
-                budgetToLoad.ItemsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
-                budgetToLoad.CostsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
-                budgetToLoad.AllTransactionsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
-                budgetToLoad.SummaryPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
-
-                return budgetToLoad;
             }
+
+            budgetToLoad.BudgetPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
+            budgetToLoad.ItemsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
+            budgetToLoad.CostsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
+            budgetToLoad.AllTransactionsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
+            budgetToLoad.SummaryPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
+
+            return budgetToLoad;
         }
 
         #region Start
@@ -804,20 +800,18 @@ namespace MoneyExperiment
                     var csvTotalLines = File.ReadLines("budget.csv").Count();
 
                     using StreamReader srBudgetItems = new StreamReader("budget.csv");
+                    List<string> csvItems = new List<string>();
+
+                    for (int i = 0; i < csvTotalLines; i++)
                     {
-                        List<string> csvItems = new List<string>();
+                        csvItems.Add(srBudgetItems.ReadLine()!);
 
-                        for (int i = 0; i < csvTotalLines; i++)
-                        {
-                            csvItems.Add(srBudgetItems.ReadLine()!);
+                        string itemName = csvItems[i].Remove(csvItems[i].IndexOf(','));
+                        string itemCost = csvItems[i].Remove(0, csvItems[i].IndexOf(',') + 1);
 
-                            string itemName = csvItems[i].Remove(csvItems[i].IndexOf(','));
-                            string itemCost = csvItems[i].Remove(0, csvItems[i].IndexOf(',') + 1);
-
-                            selectedBudget.UserInputItem.Add(itemName);
-                            selectedBudget.UserInputCost.Add(Convert.ToDouble(itemCost));
-                            this.fileLineCount++;
-                        }
+                        selectedBudget.UserInputItem.Add(itemName);
+                        selectedBudget.UserInputCost.Add(Convert.ToDouble(itemCost));
+                        this.fileLineCount++;
                     }
                     srBudgetItems.Dispose();
                 }
