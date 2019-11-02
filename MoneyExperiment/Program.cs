@@ -17,7 +17,7 @@ namespace MoneyExperiment
             Console.Title = "Money Experiment " + localVer;
 
             // Check windows program files folder for installation of git.
-            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)))
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + "\\Git"))
             {
                 Console.WriteLine("WARNING: Git is not installed globally.\nSome features will not work correctly.\nDownload the latest version from: https://git-scm.com/downloads");
             }

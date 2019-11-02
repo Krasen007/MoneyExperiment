@@ -12,7 +12,6 @@ namespace MoneyExperiment.Tests
         // [InlineData("5.5")] This fails.
         [InlineData("9,9")]
         [InlineData(null)]
-
         public void CanParseDouble(string value)
         {
             ///Assert.Equal(value, ParseHelper.ParseDouble(value).ToString());

@@ -351,6 +351,18 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** {0} **********\n", selectedBudget.Name);
 
+            ////var netWorthAccount = new Account
+            ////{
+            ////    Name = "Net worth",
+            ////    Amount = 500
+            ////};
+
+            ////var spendingAccount = new Account
+            ////{
+            ////    Name = "Wallet",
+            ////    Amount = netWorthAccount.Amount - 60
+            ////};
+
             double totalCosts = 0;
             for (int i = 0; i < this.fileLineCount; i++)
             {
@@ -359,8 +371,11 @@ namespace MoneyExperiment
                 totalCosts += selectedBudget.UserInputCost[i];
             }
 
+            ///Console.WriteLine(Constants.SeparatorHelper(netWorthAccount.Amount, 6) + netWorthAccount.Amount + " " + netWorthAccount.Name);
+
             Console.WriteLine("\n" + Constants.SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
             Console.WriteLine(Constants.SeparatorHelper(selectedBudget.Amount - totalCosts, 6) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
+            ///Console.WriteLine(Constants.SeparatorHelper(spendingAccount.Amount, 6) + spendingAccount.Amount + " currently in " + spendingAccount.Name);
             Console.WriteLine();
         }
 
