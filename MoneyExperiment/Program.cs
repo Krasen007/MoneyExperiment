@@ -67,6 +67,7 @@ namespace MoneyExperiment
             ////                 CompareVersions(localVer, remoteVer);
             ////             }
             //// #else
+
             if (CompareVersions(localVer, remoteVer))
             {
                 _ = new Begin();
