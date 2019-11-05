@@ -115,30 +115,34 @@ namespace MoneyExperiment
         /// <returns>Budget item with set fields.</returns>
         private Account LoadAccount(string? name)
         {
-            Account budgetToLoad = new Account();
+            Account accountToLoad = new Account
+            {
+                /// ODO add ability to change acc name.
+                AccName = Constants.DefaultAccountName
+            };
 
             if (name == null)
             {
-                budgetToLoad.Budget = new Budget
+                accountToLoad.Budget = new Budget
                 {
                     Name = Constants.DefaultBudgetName
                 };
             }
             else
             {
-                budgetToLoad.Budget = new Budget
+                accountToLoad.Budget = new Budget
                 {
                     Name = name
                 };
             }
 
-            budgetToLoad.Budget.BudgetPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Budget" + budgetToLoad.Name + ".krs";
-            budgetToLoad.Budget.ItemsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Items" + budgetToLoad.Name + ".krs";
-            budgetToLoad.Budget.CostsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Costs" + budgetToLoad.Name + ".krs";
-            budgetToLoad.Budget.AllTransactionsPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\AllTransactions" + budgetToLoad.Name + ".krs";
-            budgetToLoad.Budget.SummaryPath = Constants.DatabaseFolderPath + budgetToLoad.Name + "\\Summary" + budgetToLoad.Name + ".txt";
+            accountToLoad.Budget.BudgetFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Budget" + accountToLoad.Budget.Name + ".krs";
+            accountToLoad.Budget.ItemsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Items" + accountToLoad.Budget.Name + ".krs";
+            accountToLoad.Budget.CostsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Costs" + accountToLoad.Budget.Name + ".krs";
+            accountToLoad.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\AllTransactions" + accountToLoad.Budget.Name + ".krs";
+            accountToLoad.Budget.SummaryFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Summary" + accountToLoad.Budget.Name + ".txt";
 
-            return budgetToLoad;
+            return accountToLoad;
         }
 
         #region Start
@@ -146,22 +150,23 @@ namespace MoneyExperiment
         /// <summary>
         /// Main logic of the program.
         /// </summary>
-        /// <param name="selectedBudget">The Budget to operate on.</param>
-        private void Start(Account selectedBudget)
+        /// <param name="selectedAccount">The Budget to operate on.</param>
+        private void Start(Account selectedAccount)
         {
-            if (this.DecryptDatabaseFiles(selectedBudget))
+            if (this.DecryptDatabaseFiles(selectedAccount, out Budget decryptedBudget))
             {
-                this.SaveDatabase(selectedBudget.Budget);
+                this.SaveDatabase(decryptedBudget);
                 // Start UI
-                this.ListDataBaseSummary(selectedBudget.Budget);
-                this.ShowMainMenu(selectedBudget.Budget);
+                this.ListDataBaseSummary(decryptedBudget);
+                this.ShowMainMenu(decryptedBudget);
             }
             else
             {
                 // Try again.
                 Encryption.IsPasswordWrong = false;
                 this.userPassword = this.AskForPassword();
-                this.Start(selectedBudget);
+                // TODO FIX
+                this.Start(selectedAccount);
             }
         }
 
@@ -169,8 +174,9 @@ namespace MoneyExperiment
         /// Decrypts the user database with the provided password.
         /// </summary>
         /// <returns>Return true on succesful decrypt.</returns>
-        private bool DecryptDatabaseFiles(Account selectedAccount)
+        private bool DecryptDatabaseFiles(Account selectedAccount, out Budget decryptedBudget)
         {
+            decryptedBudget = selectedAccount.Budget;
             // Database folder
             if (!Directory.Exists(Constants.DatabaseFolderPath))
             {
@@ -178,54 +184,55 @@ namespace MoneyExperiment
                 Directory.CreateDirectory(Constants.DatabaseFolderPath);
             }
 
-            if (!File.Exists(selectedAccount.Name))
+            if (selectedAccount.AccName == Constants.DefaultAccountName)
             {
                 //// Case of first run
-                //if (selectedBudget.Name == Constants.DefaultBudgetName)
-                //{
-                //    Console.Write("Set your spending budget: ");
-                //    selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+                ////if (selectedBudget.Name == Constants.DefaultBudgetName)
+                ////{
+                ////    Console.Write("Set your spending budget: ");
+                ////    selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                //    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedBudget.Name);
-                //    File.Create(selectedBudget.BudgetPath).Dispose();
-                //}
-                //else
-                //{
-                //    Console.Write("Enter the name of your budget: ");
-                //    selectedBudget.Name = Console.ReadLine();
+                ////    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedBudget.Name);
+                ////    File.Create(selectedBudget.BudgetPath).Dispose();
+                ////}
+                ////else
+                ////{
+                ////    Console.Write("Enter the name of your budget: ");
+                ////    selectedBudget.Name = Console.ReadLine();
 
-                //    Console.Write("Set your spending budget: ");
-                //    selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+                ////    Console.Write("Set your spending budget: ");
+                ////    selectedBudget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                //    selectedBudget.BudgetPath = Constants.DatabaseFolderPath + selectedBudget.Name + "\\Budget" + selectedBudget.Name + ".krs";
-                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.Name);
-                //    File.Create(selectedAccount.Name).Dispose();
-                //}
+                ////    selectedBudget.BudgetPath = Constants.DatabaseFolderPath + selectedBudget.Name + "\\Budget" + selectedBudget.Name + ".krs";
+                Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.AccName);
+                ////    File.Create(selectedAccount.Name).Dispose();
+                ////}
             }
 
             // Budget file
-            if (!File.Exists(selectedAccount.Budget.BudgetPath))
+            if (!File.Exists(selectedAccount.Budget.BudgetFilePath))
             {
                 // Case of first run
-                if (selectedAccount.Name == Constants.DefaultBudgetName)
+                if (selectedAccount.Budget.Name == Constants.DefaultBudgetName)
                 {
                     Console.Write("Set your spending budget: ");
-                    selectedAccount.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+                    selectedAccount.Budget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.Name);
-                    File.Create(selectedAccount.Budget.BudgetPath).Dispose();
+                    const string backslash = "\\";
+                    Directory.CreateDirectory(path: Constants.DatabaseFolderPath + selectedAccount.AccName + backslash + selectedAccount.Budget.Name);
+                    File.Create(selectedAccount.Budget.BudgetFilePath).Dispose();
                 }
                 else
                 {
                     Console.Write("Enter the name of your budget: ");
-                    selectedAccount.Name = Console.ReadLine();
+                    selectedAccount.Budget.Name = Console.ReadLine();
 
                     Console.Write("Set your spending budget: ");
-                    selectedAccount.Amount = ParseHelper.ParseDouble(Console.ReadLine());
+                    selectedAccount.Budget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                    selectedAccount.Budget.BudgetPath = Constants.DatabaseFolderPath + selectedAccount.Name + "\\Budget" + selectedAccount.Name + ".krs";
-                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.Name);
-                    File.Create(selectedAccount.Budget.BudgetPath).Dispose();
+                    selectedAccount.Budget.BudgetFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + "\\" + selectedAccount.Budget.Name + "\\Budget" + selectedAccount.Budget.Name + ".krs";
+                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.AccName);
+                    File.Create(selectedAccount.Budget.BudgetFilePath).Dispose();
                 }
             }
             else
@@ -233,9 +240,9 @@ namespace MoneyExperiment
                 try
                 {
                     // To work the file should contain first the budget Amount and on the second line the name of the budget.
-                    using StreamReader srBudget = new StreamReader(selectedAccount.Budget.BudgetPath);
-                    selectedAccount.Amount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
-                    selectedAccount.Name = srBudget.ReadLine()!;
+                    using StreamReader srBudget = new StreamReader(selectedAccount.Budget.BudgetFilePath);
+                    selectedAccount.Budget.Amount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
+                    selectedAccount.Budget.Name = srBudget.ReadLine()!;
                     srBudget.Close();
                 }
                 catch (IOException error)
@@ -247,19 +254,19 @@ namespace MoneyExperiment
             }
 
             // Items file
-            if (!File.Exists(selectedAccount.Budget.ItemsPath))
+            if (!File.Exists(selectedAccount.Budget.ItemsFilePath))
             {
                 Console.WriteLine("Items file was missing so we created one for you.");
 
-                selectedAccount.Budget.ItemsPath = Constants.DatabaseFolderPath + selectedAccount.Name + "\\Items" + selectedAccount.Name + ".krs";
-                File.Create(selectedAccount.Budget.ItemsPath).Dispose();
+                //// selectedAccount.Budget.ItemsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + "\\Items\\" + selectedAccount.Budget.Name + ".krs";
+                File.Create(selectedAccount.Budget.ItemsFilePath).Dispose();
                 this.fileLineCount = 0;
             }
             else
             {
-                this.fileLineCount = File.ReadLines(selectedAccount.Budget.ItemsPath).Count();
+                this.fileLineCount = File.ReadLines(selectedAccount.Budget.ItemsFilePath).Count();
 
-                using StreamReader srItems = new StreamReader(selectedAccount.Budget.ItemsPath);
+                using StreamReader srItems = new StreamReader(selectedAccount.Budget.ItemsFilePath);
                 try
                 {
                     for (int i = 0; i < this.fileLineCount; i++)
@@ -285,16 +292,16 @@ namespace MoneyExperiment
             }
 
             // Costs file
-            if (!File.Exists(selectedAccount.Budget.CostsPath))
+            if (!File.Exists(selectedAccount.Budget.CostsFilePath))
             {
                 Console.WriteLine("Costs file was missing so we created one for you.");
 
-                selectedAccount.Budget.CostsPath = Constants.DatabaseFolderPath + selectedAccount.Name + "\\Costs" + selectedAccount.Name + ".krs";
-                File.Create(selectedAccount.Budget.CostsPath).Dispose();
+                /// selectedAccount.Budget.CostsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + "\\Costs" + selectedAccount.AccName + ".krs";
+                File.Create(selectedAccount.Budget.CostsFilePath).Dispose();
             }
             else
             {
-                using StreamReader srCosts = new StreamReader(selectedAccount.Budget.CostsPath);
+                using StreamReader srCosts = new StreamReader(selectedAccount.Budget.CostsFilePath);
                 try
                 {
                     for (int i = 0; i < this.fileLineCount; i++)
@@ -320,19 +327,19 @@ namespace MoneyExperiment
             }
 
             // All transactions file
-            if (!File.Exists(selectedAccount.Budget.AllTransactionsPath))
+            if (!File.Exists(selectedAccount.Budget.AllTransactionsFilePath))
             {
                 Console.WriteLine("CurrentTransaction file was missing so we created one for you.");
 
-                selectedAccount.Budget.AllTransactionsPath = Constants.DatabaseFolderPath + selectedAccount.Name + "\\AllTransactions" + selectedAccount.Name + ".krs";
-                File.Create(selectedAccount.Budget.AllTransactionsPath).Dispose();
+                ////selectedAccount.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + "\\AllTransactions" + selectedAccount.AccName + ".krs";
+                File.Create(selectedAccount.Budget.AllTransactionsFilePath).Dispose();
                 this.allTransactionsLineCount = 0;
             }
             else
             {
-                this.allTransactionsLineCount = File.ReadLines(selectedAccount.Budget.AllTransactionsPath).Count();
+                this.allTransactionsLineCount = File.ReadLines(selectedAccount.Budget.AllTransactionsFilePath).Count();
 
-                using StreamReader trReader = new StreamReader(selectedAccount.Budget.AllTransactionsPath);
+                using StreamReader trReader = new StreamReader(selectedAccount.Budget.AllTransactionsFilePath);
                 try
                 {
                     for (int i = 0; i < this.allTransactionsLineCount; i++)
@@ -356,7 +363,7 @@ namespace MoneyExperiment
                     return false;
                 }
             }
-
+            decryptedBudget = selectedAccount.Budget;
             // Succesfully read needed files
             if (Encryption.IsPasswordWrong)
             {
@@ -544,7 +551,7 @@ namespace MoneyExperiment
         /// </summary>
         private void SaveDatabase(Budget selectedBudget)
         {
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.CostsPath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.CostsFilePath))
             {
                 for (int i = 0; i < this.fileLineCount; i++)
                 {
@@ -553,7 +560,7 @@ namespace MoneyExperiment
                 }
             }
 
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.ItemsPath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.ItemsFilePath))
             {
                 for (int i = 0; i < this.fileLineCount; i++)
                 {
@@ -562,7 +569,7 @@ namespace MoneyExperiment
                 }
             }
 
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.AllTransactionsPath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.AllTransactionsFilePath))
             {
                 for (int i = 0; i < this.allTransactionsLineCount; i++)
                 {
@@ -572,7 +579,7 @@ namespace MoneyExperiment
             }
 
             // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.BudgetPath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.BudgetFilePath))
             {
                 outputFile.WriteLine(selectedBudget.Amount);
                 outputFile.WriteLine(selectedBudget.Name);
@@ -624,7 +631,7 @@ namespace MoneyExperiment
             {
                 this.SaveDatabase(selectedBudget);
                 this.ExportReadable(selectedBudget);
-                Console.WriteLine("View your summary in " + selectedBudget.SummaryPath);
+                Console.WriteLine("View your summary in " + selectedBudget.SummaryFilePath);
                 Constants.PressEnterToContinue();
 
                 this.ListDataBaseSummary(selectedBudget);
@@ -708,7 +715,7 @@ namespace MoneyExperiment
                     Console.WriteLine("Deleting all database...");
                     Directory.Delete(Constants.DatabaseFolderPath, true);
                     Console.WriteLine("***************");
-                    ////TODO FIX this
+                    ////ODO FIX this
                     ////this.Start(selectedBudget);
                 }
                 else
@@ -770,7 +777,7 @@ namespace MoneyExperiment
         private void ExportReadable(Budget selectedBudget)
         {
             // Fix method to use already established method of reading the list
-            using StreamWriter outputFile = new StreamWriter(selectedBudget.SummaryPath);
+            using StreamWriter outputFile = new StreamWriter(selectedBudget.SummaryFilePath);
             outputFile.WriteLine("*********** {0} **********", selectedBudget.Name);
 
             for (int i = 0; i < this.fileLineCount; i++)

@@ -2,8 +2,8 @@
 {
     public class Account
     {
-        public double Amount { get; set; }
-        public string Name { get; set; } = "Default Account";
+        public double AccAmount { get; set; }
+        public string AccName { get; set; } = "Default Account";
 
         public Budget Budget { get; set; } = new Budget();
     }

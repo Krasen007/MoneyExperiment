@@ -11,6 +11,8 @@ namespace MoneyExperiment.Helpers
 
         public static readonly string DefaultBudgetName = "Budget 1";
 
+        public static readonly string DefaultAccountName = "Default Account";
+
         public static readonly int PasswordLength = 31;
 
         public static void PressEnterToContinue()
