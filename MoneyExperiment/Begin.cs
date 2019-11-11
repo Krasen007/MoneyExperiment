@@ -90,7 +90,7 @@ namespace MoneyExperiment
         private void PullDataBase()
         {
             // Checks if directory contains any files or directories, pulls updated db.            
-            if (Directory.EnumerateFileSystemEntries(Constants.DatabaseFolderPath).Any())
+            if (Directory.Exists(Constants.DatabaseFolderPath))
             {
                 try
                 {
@@ -155,9 +155,9 @@ namespace MoneyExperiment
         {
             ///this.PerformIntegrityCheck(selectedAccount);
 
-            if (this.DecryptDatabaseFiles(selectedAccount, out Budget decryptedBudget, out Account decryptedAccount))
+            if (this.DecryptDatabaseFiles(selectedAccount, out Account decryptedAccount))
             {
-                this.SaveDatabase(decryptedBudget);
+                this.SaveDatabase(decryptedAccount);
                 // Start UI
                 this.ListDataBaseSummary(decryptedAccount);
                 this.ShowMainMenu(decryptedAccount);
@@ -168,7 +168,7 @@ namespace MoneyExperiment
                 Encryption.IsPasswordWrong = false;
                 this.userPassword = this.AskForPassword();
                 // TODO FIX
-                this.Start(selectedAccount);
+                this.Start(decryptedAccount);
             }
         }
 
@@ -181,9 +181,8 @@ namespace MoneyExperiment
         /// Decrypts the user database with the provided password.
         /// </summary>
         /// <returns>Return true on succesful decrypt.</returns>
-        private bool DecryptDatabaseFiles(Account selectedAccount, out Budget decryptedBudget, out Account decryptedAccount)
+        private bool DecryptDatabaseFiles(Account selectedAccount, out Account decryptedAccount)
         {
-            decryptedBudget = selectedAccount.Budget;
             decryptedAccount = selectedAccount;
 
             // Database folder
@@ -374,7 +373,6 @@ namespace MoneyExperiment
             }
 
             // used for return OUT parameter
-            decryptedBudget = selectedAccount.Budget;
             decryptedAccount = selectedAccount;
 
             // Succesfully read needed files
@@ -486,7 +484,7 @@ namespace MoneyExperiment
             if (userInput.Key == ConsoleKey.Y)
             {
                 this.AddOrUpdateBudgetItem(selectedAccount.Budget);
-                this.SaveDatabase(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
@@ -494,11 +492,11 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.E)
             {
                 Console.WriteLine("\nExiting...");
-                this.SaveDatabase(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.U)
             {
-                this.SaveDatabase(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount);
 
                 Console.WriteLine("\nUploading...");
                 this.UploadOnline();
@@ -562,40 +560,40 @@ namespace MoneyExperiment
         /// <summary>
         /// Export the strings into encrypted files.
         /// </summary>
-        private void SaveDatabase(Budget selectedBudget)
+        private void SaveDatabase(Account selectedBudget)
         {
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.CostsFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.Budget.CostsFilePath))
             {
                 for (int i = 0; i < this.fileLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.UserInputCost[i].ToString());
+                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.Budget.UserInputCost[i].ToString());
                     outputFile.WriteLine(encryptedString);
                 }
             }
 
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.ItemsFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.Budget.ItemsFilePath))
             {
                 for (int i = 0; i < this.fileLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.UserInputItem[i]);
+                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.Budget.UserInputItem[i]);
                     outputFile.WriteLine(encryptedString);
                 }
             }
 
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.AllTransactionsFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.Budget.AllTransactionsFilePath))
             {
                 for (int i = 0; i < this.allTransactionsLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.AllUserTransactionFile[i]);
+                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.Budget.AllUserTransactionFile[i]);
                     outputFile.WriteLine(encryptedString);
                 }
             }
 
             // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.BudgetFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedBudget.Budget.BudgetFilePath))
             {
-                outputFile.WriteLine(selectedBudget.Amount);
-                outputFile.WriteLine(selectedBudget.Name);
+                outputFile.WriteLine(selectedBudget.Budget.Amount);
+                outputFile.WriteLine(selectedBudget.Budget.Name);
             }
         }
 
@@ -642,7 +640,7 @@ namespace MoneyExperiment
 
             if (userInput.Key == ConsoleKey.X)
             {
-                this.SaveDatabase(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount);
                 this.ExportReadable(selectedAccount.Budget);
                 Console.WriteLine("View your summary in " + selectedAccount.Budget.SummaryFilePath);
                 Constants.PressEnterToContinue();
@@ -657,7 +655,7 @@ namespace MoneyExperiment
                 this.RemoveItemFromBudget(selectedAccount.Budget);
                 Console.Clear();
 
-                this.SaveDatabase(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -668,7 +666,7 @@ namespace MoneyExperiment
                 this.RenameBudgetItem(selectedAccount.Budget);
                 Console.Clear();
 
-                this.SaveDatabase(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -679,7 +677,7 @@ namespace MoneyExperiment
                 this.ImportCSV(selectedAccount.Budget);
                 Constants.PressEnterToContinue();
 
-                this.SaveDatabase(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -688,14 +686,14 @@ namespace MoneyExperiment
                 this.ChangeBudgetNameAndAmount(selectedAccount.Budget);
                 Console.Clear();
 
-                this.SaveDatabase(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.S)
-            {
+            {                
                 Console.WriteLine("\nSwitching budgets...\n");
-                var budgetToLoad = this.SwitchBudget();
+                var budgetToLoad = this.SwitchBudget(selectedAccount);
                 if (budgetToLoad == "False")
                 {
                     Console.WriteLine("Canceling...");
@@ -704,7 +702,9 @@ namespace MoneyExperiment
                 }
                 else
                 {
+                    // TODO FIX
                     Console.Clear();
+                    System.Console.WriteLine(budgetToLoad);
                     this.Start(this.LoadAccount(budgetToLoad));
                 }
             }
@@ -946,10 +946,10 @@ namespace MoneyExperiment
         /// Gets the name of a budget from a list of the database.
         /// </summary>
         /// <returns>Returns a name of the budget to be loaded.</returns>
-        private string SwitchBudget()
+        private string SwitchBudget(Account currentAccount)
         {
-            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath);
-
+            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + "\\" + currentAccount.AccName + "\\" + currentAccount.Budget.Name);
+            System.Console.WriteLine(dirList);
             Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < dirList.Length; i++)
             {
@@ -974,7 +974,7 @@ namespace MoneyExperiment
             {
                 Console.Clear();
                 Console.WriteLine("Wrong item selection");
-                return this.SwitchBudget();
+                return this.SwitchBudget(currentAccount);
             }
             else
             {
