@@ -4,7 +4,7 @@
     {
         public double AccAmount { get; set; }
         public string AccName { get; set; } = "Default Account";
-
         public Budget Budget { get; set; } = new Budget();
+        public string AccAmountFilePath { get; set; } = string.Empty;
     }
 }

@@ -118,7 +118,7 @@ namespace MoneyExperiment
             Account accountToLoad = new Account
             {
                 /// ODO add ability to change acc name.
-                AccName = Constants.DefaultAccountName
+                AccName = Constants.DefaultAccountName,
             };
 
             if (name == null)
@@ -136,6 +136,7 @@ namespace MoneyExperiment
                 };
             }
 
+            accountToLoad.AccAmountFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\Amount" + accountToLoad.AccName + ".krs";
             accountToLoad.Budget.BudgetFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Budget" + accountToLoad.Budget.Name + ".krs";
             accountToLoad.Budget.ItemsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Items" + accountToLoad.Budget.Name + ".krs";
             accountToLoad.Budget.CostsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Costs" + accountToLoad.Budget.Name + ".krs";
@@ -216,6 +217,27 @@ namespace MoneyExperiment
                 Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.AccName);
                 ////    File.Create(selectedAccount.Name).Dispose();
                 ////}
+            }
+
+            // Acc Amount file
+            if (!File.Exists(selectedAccount.AccAmountFilePath))
+            {
+                File.Create(selectedAccount.AccAmountFilePath).Dispose();
+            }
+            else
+            {
+                try
+                {
+                    using StreamReader srBudget = new StreamReader(selectedAccount.AccAmountFilePath);
+                    selectedAccount.AccAmount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
+                    srBudget.Close();
+                }
+                catch (IOException error)
+                {
+                    Console.WriteLine("The account file could not be read: ");
+                    Console.WriteLine(error.Message);
+                    return false;
+                }
             }
 
             // Budget file
@@ -390,9 +412,10 @@ namespace MoneyExperiment
         /// <summary>
         /// Displays a summary of the items.
         /// </summary>
-        private void ListDataBaseSummary(Account selectedBudget)
+        private void ListDataBaseSummary(Account selectedAccount)
         {
-            Console.WriteLine("*********** {0} **********\n", selectedBudget.Budget.Name);
+            Console.WriteLine("*********** {0} **********\n", selectedAccount.Budget.Name);
+            Console.WriteLine(Constants.SeparatorHelper(selectedAccount.AccAmount, 6) + selectedAccount.AccAmount + " " + selectedAccount.AccName + "\n");
 
             ////var netWorthAccount = new Account
             ////{
@@ -410,14 +433,14 @@ namespace MoneyExperiment
             for (int i = 0; i < this.fileLineCount; i++)
             {
                 // This is used to add space between the amount of the item so they appear level.
-                Console.WriteLine(Constants.SeparatorHelper(selectedBudget.Budget.UserInputCost[i], 6) + selectedBudget.Budget.UserInputCost[i] + " " + selectedBudget.Budget.UserInputItem[i]);
-                totalCosts += selectedBudget.Budget.UserInputCost[i];
+                Console.WriteLine(Constants.SeparatorHelper(selectedAccount.Budget.UserInputCost[i], 6) + selectedAccount.Budget.UserInputCost[i] + " " + selectedAccount.Budget.UserInputItem[i]);
+                totalCosts += selectedAccount.Budget.UserInputCost[i];
             }
 
             ///Console.WriteLine(Constants.SeparatorHelper(netWorthAccount.Amount, 6) + netWorthAccount.Amount + " " + netWorthAccount.Name);
 
             Console.WriteLine("\n" + Constants.SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
-            Console.WriteLine(Constants.SeparatorHelper(selectedBudget.Budget.Amount - totalCosts, 6) + (selectedBudget.Budget.Amount - totalCosts) + " Left of " + selectedBudget.Budget.Amount + " budgeted.");
+            Console.WriteLine(Constants.SeparatorHelper(selectedAccount.Budget.Amount - totalCosts, 6) + (selectedAccount.Budget.Amount - totalCosts) + " Left of " + selectedAccount.Budget.Amount + " budgeted.");
             ///Console.WriteLine(Constants.SeparatorHelper(spendingAccount.Amount, 6) + spendingAccount.Amount + " currently in " + spendingAccount.Name);
             Console.WriteLine();
         }
@@ -483,7 +506,7 @@ namespace MoneyExperiment
 
             if (userInput.Key == ConsoleKey.Y)
             {
-                this.AddOrUpdateBudgetItem(selectedAccount.Budget);
+                this.AddOrUpdateBudgetItem(selectedAccount);
                 this.SaveDatabase(selectedAccount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
@@ -523,8 +546,43 @@ namespace MoneyExperiment
             }
         }
 
-        private void AddOrUpdateBudgetItem(Budget selectedBudget)
+        private void AddOrUpdateBudgetItem(Account selectedAccount)
         {
+            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath);
+
+            string accountName = string.Empty;
+            Console.Write("From which account did you spent: ");
+
+            Console.WriteLine("\n0: Cancel.");
+            for (int i = 0; i < dirList.Length; i++)
+            {
+                accountName = dirList[i].Substring(dirList[i].IndexOf("\\") + 1);
+                Console.WriteLine(i + 1 + ": " + accountName);
+            }
+
+            var accountNumber = ParseHelper.ParseDouble(Console.ReadLine());
+
+            if (accountNumber == 0)
+            {
+                // Cancel.
+            }
+            else if (accountNumber > dirList.Length)
+            {
+                Console.Clear();
+                Console.WriteLine("Wrong item selection");
+                Constants.PressEnterToContinue();
+                ///this.AddOrUpdateBudgetItem();
+            }
+            else
+            {
+                Console.WriteLine(accountName);
+                ///Directory.Delete(dirList[(int)accountNumber - 1], true);
+                Console.WriteLine("Account selected...");
+                ///Constants.PressEnterToContinue();
+            }
+
+            /**********************/
+
             Console.Write("\nHow much did you spend: ");
             double costInput = ParseHelper.ParseDouble(Console.ReadLine());
 
@@ -535,65 +593,72 @@ namespace MoneyExperiment
             bool isDublicateItem = false;
             for (int i = 0; i < this.fileLineCount; i++)
             {
-                if (itemInput == selectedBudget.UserInputItem[i])
+                if (itemInput == selectedAccount.Budget.UserInputItem[i])
                 {
                     isDublicateItem = true;
 
                     // Only increase the cost if item is in the database
-                    selectedBudget.UserInputCost[i] += costInput;
+                    selectedAccount.Budget.UserInputCost[i] += costInput;
                 }
             }
 
             if (!isDublicateItem)
             {
-                selectedBudget.UserInputItem.Add(itemInput);
-                selectedBudget.UserInputCost.Add(costInput);
-                selectedBudget.TranasctionTime.Add(DateTime.Now.ToString());
+                selectedAccount.AccAmount -= costInput;
+                selectedAccount.Budget.UserInputItem.Add(itemInput);
+                selectedAccount.Budget.UserInputCost.Add(costInput);
+                selectedAccount.Budget.TranasctionTime.Add(DateTime.Now.ToString());
                 this.fileLineCount++;
             }
 
             // This is used to add space between the amount of the item so they appear level.
-            selectedBudget.AllUserTransactionFile.Add(Constants.SeparatorHelper(costInput, 6) + costInput + " " + itemInput + "  " + DateTime.Now.ToString());
+            selectedAccount.Budget.AllUserTransactionFile.Add(Constants.SeparatorHelper(costInput, 6) + costInput + " " + itemInput + "  " + DateTime.Now.ToString());
             this.allTransactionsLineCount++;
         }
 
         /// <summary>
         /// Export the strings into encrypted files.
         /// </summary>
-        private void SaveDatabase(Account selectedBudget)
+        private void SaveDatabase(Account selectedAccount)
         {
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.Budget.CostsFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.CostsFilePath))
             {
                 for (int i = 0; i < this.fileLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.Budget.UserInputCost[i].ToString());
+                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedAccount.Budget.UserInputCost[i].ToString());
                     outputFile.WriteLine(encryptedString);
                 }
             }
 
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.Budget.ItemsFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.ItemsFilePath))
             {
                 for (int i = 0; i < this.fileLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.Budget.UserInputItem[i]);
+                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedAccount.Budget.UserInputItem[i]);
                     outputFile.WriteLine(encryptedString);
                 }
             }
 
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.Budget.AllTransactionsFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.AllTransactionsFilePath))
             {
                 for (int i = 0; i < this.allTransactionsLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedBudget.Budget.AllUserTransactionFile[i]);
+                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedAccount.Budget.AllUserTransactionFile[i]);
                     outputFile.WriteLine(encryptedString);
                 }
             }
 
             // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(selectedBudget.Budget.BudgetFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.BudgetFilePath))
             {
-                outputFile.WriteLine(selectedBudget.Budget.Amount);
-                outputFile.WriteLine(selectedBudget.Budget.Name);
+                outputFile.WriteLine(selectedAccount.Budget.Amount);
+                outputFile.WriteLine(selectedAccount.Budget.Name);
+            }
+
+            // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
+            using (StreamWriter outputFile = new StreamWriter(selectedAccount.AccAmountFilePath))
+            {
+                outputFile.WriteLine(selectedAccount.AccAmount);
             }
         }
 
@@ -727,7 +792,7 @@ namespace MoneyExperiment
                     Console.WriteLine("Deleting all database...");
                     Directory.Delete(Constants.DatabaseFolderPath, true);
                     Console.WriteLine("************************");
-                    ////ODO FIX this
+                    Constants.PressEnterToContinue();
                     this.Start(this.LoadAccount(null));
                 }
                 else
