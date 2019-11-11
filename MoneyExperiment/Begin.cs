@@ -167,15 +167,14 @@ namespace MoneyExperiment
                 // Try again.
                 Encryption.IsPasswordWrong = false;
                 this.userPassword = this.AskForPassword();
-                // TODO FIX
                 this.Start(decryptedAccount);
             }
         }
 
-        // // private bool PerformIntegrityCheck(Account selectedAccount)
-        // // {
-        // //     return true;
-        // // }
+        //// private bool PerformIntegrityCheck(Account selectedAccount)
+        //// {
+        ////     return true;
+        //// }
 
         /// <summary>
         /// Decrypts the user database with the provided password.
@@ -691,7 +690,7 @@ namespace MoneyExperiment
                 this.ShowMainMenu(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.S)
-            {                
+            {
                 Console.WriteLine("\nSwitching budgets...\n");
                 var budgetToLoad = this.SwitchBudget(selectedAccount);
                 if (budgetToLoad == "False")
@@ -702,9 +701,7 @@ namespace MoneyExperiment
                 }
                 else
                 {
-                    // TODO FIX
                     Console.Clear();
-                    System.Console.WriteLine(budgetToLoad);
                     this.Start(this.LoadAccount(budgetToLoad));
                 }
             }
@@ -948,12 +945,14 @@ namespace MoneyExperiment
         /// <returns>Returns a name of the budget to be loaded.</returns>
         private string SwitchBudget(Account currentAccount)
         {
-            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + "\\" + currentAccount.AccName + "\\" + currentAccount.Budget.Name);
-            System.Console.WriteLine(dirList);
+            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + currentAccount.AccName);
+
             Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < dirList.Length; i++)
             {
-                Console.WriteLine(i + 1 + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
+                // I use this to find the first and second backslashes.
+                var budgetName = dirList[i].Substring(dirList[i].IndexOf("\\") + 1);
+                Console.WriteLine(i + 1 + ": " + budgetName.Substring(budgetName.IndexOf("\\") + 1));
             }
             Console.WriteLine(dirList.Length + 1 + ": Add new budget.");
 
@@ -978,8 +977,9 @@ namespace MoneyExperiment
             }
             else
             {
-                var name = dirList[(int)loadBudget - 1].Substring(dirList[(int)loadBudget - 1].IndexOf("\\") + 1);
-                return name;
+                var name = dirList[(int)loadBudget - 1]
+                    .Substring(dirList[(int)loadBudget - 1].IndexOf("\\") + 1);
+                return name.Substring(name.IndexOf("\\") + 1);
             }
         }
 
