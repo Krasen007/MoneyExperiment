@@ -56,46 +56,44 @@ namespace MoneyExperiment.Helpers
 #pragma warning restore CA1031 // Do not catch general exception types
 
             using AesManaged aes = new AesManaged();
+
+            try
             {
-                try
-                {
-                    aes.Key = Encoding.UTF8.GetBytes(password);
-                    aes.IV = iv;
-                }
-#pragma warning disable CA1031 // Do not catch general exception types
-                catch (CryptographicException)
-                {
-                    IsPasswordWrong = true;
-                }
-#pragma warning restore CA1031 // Do not catch general exception types
+                aes.Key = Encoding.UTF8.GetBytes(password);
+                aes.IV = iv;
             }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (CryptographicException)
+            {
+                IsPasswordWrong = true;
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
             using MemoryStream memoryStream = new MemoryStream(buffer);
             using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using StreamReader streamReader = new StreamReader(cryptoStream);
+
+            IsPasswordWrong = false;
+            try
             {
-                IsPasswordWrong = false;
-                try
-                {
-                    return streamReader.ReadToEnd();
-                }
+                return streamReader.ReadToEnd();
+            }
 #pragma warning disable CA1031 // Do not catch general exception types
-                catch (CryptographicException)
-                {
-                    IsPasswordWrong = true;
-                    return "";
-                }
+            catch (CryptographicException)
+            {
+                IsPasswordWrong = true;
+                return "";
+            }
 #pragma warning restore CA1031 // Do not catch general exception types
-                finally
+            finally
+            {
+                if (IsPasswordWrong)
                 {
-                    if (IsPasswordWrong)
-                    {
-                        memoryStream.Dispose();
-                        cryptoStream.Dispose();
-                        streamReader.Dispose();
-                    }
+                    memoryStream.Dispose();
+                    cryptoStream.Dispose();
+                    streamReader.Dispose();
                 }
             }
         }

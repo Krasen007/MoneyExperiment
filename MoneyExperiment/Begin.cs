@@ -191,6 +191,8 @@ namespace MoneyExperiment
                 Directory.CreateDirectory(Constants.DatabaseFolderPath);
             }
 
+            const string backslash = "\\";
+
             if (selectedAccount.AccName == Constants.DefaultAccountName)
             {
                 //// Case of first run
@@ -225,7 +227,6 @@ namespace MoneyExperiment
                     Console.Write("Set your spending budget: ");
                     selectedAccount.Budget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                    const string backslash = "\\";
                     Directory.CreateDirectory(path: Constants.DatabaseFolderPath + selectedAccount.AccName + backslash + selectedAccount.Budget.Name);
                     File.Create(selectedAccount.Budget.BudgetFilePath).Dispose();
                 }
@@ -237,8 +238,8 @@ namespace MoneyExperiment
                     Console.Write("Set your spending budget: ");
                     selectedAccount.Budget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                    selectedAccount.Budget.BudgetFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + "\\" + selectedAccount.Budget.Name + "\\Budget" + selectedAccount.Budget.Name + ".krs";
-                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.AccName);
+                    selectedAccount.Budget.BudgetFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + backslash + selectedAccount.Budget.Name + "\\Budget" + selectedAccount.Budget.Name + ".krs";
+                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.AccName + backslash + selectedAccount.Budget.Name);
                     File.Create(selectedAccount.Budget.BudgetFilePath).Dispose();
                 }
             }
@@ -265,7 +266,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("Items file was missing so we created one for you.");
 
-                //// selectedAccount.Budget.ItemsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + "\\Items\\" + selectedAccount.Budget.Name + ".krs";
+                selectedAccount.Budget.ItemsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + backslash + selectedAccount.Budget.Name + "\\Items" + selectedAccount.Budget.Name + ".krs";
                 File.Create(selectedAccount.Budget.ItemsFilePath).Dispose();
                 this.fileLineCount = 0;
             }
@@ -303,7 +304,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("Costs file was missing so we created one for you.");
 
-                /// selectedAccount.Budget.CostsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + "\\Costs" + selectedAccount.AccName + ".krs";
+                selectedAccount.Budget.CostsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + backslash + selectedAccount.Budget.Name + "\\Costs" + selectedAccount.Budget.Name + ".krs";
                 File.Create(selectedAccount.Budget.CostsFilePath).Dispose();
             }
             else
@@ -338,7 +339,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("CurrentTransaction file was missing so we created one for you.");
 
-                ////selectedAccount.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + "\\AllTransactions" + selectedAccount.AccName + ".krs";
+                selectedAccount.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + selectedAccount.AccName + backslash + selectedAccount.Budget.Name + "\\AllTransactions" + selectedAccount.Budget.Name + ".krs";
                 File.Create(selectedAccount.Budget.AllTransactionsFilePath).Dispose();
                 this.allTransactionsLineCount = 0;
             }
@@ -634,11 +635,12 @@ namespace MoneyExperiment
                 "type 'd' to DELETE ALL DATABASE, \n" +
                 "press ESC to return to the main menu.");
 
-            Console.WriteLine("Enter your choice: ");
+            Console.Write("Enter your choice: ");
             var userInput = Console.ReadKey();
 
             if (userInput.Key == ConsoleKey.X)
             {
+                Console.Clear();
                 this.SaveDatabase(selectedAccount);
                 this.ExportReadable(selectedAccount.Budget);
                 Console.WriteLine("View your summary in " + selectedAccount.Budget.SummaryFilePath);
@@ -672,7 +674,7 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.I)
             {
                 Console.Clear();
-                Console.WriteLine("\nImporting...");
+                Console.WriteLine("Importing...");
                 this.ImportCSV(selectedAccount.Budget);
                 Constants.PressEnterToContinue();
 
@@ -708,7 +710,7 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.A)
             {
                 Console.WriteLine("\nDeleting budget...");
-                this.DeleteBudget();
+                this.DeleteBudget(selectedAccount);
 
                 Console.Clear();
                 Console.WriteLine("Loading the default budget...");
@@ -724,9 +726,9 @@ namespace MoneyExperiment
                 {
                     Console.WriteLine("Deleting all database...");
                     Directory.Delete(Constants.DatabaseFolderPath, true);
-                    Console.WriteLine("***************");
+                    Console.WriteLine("************************");
                     ////ODO FIX this
-                    ////this.Start(selectedBudget);
+                    this.Start(this.LoadAccount(null));
                 }
                 else
                 {
@@ -849,7 +851,7 @@ namespace MoneyExperiment
         {
             if (!File.Exists("budget.csv"))
             {
-                Console.WriteLine("!!! budget.csv file is missing !!!\n Canceling...");
+                Console.WriteLine("!!! budget.csv file is missing !!!\nCanceling...");
             }
             else
             {
@@ -986,37 +988,38 @@ namespace MoneyExperiment
         /// <summary>
         /// Deletes the directory containing the budget.
         /// </summary>
-        private void DeleteBudget()
+        private void DeleteBudget(Account currentAccount)
         {
-            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath);
+            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + currentAccount.AccName);
 
-            Console.WriteLine(0 + ": Cancel...");
+            Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < dirList.Length; i++)
             {
-                Console.WriteLine(i + 1 + ": " + dirList[i].Substring(dirList[i].IndexOf("\\") + 1));
+                // I use this to find the first and second backslashes.
+                var budgetName = dirList[i].Substring(dirList[i].IndexOf("\\") + 1);
+                Console.WriteLine(i + 1 + ": " + budgetName.Substring(budgetName.IndexOf("\\") + 1));
             }
 
             // This is for deleting...
             Console.Write("Enter the number of the budget you want to remove: ");
             var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
 
-            for (int i = 0; i < dirList.Length; i++)
+            if (deleteItem == 0)
             {
-                if (deleteItem == i + 1)
-                {
-                    Directory.Delete(dirList[i], true);
-                    break;
-                }
-                else if (deleteItem == 0)
-                {
-                    break;
-                }
-                else if (deleteItem > dirList.Length)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Wrong item selection");
-                    break;
-                }
+                // Cancel.
+            }
+            else if (deleteItem > dirList.Length)
+            {
+                Console.Clear();
+                Console.WriteLine("Wrong item selection");
+                Constants.PressEnterToContinue();
+                this.DeleteBudget(currentAccount);
+            }
+            else
+            {
+                Directory.Delete(dirList[(int)deleteItem - 1], true);
+                Console.WriteLine("Budget deleted...");
+                Constants.PressEnterToContinue();
             }
         }
 
