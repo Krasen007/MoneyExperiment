@@ -89,8 +89,8 @@ namespace MoneyExperiment
         /// </summary>
         private void PullDataBase()
         {
-            // If has files in database directory, pull updated db.
-            if (Directory.Exists(Constants.DatabaseFolderPath))
+            // Checks if directory contains any files or directories, pulls updated db.            
+            if (Directory.EnumerateFileSystemEntries(Constants.DatabaseFolderPath).Any())
             {
                 try
                 {
@@ -153,12 +153,14 @@ namespace MoneyExperiment
         /// <param name="selectedAccount">The Budget to operate on.</param>
         private void Start(Account selectedAccount)
         {
-            if (this.DecryptDatabaseFiles(selectedAccount, out Budget decryptedBudget))
+            ///this.PerformIntegrityCheck(selectedAccount);
+
+            if (this.DecryptDatabaseFiles(selectedAccount, out Budget decryptedBudget, out Account decryptedAccount))
             {
                 this.SaveDatabase(decryptedBudget);
                 // Start UI
-                this.ListDataBaseSummary(decryptedBudget);
-                this.ShowMainMenu(decryptedBudget);
+                this.ListDataBaseSummary(decryptedAccount);
+                this.ShowMainMenu(decryptedAccount);
             }
             else
             {
@@ -170,13 +172,20 @@ namespace MoneyExperiment
             }
         }
 
+        // // private bool PerformIntegrityCheck(Account selectedAccount)
+        // // {
+        // //     return true;
+        // // }
+
         /// <summary>
         /// Decrypts the user database with the provided password.
         /// </summary>
         /// <returns>Return true on succesful decrypt.</returns>
-        private bool DecryptDatabaseFiles(Account selectedAccount, out Budget decryptedBudget)
+        private bool DecryptDatabaseFiles(Account selectedAccount, out Budget decryptedBudget, out Account decryptedAccount)
         {
             decryptedBudget = selectedAccount.Budget;
+            decryptedAccount = selectedAccount;
+
             // Database folder
             if (!Directory.Exists(Constants.DatabaseFolderPath))
             {
@@ -363,7 +372,11 @@ namespace MoneyExperiment
                     return false;
                 }
             }
+
+            // used for return OUT parameter
             decryptedBudget = selectedAccount.Budget;
+            decryptedAccount = selectedAccount;
+
             // Succesfully read needed files
             if (Encryption.IsPasswordWrong)
             {
@@ -379,9 +392,9 @@ namespace MoneyExperiment
         /// <summary>
         /// Displays a summary of the items.
         /// </summary>
-        private void ListDataBaseSummary(Budget selectedBudget)
+        private void ListDataBaseSummary(Account selectedBudget)
         {
-            Console.WriteLine("*********** {0} **********\n", selectedBudget.Name);
+            Console.WriteLine("*********** {0} **********\n", selectedBudget.Budget.Name);
 
             ////var netWorthAccount = new Account
             ////{
@@ -399,14 +412,14 @@ namespace MoneyExperiment
             for (int i = 0; i < this.fileLineCount; i++)
             {
                 // This is used to add space between the amount of the item so they appear level.
-                Console.WriteLine(Constants.SeparatorHelper(selectedBudget.UserInputCost[i], 6) + selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i]);
-                totalCosts += selectedBudget.UserInputCost[i];
+                Console.WriteLine(Constants.SeparatorHelper(selectedBudget.Budget.UserInputCost[i], 6) + selectedBudget.Budget.UserInputCost[i] + " " + selectedBudget.Budget.UserInputItem[i]);
+                totalCosts += selectedBudget.Budget.UserInputCost[i];
             }
 
             ///Console.WriteLine(Constants.SeparatorHelper(netWorthAccount.Amount, 6) + netWorthAccount.Amount + " " + netWorthAccount.Name);
 
             Console.WriteLine("\n" + Constants.SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
-            Console.WriteLine(Constants.SeparatorHelper(selectedBudget.Amount - totalCosts, 6) + (selectedBudget.Amount - totalCosts) + " Left of " + selectedBudget.Amount + " budgeted.");
+            Console.WriteLine(Constants.SeparatorHelper(selectedBudget.Budget.Amount - totalCosts, 6) + (selectedBudget.Budget.Amount - totalCosts) + " Left of " + selectedBudget.Budget.Amount + " budgeted.");
             ///Console.WriteLine(Constants.SeparatorHelper(spendingAccount.Amount, 6) + spendingAccount.Amount + " currently in " + spendingAccount.Name);
             Console.WriteLine();
         }
@@ -444,11 +457,11 @@ namespace MoneyExperiment
         /// <summary>
         /// Displays the main menu of the program.
         /// </summary>
-        private void ShowMainMenu(Budget selectedBudget)
+        private void ShowMainMenu(Account selectedBudget)
         {
             this.DisplayMenuChoices();
 
-            this.ShowLastTransactions(selectedBudget, 6);
+            this.ShowLastTransactions(selectedBudget.Budget, 6);
 
             this.AskForUserMenuChoice(selectedBudget);
         }
@@ -465,27 +478,27 @@ namespace MoneyExperiment
                 "type 'o' for other Options. \n");
         }
 
-        private void AskForUserMenuChoice(Budget selectedBudget)
+        private void AskForUserMenuChoice(Account selectedAccount)
         {
             Console.Write("Enter your choice: ");
             var userInput = Console.ReadKey();
 
             if (userInput.Key == ConsoleKey.Y)
             {
-                this.AddOrUpdateBudgetItem(selectedBudget);
-                this.SaveDatabase(selectedBudget);
+                this.AddOrUpdateBudgetItem(selectedAccount.Budget);
+                this.SaveDatabase(selectedAccount.Budget);
                 Console.Clear();
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.E)
             {
                 Console.WriteLine("\nExiting...");
-                this.SaveDatabase(selectedBudget);
+                this.SaveDatabase(selectedAccount.Budget);
             }
             else if (userInput.Key == ConsoleKey.U)
             {
-                this.SaveDatabase(selectedBudget);
+                this.SaveDatabase(selectedAccount.Budget);
 
                 Console.WriteLine("\nUploading...");
                 this.UploadOnline();
@@ -495,20 +508,20 @@ namespace MoneyExperiment
             {
                 Console.Clear();
                 Console.WriteLine("Show how many of the last made transactions: ");
-                this.ShowLastTransactions(selectedBudget, (int)ParseHelper.ParseDouble(Console.ReadLine()));
+                this.ShowLastTransactions(selectedAccount.Budget, (int)ParseHelper.ParseDouble(Console.ReadLine()));
                 this.DisplayMenuChoices();
-                this.AskForUserMenuChoice(selectedBudget);
+                this.AskForUserMenuChoice(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.O)
             {
                 Console.Clear();
-                this.ShowOptionsMenu(selectedBudget);
+                this.ShowOptionsMenu(selectedAccount);
             }
             else
             {
                 Console.Clear();
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
             }
         }
 
@@ -610,7 +623,7 @@ namespace MoneyExperiment
         /// <summary>
         /// Displays a menu with additional options.
         /// </summary>
-        private void ShowOptionsMenu(Budget selectedBudget)
+        private void ShowOptionsMenu(Account selectedAccount)
         {
             Console.WriteLine("*********** Options ***********");
             Console.WriteLine(
@@ -629,55 +642,55 @@ namespace MoneyExperiment
 
             if (userInput.Key == ConsoleKey.X)
             {
-                this.SaveDatabase(selectedBudget);
-                this.ExportReadable(selectedBudget);
-                Console.WriteLine("View your summary in " + selectedBudget.SummaryFilePath);
+                this.SaveDatabase(selectedAccount.Budget);
+                this.ExportReadable(selectedAccount.Budget);
+                Console.WriteLine("View your summary in " + selectedAccount.Budget.SummaryFilePath);
                 Constants.PressEnterToContinue();
 
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.R)
             {
                 Console.Clear();
                 Console.WriteLine("Remove which item?");
-                this.RemoveItemFromBudget(selectedBudget);
+                this.RemoveItemFromBudget(selectedAccount.Budget);
                 Console.Clear();
 
-                this.SaveDatabase(selectedBudget);
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
+                this.SaveDatabase(selectedAccount.Budget);
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.N)
             {
                 Console.Clear();
                 Console.WriteLine("Rename which item?");
-                this.RenameBudgetItem(selectedBudget);
+                this.RenameBudgetItem(selectedAccount.Budget);
                 Console.Clear();
 
-                this.SaveDatabase(selectedBudget);
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
+                this.SaveDatabase(selectedAccount.Budget);
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.I)
             {
                 Console.Clear();
                 Console.WriteLine("\nImporting...");
-                this.ImportCSV(selectedBudget);
+                this.ImportCSV(selectedAccount.Budget);
                 Constants.PressEnterToContinue();
 
-                this.SaveDatabase(selectedBudget);
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
+                this.SaveDatabase(selectedAccount.Budget);
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.C)
             {
-                this.ChangeBudgetNameAndAmount(selectedBudget);
+                this.ChangeBudgetNameAndAmount(selectedAccount.Budget);
                 Console.Clear();
 
-                this.SaveDatabase(selectedBudget);
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
+                this.SaveDatabase(selectedAccount.Budget);
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.S)
             {
@@ -687,7 +700,7 @@ namespace MoneyExperiment
                 {
                     Console.WriteLine("Canceling...");
                     Console.Clear();
-                    this.ShowOptionsMenu(selectedBudget);
+                    this.ShowOptionsMenu(selectedAccount);
                 }
                 else
                 {
@@ -722,20 +735,20 @@ namespace MoneyExperiment
                 {
                     Console.WriteLine("Aborting...");
                     Console.Clear();
-                    this.ListDataBaseSummary(selectedBudget);
-                    this.ShowMainMenu(selectedBudget);
+                    this.ListDataBaseSummary(selectedAccount);
+                    this.ShowMainMenu(selectedAccount);
                 }
             }
             else if (userInput.Key == ConsoleKey.Escape)
             {
                 Console.Clear();
-                this.ListDataBaseSummary(selectedBudget);
-                this.ShowMainMenu(selectedBudget);
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
             }
             else
             {
                 Console.Clear();
-                this.ShowOptionsMenu(selectedBudget);
+                this.ShowOptionsMenu(selectedAccount);
             }
         }
 
