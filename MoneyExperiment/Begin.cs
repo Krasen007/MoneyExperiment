@@ -142,7 +142,7 @@ namespace MoneyExperiment
             accountToLoad.Budget.CostsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Costs" + accountToLoad.Budget.Name + ".krs";
             accountToLoad.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\AllTransactions" + accountToLoad.Budget.Name + ".krs";
             accountToLoad.Budget.SummaryFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Summary" + accountToLoad.Budget.Name + ".txt";
-
+            
             return accountToLoad;
         }
 
@@ -557,10 +557,10 @@ namespace MoneyExperiment
 
         private void UpdateBalance(Account selectedAccount)
         {
-            System.Console.WriteLine("What do you want to do with the current account?");
-            System.Console.WriteLine("0: Cancel");
-            System.Console.WriteLine("1: Add/remove funds");
-            System.Console.WriteLine("2: Transfer funds");
+            Console.WriteLine("What do you want to do with the current account?");
+            Console.WriteLine("0: Cancel");
+            Console.WriteLine("1: Add/remove funds");
+            //Console.WriteLine("2: Transfer funds");
 
             var userChoice = ParseHelper.ParseDouble(Console.ReadLine());
 
@@ -570,8 +570,8 @@ namespace MoneyExperiment
             }
             else if (userChoice == 1)
             {
-                System.Console.WriteLine("Current amount is: " + selectedAccount.AccAmount);
-                System.Console.WriteLine("Increase/Decrease balance corection with:");
+                Console.WriteLine("Current amount is: " + selectedAccount.AccAmount);
+                Console.WriteLine("Increase/Decrease balance corection with:");
                 var balance = ParseHelper.ParseDouble(Console.ReadLine());
 
                 selectedAccount.AccAmount += balance;
