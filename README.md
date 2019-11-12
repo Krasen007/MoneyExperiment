@@ -54,7 +54,12 @@ If you forget your password you will have to delete the Database folder containi
 * Main coding: Krasen Ivanov 2019
 * Icon made by Freepik from www.flaticon.com  
 
-#### Whats new in version 1.3.10
+#### Whats new in version 1.3.11.x
+
+Added first implementation of accounts;
+Various optimizations;  
+
+* Whats new in version 1.3.10
 
 Added option to display n-number of items from the last transactions made;  
 
@@ -79,6 +84,7 @@ Add description. Maybe only on AllUserTransactionFile.<br>
 Get it setup using git portable.<br>
 Ability to find and load or rename items in budget folder.<br>
 Test the app on linux.<br>
+Add tool or functionality to update all needed for git .bat files. Example: First run, setup your git remote, then the app opens all the .bat files and changes the lines needed for git to match the users input.<br>
 
 #### Known issues
 The app may require elevated permissions if using the release versions.<br>

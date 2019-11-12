@@ -4,5 +4,5 @@ git pull
 dotnet build
 cd bin
 cd debug
-cd netcoreapp3.0
+cd netcoreapp3.1
 MoneyExperiment.exe

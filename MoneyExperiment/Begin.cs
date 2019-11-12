@@ -415,6 +415,7 @@ namespace MoneyExperiment
         private void ListDataBaseSummary(Account selectedAccount)
         {
             Console.WriteLine("*********** {0} **********\n", selectedAccount.Budget.Name);
+
             Console.WriteLine(Constants.SeparatorHelper(selectedAccount.AccAmount, 6) + selectedAccount.AccAmount + " " + selectedAccount.AccName + "\n");
 
             ////var netWorthAccount = new Account
@@ -437,11 +438,8 @@ namespace MoneyExperiment
                 totalCosts += selectedAccount.Budget.UserInputCost[i];
             }
 
-            ///Console.WriteLine(Constants.SeparatorHelper(netWorthAccount.Amount, 6) + netWorthAccount.Amount + " " + netWorthAccount.Name);
-
             Console.WriteLine("\n" + Constants.SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
             Console.WriteLine(Constants.SeparatorHelper(selectedAccount.Budget.Amount - totalCosts, 6) + (selectedAccount.Budget.Amount - totalCosts) + " Left of " + selectedAccount.Budget.Amount + " budgeted.");
-            ///Console.WriteLine(Constants.SeparatorHelper(spendingAccount.Amount, 6) + spendingAccount.Amount + " currently in " + spendingAccount.Name);
             Console.WriteLine();
         }
 
@@ -492,7 +490,8 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** Menu ***********");
             Console.WriteLine(
-                "type 'y' to add new entrY, \n" +
+                "type 'y' to add new entrY in the current budget, \n" +
+                "type 'b' to update account Balance, \n" +
                 "type 'e' to save and Exit without uploading online, \n" +
                 "type 'u' to save and exit and Upload the database online, \n" +
                 "type 't' to show the last n-number of Transactions, \n" +
@@ -506,7 +505,17 @@ namespace MoneyExperiment
 
             if (userInput.Key == ConsoleKey.Y)
             {
+                Console.WriteLine();
                 this.AddOrUpdateBudgetItem(selectedAccount);
+                this.SaveDatabase(selectedAccount);
+                Console.Clear();
+                this.ListDataBaseSummary(selectedAccount);
+                this.ShowMainMenu(selectedAccount);
+            }
+            else if (userInput.Key == ConsoleKey.B)
+            {
+                Console.WriteLine();
+                this.UpdateBalance(selectedAccount);
                 this.SaveDatabase(selectedAccount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
@@ -546,12 +555,41 @@ namespace MoneyExperiment
             }
         }
 
+        private void UpdateBalance(Account selectedAccount)
+        {
+            System.Console.WriteLine("What do you want to do with the current account?");
+            System.Console.WriteLine("0: Cancel");
+            System.Console.WriteLine("1: Add/remove funds");
+            System.Console.WriteLine("2: Transfer funds");
+
+            var userChoice = ParseHelper.ParseDouble(Console.ReadLine());
+
+            if (userChoice == 0)
+            {
+                // Cancel
+            }
+            else if (userChoice == 1)
+            {
+                System.Console.WriteLine("Current amount is: " + selectedAccount.AccAmount);
+                System.Console.WriteLine("Increase/Decrease balance corection with:");
+                var balance = ParseHelper.ParseDouble(Console.ReadLine());
+
+                selectedAccount.AccAmount += balance;
+            }
+            else
+            {
+                Console.WriteLine("Not implemented yet");
+                Console.WriteLine("Current amount is: " + selectedAccount.AccAmount);
+            }
+
+        }
+
         private void AddOrUpdateBudgetItem(Account selectedAccount)
         {
             var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath);
 
             string accountName = string.Empty;
-            Console.Write("From which account did you spent: ");
+            Console.WriteLine("From which account did you spent: ");
 
             Console.WriteLine("\n0: Cancel.");
             for (int i = 0; i < dirList.Length; i++)
@@ -575,9 +613,8 @@ namespace MoneyExperiment
             }
             else
             {
-                Console.WriteLine(accountName);
+                Console.WriteLine(accountName + " selected...");
                 ///Directory.Delete(dirList[(int)accountNumber - 1], true);
-                Console.WriteLine("Account selected...");
                 ///Constants.PressEnterToContinue();
             }
 
@@ -599,6 +636,9 @@ namespace MoneyExperiment
 
                     // Only increase the cost if item is in the database
                     selectedAccount.Budget.UserInputCost[i] += costInput;
+
+                    selectedAccount.AccAmount -= costInput;
+                    break;
                 }
             }
 
