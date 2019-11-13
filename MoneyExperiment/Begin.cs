@@ -89,7 +89,7 @@ namespace MoneyExperiment
         /// </summary>
         private void PullDataBase()
         {
-            // Checks if directory contains any files or directories, pulls updated db.            
+            // Checks if directory contains any files or directories, pulls updated db.
             if (Directory.Exists(Constants.DatabaseFolderPath))
             {
                 try
@@ -142,7 +142,7 @@ namespace MoneyExperiment
             accountToLoad.Budget.CostsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Costs" + accountToLoad.Budget.Name + ".krs";
             accountToLoad.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\AllTransactions" + accountToLoad.Budget.Name + ".krs";
             accountToLoad.Budget.SummaryFilePath = Constants.DatabaseFolderPath + accountToLoad.AccName + "\\" + accountToLoad.Budget.Name + "\\Summary" + accountToLoad.Budget.Name + ".txt";
-            
+
             return accountToLoad;
         }
 
@@ -560,7 +560,7 @@ namespace MoneyExperiment
             Console.WriteLine("What do you want to do with the current account?");
             Console.WriteLine("0: Cancel");
             Console.WriteLine("1: Add/remove funds");
-            //Console.WriteLine("2: Transfer funds");
+            ///Console.WriteLine("2: Transfer funds");
 
             var userChoice = ParseHelper.ParseDouble(Console.ReadLine());
 
@@ -581,42 +581,41 @@ namespace MoneyExperiment
                 Console.WriteLine("Not implemented yet");
                 Console.WriteLine("Current amount is: " + selectedAccount.AccAmount);
             }
-
         }
 
         private void AddOrUpdateBudgetItem(Account selectedAccount)
         {
-            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath);
+            ////var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath);
 
-            string accountName = string.Empty;
-            Console.WriteLine("From which account did you spent: ");
+            ////string accountName = string.Empty;
+            ////Console.WriteLine("From which account did you spent: ");
 
-            Console.WriteLine("\n0: Cancel.");
-            for (int i = 0; i < dirList.Length; i++)
-            {
-                accountName = dirList[i].Substring(dirList[i].IndexOf("\\") + 1);
-                Console.WriteLine(i + 1 + ": " + accountName);
-            }
+            ////Console.WriteLine("\n0: Cancel.");
+            ////for (int i = 0; i < dirList.Length; i++)
+            ////{
+            ////    accountName = dirList[i].Substring(dirList[i].IndexOf("\\") + 1);
+            ////    Console.WriteLine(i + 1 + ": " + accountName);
+            ////}
 
-            var accountNumber = ParseHelper.ParseDouble(Console.ReadLine());
+            ////var accountNumber = ParseHelper.ParseDouble(Console.ReadLine());
 
-            if (accountNumber == 0)
-            {
-                // Cancel.
-            }
-            else if (accountNumber > dirList.Length)
-            {
-                Console.Clear();
-                Console.WriteLine("Wrong item selection");
-                Constants.PressEnterToContinue();
-                ///this.AddOrUpdateBudgetItem();
-            }
-            else
-            {
-                Console.WriteLine(accountName + " selected...");
-                ///Directory.Delete(dirList[(int)accountNumber - 1], true);
-                ///Constants.PressEnterToContinue();
-            }
+            ////if (accountNumber == 0)
+            ////{
+            ////    // Cancel.
+            ////}
+            ////else if (accountNumber > dirList.Length)
+            ////{
+            ////    Console.Clear();
+            ////    Console.WriteLine("Wrong item selection");
+            ////    Constants.PressEnterToContinue();
+            ////    ///this.AddOrUpdateBudgetItem();
+            ////}
+            ////else
+            ////{
+            ////    Console.WriteLine(accountName + " selected...");
+            ////    ///Directory.Delete(dirList[(int)accountNumber - 1], true);
+            ////    ///Constants.PressEnterToContinue();
+            ////}
 
             /**********************/
 
