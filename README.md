@@ -43,7 +43,7 @@ If you forget your password you will have to delete the Database folder containi
 
 #### Whats new in version 1.4.0.x
 
-Added a working account;  
+Added a working account and wallet;  
 This version will probably break existing databases;  
 
 * Whats new in version 1.3.11.x
@@ -72,9 +72,10 @@ Added option to record all made and deleted transactions;
 #### Possible features to be implemented
 
 Walet functionality to transfer between accounts.<br>
+NetWorth of multiple accounts.<br>
 Add description. Maybe only on AllUserTransactionFile.<br>
-Get it setup using git portable.<br>
 Ability to find and load or rename items in budget folder.<br>
+Get it setup using git portable.<br>
 Test the app on linux.<br>
 Add tool or functionality to update all needed for git .bat files. Example: First run, setup your git remote, then the app opens all the .bat files and changes the lines needed for git to match the users input.<br>
 Publish releases on github, and since I am already using git to downlaod the database, maybe I can use github to download new versions of the app.
