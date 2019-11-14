@@ -23,8 +23,8 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** Welcome **********");
             this.userPassword = this.AskForPassword();
-            this.PullDataBase();
-            this.Start(this.LoadAccount(null));
+            PullDataBase();
+            this.Start(LoadAccount(null));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace MoneyExperiment
         /// <summary>
         /// Gets the updated database from remote.
         /// </summary>
-        private void PullDataBase()
+        private static void PullDataBase()
         {
             // Checks if directory contains any files or directories, pulls updated db.
             if (Directory.Exists(Constants.DatabaseFolderPath))
@@ -113,7 +113,7 @@ namespace MoneyExperiment
         /// </summary>
         /// <param name="name">Selected budget to load.</param>
         /// <returns>Budget item with set fields.</returns>
-        private Account LoadAccount(string? name)
+        private static Account LoadAccount(string? name)
         {
             Account accountToLoad = new Account
             {
@@ -447,7 +447,7 @@ namespace MoneyExperiment
         /// Displays the last n-number of transactions.
         /// </summary>
         /// <param name="displayedItems">The number of items to show.</param>
-        private void ShowLastTransactions(Budget selectedBudget, int displayedItems)
+        private static void ShowLastTransactions(Budget selectedBudget, int displayedItems)
         {
             Console.WriteLine("*********** List of recent transactions ***********");
 
@@ -478,15 +478,15 @@ namespace MoneyExperiment
         /// </summary>
         private void ShowMainMenu(Account selectedBudget)
         {
-            this.DisplayMenuChoices();
+            DisplayMenuChoices();
 
-            this.ShowLastTransactions(selectedBudget.Budget, 6);
+            ShowLastTransactions(selectedBudget.Budget, 6);
 
             this.AskForUserMenuChoice(selectedBudget);
         }
 
         // This method must be used with AskForUserMenuChoice method.
-        private void DisplayMenuChoices()
+        private static void DisplayMenuChoices()
         {
             Console.WriteLine("*********** Menu ***********");
             Console.WriteLine(
@@ -515,7 +515,7 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.B)
             {
                 Console.WriteLine();
-                this.UpdateBalance(selectedAccount);
+                UpdateBalance(selectedAccount);
                 this.SaveDatabase(selectedAccount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
@@ -531,15 +531,15 @@ namespace MoneyExperiment
                 this.SaveDatabase(selectedAccount);
 
                 Console.WriteLine("\nUploading...");
-                this.UploadOnline();
+                UploadOnline();
                 Constants.PressEnterToContinue();
             }
             else if (userInput.Key == ConsoleKey.T)
             {
                 Console.Clear();
                 Console.WriteLine("Show how many of the last made transactions: ");
-                this.ShowLastTransactions(selectedAccount.Budget, (int)ParseHelper.ParseDouble(Console.ReadLine()));
-                this.DisplayMenuChoices();
+                ShowLastTransactions(selectedAccount.Budget, (int)ParseHelper.ParseDouble(Console.ReadLine()));
+                DisplayMenuChoices();
                 this.AskForUserMenuChoice(selectedAccount);
             }
             else if (userInput.Key == ConsoleKey.O)
@@ -555,7 +555,7 @@ namespace MoneyExperiment
             }
         }
 
-        private void UpdateBalance(Account selectedAccount)
+        private static void UpdateBalance(Account selectedAccount)
         {
             Console.WriteLine("What do you want to do with the current account?");
             Console.WriteLine("0: Cancel");
@@ -701,7 +701,7 @@ namespace MoneyExperiment
             }
         }
 
-        private void UploadOnline()
+        private static void UploadOnline()
         {
             const string InitCreateDB = @"Scripts\InitCreateDB.bat";
             const string PushUpdateDB = @"Scripts\PushUpdateDB.bat";
@@ -788,7 +788,7 @@ namespace MoneyExperiment
             }
             else if (userInput.Key == ConsoleKey.C)
             {
-                this.ChangeBudgetNameAndAmount(selectedAccount.Budget);
+                ChangeBudgetNameAndAmount(selectedAccount.Budget);
                 Console.Clear();
 
                 this.SaveDatabase(selectedAccount);
@@ -808,7 +808,7 @@ namespace MoneyExperiment
                 else
                 {
                     Console.Clear();
-                    this.Start(this.LoadAccount(budgetToLoad));
+                    this.Start(LoadAccount(budgetToLoad));
                 }
             }
             else if (userInput.Key == ConsoleKey.A)
@@ -818,7 +818,7 @@ namespace MoneyExperiment
 
                 Console.Clear();
                 Console.WriteLine("Loading the default budget...");
-                this.Start(this.LoadAccount(null));
+                this.Start(LoadAccount(null));
             }
             else if (userInput.Key == ConsoleKey.D)
             {
@@ -832,7 +832,7 @@ namespace MoneyExperiment
                     Directory.Delete(Constants.DatabaseFolderPath, true);
                     Console.WriteLine("************************");
                     Constants.PressEnterToContinue();
-                    this.Start(this.LoadAccount(null));
+                    this.Start(LoadAccount(null));
                 }
                 else
                 {
@@ -987,7 +987,7 @@ namespace MoneyExperiment
             }
         }
 
-        private void ChangeBudgetNameAndAmount(Budget selectedBudget)
+        private static void ChangeBudgetNameAndAmount(Budget selectedBudget)
         {
             Console.Write("\nEnter new name for the budget: ");
             selectedBudget.Name = ParseHelper.ParseStringInput(Console.ReadLine());
