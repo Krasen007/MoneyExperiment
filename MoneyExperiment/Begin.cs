@@ -546,6 +546,7 @@ namespace MoneyExperiment
             Console.WriteLine("0: Cancel");
             Console.WriteLine("1: Add/remove funds");
             ///Console.WriteLine("2: Transfer funds");
+            ///Console.WriteLine("3: Create new account");
 
             var userChoice = ParseHelper.ParseDouble(Console.ReadLine());
 
@@ -561,11 +562,16 @@ namespace MoneyExperiment
 
                 selectedAccount.Wallet.WalletAmount += balance;
             }
-            else
-            {
-                Console.WriteLine("Not implemented yet");
-                Console.WriteLine("Current amount is: " + selectedAccount.Wallet.WalletAmount);
-            }
+            ////else if (userChoice == 2)
+            ////{
+            ////    Console.WriteLine("What amount you want to transfer between who?");
+            ////    Console.WriteLine("Current amount is: " + selectedAccount.Wallet.WalletAmount);
+            ////}
+            ////else if (userChoice == 3)
+            ////{
+            ////    // add new wallet
+            ////    //selectedAccount.Wallet.Add()
+            ////}
         }
 
         private void AddOrUpdateBudgetItem(Account selectedAccount)
@@ -763,7 +769,8 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.I)
             {
                 Console.Clear();
-                Console.WriteLine("Importing...");
+                Console.WriteLine("Please make sure budget.csv is present in the main directory of the app.");
+                Constants.PressEnterToContinue();
                 this.ImportCSV(selectedAccount.Budget);
                 Constants.PressEnterToContinue();
 
@@ -938,7 +945,7 @@ namespace MoneyExperiment
         }
 
         /// <summary>
-        /// This method imports budget.csv file that is based only with 2 items and is split by ','
+        /// This method imports budget.csv file that is based only with 2 items and is split by ',' (name,cost)
         /// </summary>
         private void ImportCSV(Budget selectedBudget)
         {
@@ -959,13 +966,37 @@ namespace MoneyExperiment
                     {
                         csvItems.Add(srBudgetItems.ReadLine()!);
 
-                        string itemName = csvItems[i].Remove(csvItems[i].IndexOf(','));
-                        string itemCost = csvItems[i].Remove(0, csvItems[i].IndexOf(',') + 1);
+                        string itemInput = csvItems[i].Remove(csvItems[i].IndexOf(','));
+                        string costInput = csvItems[i].Remove(0, csvItems[i].IndexOf(',') + 1);
 
-                        selectedBudget.UserInputItem.Add(itemName);
-                        selectedBudget.UserInputCost.Add(Convert.ToDouble(itemCost));
-                        this.fileLineCount++;
+                        // Check if item is already in the database
+                        bool isDublicateItem = false;
+                        for (int j = 0; j < this.fileLineCount; j++)
+                        {
+                            if (itemInput == selectedBudget.UserInputItem[j])
+                            {
+                                isDublicateItem = true;
+
+                                // Only increase the cost if item is in the database
+                                selectedBudget.UserInputCost[j] += Convert.ToDouble(costInput);
+                                break;
+                            }
+                        }
+
+                        if (!isDublicateItem)
+                        {
+                            selectedBudget.UserInputItem.Add(itemInput);
+                            selectedBudget.UserInputCost.Add(Convert.ToDouble(costInput));
+                            selectedBudget.TranasctionTime.Add(DateTime.Now.ToString());
+                            this.fileLineCount++;
+                        }
                     }
+                    Console.WriteLine("Import complete!");
+                    Console.WriteLine($"You imported {csvTotalLines} items at {DateTime.Now.ToString()}");
+
+                    selectedBudget.AllUserTransactionFile.Add($"You imported {csvTotalLines} items at {DateTime.Now.ToString()}");
+                    this.allTransactionsLineCount++;
+
                     srBudgetItems.Dispose();
                 }
                 catch (FileNotFoundException e)
