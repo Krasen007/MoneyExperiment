@@ -742,7 +742,7 @@ namespace MoneyExperiment
             {
                 Console.Clear();
                 Console.WriteLine("Remove which item?");
-                this.RemoveItemFromBudget(selectedAccount.Budget);
+                this.RemoveItemFromBudget(selectedAccount);
                 Console.Clear();
 
                 this.SaveDatabase(selectedAccount);
@@ -898,25 +898,29 @@ namespace MoneyExperiment
             outputFile.Dispose();
         }
 
-        private void RemoveItemFromBudget(Budget selectedBudget)
+        private void RemoveItemFromBudget(Account selectedBudget)
         {
             Console.WriteLine(0 + ": Cancel.");
-            for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
+            for (int i = 0; i < selectedBudget.Budget.UserInputItem.Count; i++)
             {
-                Console.WriteLine(i + 1 + ": " + selectedBudget.UserInputItem[i] + " " + selectedBudget.UserInputCost[i]);
+                Console.WriteLine(i + 1 + ": " + selectedBudget.Budget.UserInputItem[i] + " " + selectedBudget.Budget.UserInputCost[i]);
             }
 
             Console.Write("Enter the number of the item you want to remove: ");
             var deleteItem = ParseHelper.ParseDouble(Console.ReadLine());
 
-            for (int i = 0; i < selectedBudget.UserInputItem.Count; i++)
+            for (int i = 0; i < selectedBudget.Budget.UserInputItem.Count; i++)
             {
                 if (deleteItem == i + 1)
                 {
-                    selectedBudget.AllUserTransactionFile.Add(selectedBudget.UserInputCost[i] + " " + selectedBudget.UserInputItem[i] + " " + DateTime.Now.ToString() + " Deleted. ");
+                    selectedBudget.Budget.AllUserTransactionFile.Add(selectedBudget.Budget.UserInputCost[i] + " " + selectedBudget.Budget.UserInputItem[i] + " " + DateTime.Now.ToString() + " Deleted. ");
                     this.allTransactionsLineCount++;
-                    selectedBudget.UserInputItem.Remove(selectedBudget.UserInputItem[i]);
-                    selectedBudget.UserInputCost.Remove(selectedBudget.UserInputCost[i]);
+
+                    var amountToRemove = selectedBudget.Budget.UserInputCost[i];
+                    selectedBudget.Wallet.WalletAmount -= amountToRemove;
+
+                    selectedBudget.Budget.UserInputItem.Remove(selectedBudget.Budget.UserInputItem[i]);
+                    selectedBudget.Budget.UserInputCost.Remove(selectedBudget.Budget.UserInputCost[i]);
                     this.fileLineCount--;
                     break;
                 }
@@ -924,7 +928,7 @@ namespace MoneyExperiment
                 {
                     break;
                 }
-                else if (deleteItem > selectedBudget.UserInputItem.Count)
+                else if (deleteItem > selectedBudget.Budget.UserInputItem.Count)
                 {
                     Console.Clear();
                     Console.WriteLine("Wrong item selection");
