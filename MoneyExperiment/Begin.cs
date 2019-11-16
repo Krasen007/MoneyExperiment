@@ -9,79 +9,18 @@ namespace MoneyExperiment
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Text;
 
     public class Begin
     {
-        // Can probably be moved to separate file. Used only in decrypt db and save db.
-        private string userPassword;
-
         private int fileLineCount;
         private int allTransactionsLineCount;
 
         public Begin()
         {
             Console.WriteLine("*********** Welcome **********");
-            this.userPassword = this.AskForPassword();
+            Encryption.AskForPassword();
             PullDataBase();
             this.Start(LoadAccount(null));
-        }
-
-        /// <summary>
-        /// Ask for user to set password.
-        /// </summary>
-        /// <returns>string of User input</returns>
-        private string AskForPassword()
-        {
-            Console.Write("Please enter your password: ");
-
-            StringBuilder passwordInput = new StringBuilder();
-            ConsoleKeyInfo key;
-
-            do
-            {
-                key = Console.ReadKey(true);
-
-                // Backspace Should Not Work
-                if (!char.IsControl(key.KeyChar))
-                {
-                    passwordInput.Append(key.KeyChar);
-                    Console.Write("*");
-                }
-                else
-                {
-                    if (key.Key == ConsoleKey.Backspace && passwordInput.Length > 0)
-                    {
-                        passwordInput.Remove(passwordInput.Length - 1, 1);
-                        Console.Write("\b \b");
-                    }
-                }
-            }
-            // Stops Receving Keys Once Enter is Pressed
-            while (key.Key != ConsoleKey.Enter);
-            Console.Clear();
-
-            // Save password
-            if (passwordInput.ToString().Length <= Constants.PasswordLength)
-            {
-                StringBuilder builder = new StringBuilder(passwordInput.ToString());
-
-                for (int i = Constants.PasswordLength; i >= passwordInput.ToString().Length; i--)
-                {
-                    builder.Append("-");
-                }
-
-                return builder.ToString();
-            }
-            else if (passwordInput.ToString().Length >= Constants.PasswordLength + 2)
-            {
-                Console.WriteLine("Your password is too long.");
-                return this.AskForPassword();
-            }
-            else
-            {
-                return passwordInput.ToString();
-            }
         }
 
         /// <summary>
@@ -155,7 +94,7 @@ namespace MoneyExperiment
 
             if (this.DecryptDatabaseFiles(selectedAccount, out Account decryptedAccount))
             {
-                this.SaveDatabase(decryptedAccount);
+                Encryption.SaveDatabase(decryptedAccount, this.fileLineCount, this.allTransactionsLineCount);
                 // Start UI
                 this.ListDataBaseSummary(decryptedAccount);
                 this.ShowMainMenu(decryptedAccount);
@@ -164,15 +103,10 @@ namespace MoneyExperiment
             {
                 // Try again.
                 Encryption.IsPasswordWrong = false;
-                this.userPassword = this.AskForPassword();
+                Encryption.AskForPassword();
                 this.Start(decryptedAccount);
             }
         }
-
-        //// private bool PerformIntegrityCheck(Account selectedAccount)
-        //// {
-        ////     return true;
-        //// }
 
         /// <summary>
         /// Decrypts the user database with the provided password.
@@ -286,7 +220,7 @@ namespace MoneyExperiment
                 {
                     for (int i = 0; i < this.fileLineCount; i++)
                     {
-                        var decryptedString = Encryption.DecryptString(this.userPassword, srItems.ReadLine()!);
+                        var decryptedString = Encryption.DecryptString(srItems.ReadLine()!);
                         if (Encryption.IsPasswordWrong)
                         {
                             break;
@@ -321,7 +255,7 @@ namespace MoneyExperiment
                 {
                     for (int i = 0; i < this.fileLineCount; i++)
                     {
-                        var decryptedString = Encryption.DecryptString(this.userPassword, srCosts.ReadLine()!);
+                        var decryptedString = Encryption.DecryptString(srCosts.ReadLine()!);
                         if (Encryption.IsPasswordWrong)
                         {
                             break;
@@ -359,7 +293,7 @@ namespace MoneyExperiment
                 {
                     for (int i = 0; i < this.allTransactionsLineCount; i++)
                     {
-                        var decryptedString = Encryption.DecryptString(this.userPassword, trReader.ReadLine()!);
+                        var decryptedString = Encryption.DecryptString(trReader.ReadLine()!);
                         if (Encryption.IsPasswordWrong)
                         {
                             break;
@@ -492,7 +426,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine();
                 this.AddOrUpdateBudgetItem(selectedAccount);
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
@@ -501,7 +435,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine();
                 UpdateBalance(selectedAccount);
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
@@ -509,11 +443,11 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.E)
             {
                 Console.WriteLine("\nExiting...");
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
             }
             else if (userInput.Key == ConsoleKey.U)
             {
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
 
                 Console.WriteLine("\nUploading...");
                 UploadOnline();
@@ -646,52 +580,6 @@ namespace MoneyExperiment
             this.allTransactionsLineCount++;
         }
 
-        /// <summary>
-        /// Export the strings into encrypted files.
-        /// </summary>
-        private void SaveDatabase(Account selectedAccount)
-        {
-            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.CostsFilePath))
-            {
-                for (int i = 0; i < this.fileLineCount; i++)
-                {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedAccount.Budget.UserInputCost[i].ToString());
-                    outputFile.WriteLine(encryptedString);
-                }
-            }
-
-            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.ItemsFilePath))
-            {
-                for (int i = 0; i < this.fileLineCount; i++)
-                {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedAccount.Budget.UserInputItem[i]);
-                    outputFile.WriteLine(encryptedString);
-                }
-            }
-
-            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.AllTransactionsFilePath))
-            {
-                for (int i = 0; i < this.allTransactionsLineCount; i++)
-                {
-                    var encryptedString = Encryption.EncryptString(this.userPassword, selectedAccount.Budget.AllUserTransactionFile[i]);
-                    outputFile.WriteLine(encryptedString);
-                }
-            }
-
-            // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.BudgetFilePath))
-            {
-                outputFile.WriteLine(selectedAccount.Budget.Amount);
-                outputFile.WriteLine(selectedAccount.Budget.Name);
-            }
-
-            // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Wallet.AmountFilePath))
-            {
-                outputFile.WriteLine(selectedAccount.Wallet.WalletAmount);
-            }
-        }
-
         private static void UploadOnline()
         {
             const string InitCreateDB = @"Scripts\InitCreateDB.bat";
@@ -736,7 +624,7 @@ namespace MoneyExperiment
             if (userInput.Key == ConsoleKey.X)
             {
                 Console.Clear();
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
                 this.ExportReadable(selectedAccount.Budget);
                 Console.WriteLine("View your summary in " + selectedAccount.Budget.SummaryFilePath);
                 Constants.PressEnterToContinue();
@@ -751,7 +639,8 @@ namespace MoneyExperiment
                 this.RemoveItemFromBudget(selectedAccount);
                 Console.Clear();
 
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -762,7 +651,7 @@ namespace MoneyExperiment
                 this.RenameBudgetItem(selectedAccount.Budget);
                 Console.Clear();
 
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -774,7 +663,7 @@ namespace MoneyExperiment
                 this.ImportCSV(selectedAccount.Budget);
                 Constants.PressEnterToContinue();
 
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -783,7 +672,7 @@ namespace MoneyExperiment
                 ChangeBudgetNameAndAmount(selectedAccount.Budget);
                 Console.Clear();
 
-                this.SaveDatabase(selectedAccount);
+                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
