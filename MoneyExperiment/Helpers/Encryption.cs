@@ -140,9 +140,12 @@ namespace MoneyExperiment.Helpers
             }
 
             // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Wallet.AmountFilePath))
+            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Wallet[0].AmountFilePath)) // TODO FIX
             {
-                outputFile.WriteLine(selectedAccount.Wallet.WalletAmount);
+                foreach (var wallet in selectedAccount.Wallet)
+                {
+                    outputFile.WriteLine(wallet.WalletAmount);
+                }
             }
         }
 

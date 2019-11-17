@@ -50,14 +50,15 @@ namespace MoneyExperiment
         /// <summary>
         /// Performs a setup of a budget file.
         /// </summary>
-        /// <param name="name">Selected budget to load.</param>
+        /// <param name="budgetName">Selected budget to load.</param>
         /// <returns>Budget item with set fields.</returns>
-        private static Account LoadAccount(string? name)
+        private static Account LoadAccount(string? budgetName)
         {
             Account accountToLoad = new Account();
-            accountToLoad.Wallet.WalletName = Constants.DefaultWalletName;
+            accountToLoad.Wallet.Add(new Wallet());
+            accountToLoad.Wallet[0].WalletName = Constants.DefaultWalletName;
 
-            if (name == null)
+            if (budgetName == null)
             {
                 accountToLoad.Budget = new Budget
                 {
@@ -68,16 +69,16 @@ namespace MoneyExperiment
             {
                 accountToLoad.Budget = new Budget
                 {
-                    Name = name
+                    Name = budgetName
                 };
             }
 
-            accountToLoad.Wallet.AmountFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet.WalletName + "\\Amount" + accountToLoad.Wallet.WalletName + ".krs";
-            accountToLoad.Budget.BudgetFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet.WalletName + "\\" + accountToLoad.Budget.Name + "\\Budget" + accountToLoad.Budget.Name + ".krs";
-            accountToLoad.Budget.ItemsFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet.WalletName + "\\" + accountToLoad.Budget.Name + "\\Items" + accountToLoad.Budget.Name + ".krs";
-            accountToLoad.Budget.CostsFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet.WalletName + "\\" + accountToLoad.Budget.Name + "\\Costs" + accountToLoad.Budget.Name + ".krs";
-            accountToLoad.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet.WalletName + "\\" + accountToLoad.Budget.Name + "\\AllTransactions" + accountToLoad.Budget.Name + ".krs";
-            accountToLoad.Budget.SummaryFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet.WalletName + "\\" + accountToLoad.Budget.Name + "\\Summary" + accountToLoad.Budget.Name + ".txt";
+            accountToLoad.Wallet[0].AmountFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\Amount" + accountToLoad.Wallet[0].WalletName + ".krs";
+            accountToLoad.Budget.BudgetFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\" + accountToLoad.Budget.Name + "\\Budget" + accountToLoad.Budget.Name + ".krs";
+            accountToLoad.Budget.ItemsFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\" + accountToLoad.Budget.Name + "\\Items" + accountToLoad.Budget.Name + ".krs";
+            accountToLoad.Budget.CostsFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\" + accountToLoad.Budget.Name + "\\Costs" + accountToLoad.Budget.Name + ".krs";
+            accountToLoad.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\" + accountToLoad.Budget.Name + "\\AllTransactions" + accountToLoad.Budget.Name + ".krs";
+            accountToLoad.Budget.SummaryFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\" + accountToLoad.Budget.Name + "\\Summary" + accountToLoad.Budget.Name + ".txt";
 
             return accountToLoad;
         }
@@ -126,11 +127,11 @@ namespace MoneyExperiment
             const string backslash = "\\";
 
             // Default account folder
-            if (selectedAccount.Wallet.WalletName == Constants.DefaultWalletName)
+            if (selectedAccount.Wallet[0].WalletName == Constants.DefaultWalletName)
             {
-                if (!Directory.Exists(Constants.DatabaseFolderPath + selectedAccount.Wallet.WalletName))
+                if (!Directory.Exists(Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName))
                 {
-                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.Wallet.WalletName);
+                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName);
                 }
                 else
                 {
@@ -139,16 +140,29 @@ namespace MoneyExperiment
             }
 
             // Acc Amount file
-            if (!File.Exists(selectedAccount.Wallet.AmountFilePath))
+            if (!File.Exists(selectedAccount.Wallet[0].AmountFilePath))
             {
-                File.Create(selectedAccount.Wallet.AmountFilePath).Dispose();
+                File.Create(selectedAccount.Wallet[0].AmountFilePath).Dispose();
             }
             else
             {
                 try
                 {
-                    using StreamReader srBudget = new StreamReader(selectedAccount.Wallet.AmountFilePath);
-                    selectedAccount.Wallet.WalletAmount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
+                    var walletsNumber = File.ReadLines(selectedAccount.Wallet[0].AmountFilePath).Count();
+
+                    using StreamReader srBudget = new StreamReader(selectedAccount.Wallet[0].AmountFilePath);
+
+                    for (int i = 0; i < walletsNumber - 1; i++)
+                    {
+                        selectedAccount.Wallet.Add(new Wallet());
+                    }
+
+                    for (int i = 0; i < walletsNumber; i++)
+                    {
+                        selectedAccount.Wallet[i].WalletAmount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
+                        // TODO add walet name too
+                    }
+
                     srBudget.Close();
                 }
                 catch (IOException error)
@@ -168,7 +182,7 @@ namespace MoneyExperiment
                     Console.Write("Set your spending budget: ");
                     selectedAccount.Budget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                    Directory.CreateDirectory(path: Constants.DatabaseFolderPath + selectedAccount.Wallet.WalletName + backslash + selectedAccount.Budget.Name);
+                    Directory.CreateDirectory(path: Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName + backslash + selectedAccount.Budget.Name);
                     File.Create(selectedAccount.Budget.BudgetFilePath).Dispose();
                 }
                 else
@@ -179,8 +193,8 @@ namespace MoneyExperiment
                     Console.Write("Set your spending budget: ");
                     selectedAccount.Budget.Amount = ParseHelper.ParseDouble(Console.ReadLine());
 
-                    selectedAccount.Budget.BudgetFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet.WalletName + backslash + selectedAccount.Budget.Name + "\\Budget" + selectedAccount.Budget.Name + ".krs";
-                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.Wallet.WalletName + backslash + selectedAccount.Budget.Name);
+                    selectedAccount.Budget.BudgetFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName + backslash + selectedAccount.Budget.Name + "\\Budget" + selectedAccount.Budget.Name + ".krs";
+                    Directory.CreateDirectory(Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName + backslash + selectedAccount.Budget.Name);
                     File.Create(selectedAccount.Budget.BudgetFilePath).Dispose();
                 }
             }
@@ -207,7 +221,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("Items file was missing so we created one for you.");
 
-                selectedAccount.Budget.ItemsFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet.WalletName + backslash + selectedAccount.Budget.Name + "\\Items" + selectedAccount.Budget.Name + ".krs";
+                selectedAccount.Budget.ItemsFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName + backslash + selectedAccount.Budget.Name + "\\Items" + selectedAccount.Budget.Name + ".krs";
                 File.Create(selectedAccount.Budget.ItemsFilePath).Dispose();
                 this.fileLineCount = 0;
             }
@@ -245,7 +259,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("Costs file was missing so we created one for you.");
 
-                selectedAccount.Budget.CostsFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet.WalletName + backslash + selectedAccount.Budget.Name + "\\Costs" + selectedAccount.Budget.Name + ".krs";
+                selectedAccount.Budget.CostsFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName + backslash + selectedAccount.Budget.Name + "\\Costs" + selectedAccount.Budget.Name + ".krs";
                 File.Create(selectedAccount.Budget.CostsFilePath).Dispose();
             }
             else
@@ -280,7 +294,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine("CurrentTransaction file was missing so we created one for you.");
 
-                selectedAccount.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet.WalletName + backslash + selectedAccount.Budget.Name + "\\AllTransactions" + selectedAccount.Budget.Name + ".krs";
+                selectedAccount.Budget.AllTransactionsFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName + backslash + selectedAccount.Budget.Name + "\\AllTransactions" + selectedAccount.Budget.Name + ".krs";
                 File.Create(selectedAccount.Budget.AllTransactionsFilePath).Dispose();
                 this.allTransactionsLineCount = 0;
             }
@@ -335,7 +349,13 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** {0} **********\n", selectedAccount.Budget.Name);
 
-            Console.WriteLine(Constants.SeparatorHelper(selectedAccount.Wallet.WalletAmount, 6) + selectedAccount.Wallet.WalletAmount + " " + selectedAccount.Wallet.WalletName + "\n");
+            foreach (var wallet in selectedAccount.Wallet)
+            {
+                Console.WriteLine(Constants.SeparatorHelper(wallet.WalletAmount, 6) + wallet.WalletAmount + " " + wallet.WalletName);
+            }
+            Console.WriteLine();
+
+            ///Console.WriteLine(Constants.SeparatorHelper(selectedAccount.Wallet[0].WalletAmount, 6) + selectedAccount.Wallet[0].WalletAmount + " " + selectedAccount.Wallet[0].WalletName + "\n");
 
             ////var netWorthAccount = new Account
             ////{
@@ -479,8 +499,9 @@ namespace MoneyExperiment
             Console.WriteLine("What do you want to do with the current account?");
             Console.WriteLine("0: Cancel");
             Console.WriteLine("1: Add/remove funds");
-            ///Console.WriteLine("2: Transfer funds");
-            ///Console.WriteLine("3: Create new account");
+            Console.WriteLine("2: Transfer funds");
+            Console.WriteLine("3: Create new account");
+            // TODO add remove acc.
 
             var userChoice = ParseHelper.ParseDouble(Console.ReadLine());
 
@@ -490,22 +511,50 @@ namespace MoneyExperiment
             }
             else if (userChoice == 1)
             {
-                Console.WriteLine("Current amount is: " + selectedAccount.Wallet.WalletAmount);
+                Console.WriteLine("Current amount is: " + selectedAccount.Wallet[0].WalletAmount);
                 Console.WriteLine("Increase/Decrease balance corection with:");
                 var balance = ParseHelper.ParseDouble(Console.ReadLine());
 
-                selectedAccount.Wallet.WalletAmount += balance;
+                selectedAccount.Wallet[0].WalletAmount += balance;
             }
-            ////else if (userChoice == 2)
-            ////{
-            ////    Console.WriteLine("What amount you want to transfer between who?");
-            ////    Console.WriteLine("Current amount is: " + selectedAccount.Wallet.WalletAmount);
-            ////}
-            ////else if (userChoice == 3)
-            ////{
-            ////    // add new wallet
-            ////    //selectedAccount.Wallet.Add()
-            ////}
+            else if (userChoice == 2)
+            {
+                if (selectedAccount.Wallet.Count < 1)
+                {
+                    // Cancel.
+                }
+                else
+                {
+                    Console.WriteLine("What amount you want to transfer between who?");
+
+                    Console.WriteLine("Pick from which account to move funds: ");
+                    for (int i = 0; i < selectedAccount.Wallet.Count; i++)
+                    {
+                        Console.WriteLine(i + ": " + selectedAccount.Wallet[i].WalletName + " contains " + selectedAccount.Wallet[i].WalletAmount);
+                    }
+                    var userChoseFirstAcc = ParseHelper.ParseDouble(Console.ReadLine());
+
+                    Console.WriteLine("How much?");
+                    var userChoseAmount = ParseHelper.ParseDouble(Console.ReadLine());
+
+                    Console.WriteLine("Pick second account from which to move funds to: ");
+                    for (int i = 0; i < selectedAccount.Wallet.Count; i++)
+                    {
+                        Console.WriteLine(i + ": " + selectedAccount.Wallet[i].WalletName + " contains " + selectedAccount.Wallet[i].WalletAmount);
+                    }
+                    var userChoseSecondAcc = ParseHelper.ParseDouble(Console.ReadLine());
+
+                    // The actual logic
+                    selectedAccount.Wallet[(int)userChoseFirstAcc].WalletAmount -= userChoseAmount;
+                    selectedAccount.Wallet[(int)userChoseSecondAcc].WalletAmount += userChoseAmount;
+                }
+            }
+            else if (userChoice == 3)
+            {
+                // Adds a new wallet
+                Console.WriteLine("What is the name of the new wallet?");
+                selectedAccount.Wallet.Add(new Wallet() { WalletName = ParseHelper.ParseStringInput(Console.ReadLine()) });
+            }
         }
 
         private void AddOrUpdateBudgetItem(Account selectedAccount)
@@ -561,14 +610,14 @@ namespace MoneyExperiment
                     // Only increase the cost if item is in the database
                     selectedAccount.Budget.UserInputCost[i] += costInput;
 
-                    selectedAccount.Wallet.WalletAmount -= costInput;
+                    selectedAccount.Wallet[0].WalletAmount -= costInput;
                     break;
                 }
             }
 
             if (!isDublicateItem)
             {
-                selectedAccount.Wallet.WalletAmount -= costInput;
+                selectedAccount.Wallet[0].WalletAmount -= costInput;
                 selectedAccount.Budget.UserInputItem.Add(itemInput);
                 selectedAccount.Budget.UserInputCost.Add(costInput);
                 selectedAccount.Budget.TranasctionTime.Add(DateTime.Now.ToString());
@@ -640,7 +689,7 @@ namespace MoneyExperiment
                 Console.Clear();
 
                 Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
-                
+
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -813,7 +862,7 @@ namespace MoneyExperiment
                     this.allTransactionsLineCount++;
 
                     var amountToRemove = selectedBudget.Budget.UserInputCost[i];
-                    selectedBudget.Wallet.WalletAmount -= amountToRemove;
+                    selectedBudget.Wallet[0].WalletAmount -= amountToRemove;
 
                     selectedBudget.Budget.UserInputItem.Remove(selectedBudget.Budget.UserInputItem[i]);
                     selectedBudget.Budget.UserInputCost.Remove(selectedBudget.Budget.UserInputCost[i]);
@@ -960,7 +1009,7 @@ namespace MoneyExperiment
         /// <returns>Returns a name of the budget to be loaded.</returns>
         private string SwitchBudget(Account currentAccount)
         {
-            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + currentAccount.Wallet.WalletName);
+            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + currentAccount.Wallet[0].WalletName);
 
             Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < dirList.Length; i++)
@@ -1003,7 +1052,7 @@ namespace MoneyExperiment
         /// </summary>
         private void DeleteBudget(Account currentAccount)
         {
-            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + currentAccount.Wallet.WalletName);
+            var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + currentAccount.Wallet[0].WalletName);
 
             Console.WriteLine(0 + ": Cancel.");
             for (int i = 0; i < dirList.Length; i++)
