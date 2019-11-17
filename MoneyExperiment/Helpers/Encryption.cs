@@ -2,11 +2,11 @@
 
 namespace MoneyExperiment.Helpers
 {
+    using MoneyExperiment.Model;
     using System;
     using System.IO;
     using System.Security.Cryptography;
     using System.Text;
-    using MoneyExperiment.Model;
 
     public static class Encryption
     {
@@ -140,11 +140,12 @@ namespace MoneyExperiment.Helpers
             }
 
             // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Wallet[0].AmountFilePath)) // TODO FIX
+            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Wallet[0].AmountFilePath))
             {
                 foreach (var wallet in selectedAccount.Wallet)
                 {
                     outputFile.WriteLine(wallet.WalletAmount);
+                    outputFile.WriteLine(wallet.WalletName);
                 }
             }
         }

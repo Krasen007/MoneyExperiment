@@ -149,6 +149,7 @@ namespace MoneyExperiment
                 try
                 {
                     var walletsNumber = File.ReadLines(selectedAccount.Wallet[0].AmountFilePath).Count();
+                    walletsNumber /= 2; // This isused because the file contains both name and amount, but we need only the number of wallets.
 
                     using StreamReader srBudget = new StreamReader(selectedAccount.Wallet[0].AmountFilePath);
 
@@ -160,7 +161,7 @@ namespace MoneyExperiment
                     for (int i = 0; i < walletsNumber; i++)
                     {
                         selectedAccount.Wallet[i].WalletAmount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
-                        // TODO add walet name too
+                        selectedAccount.Wallet[i].WalletName = srBudget.ReadLine()!;
                     }
 
                     srBudget.Close();
@@ -501,7 +502,7 @@ namespace MoneyExperiment
             Console.WriteLine("1: Add/remove funds");
             Console.WriteLine("2: Transfer funds");
             Console.WriteLine("3: Create new account");
-            // TODO add remove acc.
+            Console.WriteLine("4: Remove account");
 
             var userChoice = ParseHelper.ParseDouble(Console.ReadLine());
 
@@ -553,7 +554,18 @@ namespace MoneyExperiment
             {
                 // Adds a new wallet
                 Console.WriteLine("What is the name of the new wallet?");
-                selectedAccount.Wallet.Add(new Wallet() { WalletName = ParseHelper.ParseStringInput(Console.ReadLine()) });
+                selectedAccount.Wallet.Add(new Wallet { WalletName = ParseHelper.ParseStringInput(Console.ReadLine()) });
+            }
+            else if (userChoice == 4)
+            {
+                // Adds a new wallet
+                Console.WriteLine("Which wallet you wish to remove?");
+                for (int i = 0; i < selectedAccount.Wallet.Count; i++)
+                {
+                    Console.WriteLine(i + ": " + selectedAccount.Wallet[i].WalletName + " contains " + selectedAccount.Wallet[i].WalletAmount);
+                }
+                var userChosenWalletToRemove = ParseHelper.ParseDouble(Console.ReadLine());
+                selectedAccount.Wallet.Remove(selectedAccount.Wallet[(int)userChosenWalletToRemove]);
             }
         }
 
