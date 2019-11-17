@@ -2,26 +2,26 @@
 
 namespace MoneyExperiment.Tests
 {
-    using MoneyExperiment.Helpers;
-    using Xunit;
+    ////using MoneyExperiment.Helpers;
+    ////using Xunit;
 
     public class EncryptionTests
     {
-        private readonly string password = "test----------------------------";
-        private string result = "";
+        ////private readonly string password = "test----------------------------";
+        ////private string result = "";
 
-        [Fact]
-        public void TestSamePasswordEveryTime_ReturnSameKeyEncrypted()
-        {
-            this.result = Encryption.EncryptString(this.password, "to be encrypted");
+        ////[Fact]
+        ////public void TestSamePasswordEveryTime_ReturnSameKeyEncrypted()
+        ////{
+        ////    this.result = Encryption.EncryptString(this.password, "to be encrypted");
 
-            Assert.Equal(Encryption.EncryptString(this.password, "to be encrypted"), this.result);
-        }
+        ////    Assert.Equal(Encryption.EncryptString(this.password, "to be encrypted"), this.result);
+        ////}
 
-        [Fact]
-        public void TestSamePasswordEveryTime_ReturnSameKeyDecrypted()
-        {
-            Assert.Equal(Encryption.DecryptString(this.password, this.result), Encryption.DecryptString(this.password, this.result));
-        }
+        ////[Fact]
+        ////public void TestSamePasswordEveryTime_ReturnSameKeyDecrypted()
+        ////{
+        ////    Assert.Equal(Encryption.DecryptString(this.password, this.result), Encryption.DecryptString(this.password, this.result));
+        ////}
     }
 }

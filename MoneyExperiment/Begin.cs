@@ -356,20 +356,6 @@ namespace MoneyExperiment
             }
             Console.WriteLine();
 
-            ///Console.WriteLine(Constants.SeparatorHelper(selectedAccount.Wallet[0].WalletAmount, 6) + selectedAccount.Wallet[0].WalletAmount + " " + selectedAccount.Wallet[0].WalletName + "\n");
-
-            ////var netWorthAccount = new Account
-            ////{
-            ////    Name = "Net worth",
-            ////    Amount = 500
-            ////};
-
-            ////var spendingAccount = new Account
-            ////{
-            ////    Name = "Wallet",
-            ////    Amount = netWorthAccount.Amount - 60
-            ////};
-
             double totalCosts = 0;
             for (int i = 0; i < this.fileLineCount; i++)
             {
@@ -508,7 +494,7 @@ namespace MoneyExperiment
 
             if (userChoice == 0)
             {
-                // Cancel
+                // Cancel.
             }
             else if (userChoice == 1)
             {
@@ -566,6 +552,11 @@ namespace MoneyExperiment
                 }
                 var userChosenWalletToRemove = ParseHelper.ParseDouble(Console.ReadLine());
                 selectedAccount.Wallet.Remove(selectedAccount.Wallet[(int)userChosenWalletToRemove]);
+            }
+            else
+            {
+                Console.Clear();
+                UpdateBalance(selectedAccount);
             }
         }
 
