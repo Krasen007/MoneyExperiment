@@ -350,6 +350,13 @@ namespace MoneyExperiment
         {
             Console.WriteLine("*********** {0} **********\n", selectedAccount.Budget.Name);
 
+            double netWorth = 0;
+            foreach (var wallet in selectedAccount.Wallet)
+            {
+                netWorth += wallet.WalletAmount;
+            }
+            Console.WriteLine(Constants.SeparatorHelper(netWorth, 6) + netWorth + " Net Worth");
+
             foreach (var wallet in selectedAccount.Wallet)
             {
                 Console.WriteLine(Constants.SeparatorHelper(wallet.WalletAmount, 6) + wallet.WalletAmount + " " + wallet.WalletName);
@@ -489,6 +496,7 @@ namespace MoneyExperiment
             Console.WriteLine("2: Transfer funds");
             Console.WriteLine("3: Create new account");
             Console.WriteLine("4: Remove account");
+            Console.WriteLine("5: Rename account");
 
             var userChoice = ParseHelper.ParseDouble(Console.ReadLine());
 
@@ -531,9 +539,18 @@ namespace MoneyExperiment
                     }
                     var userChoseSecondAcc = ParseHelper.ParseDouble(Console.ReadLine());
 
-                    // The actual logic
-                    selectedAccount.Wallet[(int)userChoseFirstAcc].WalletAmount -= userChoseAmount;
-                    selectedAccount.Wallet[(int)userChoseSecondAcc].WalletAmount += userChoseAmount;
+                    // Checks if selected wallet exists
+                    if (userChoseSecondAcc > selectedAccount.Wallet.Count || userChoseFirstAcc > selectedAccount.Wallet.Count)
+                    {
+                        Console.WriteLine("Account does not exist");
+                        UpdateBalance(selectedAccount);
+                    }
+                    else
+                    {
+                        // The actual logic
+                        selectedAccount.Wallet[(int)userChoseFirstAcc].WalletAmount -= userChoseAmount;
+                        selectedAccount.Wallet[(int)userChoseSecondAcc].WalletAmount += userChoseAmount;
+                    }
                 }
             }
             else if (userChoice == 3)
@@ -551,7 +568,35 @@ namespace MoneyExperiment
                     Console.WriteLine(i + ": " + selectedAccount.Wallet[i].WalletName + " contains " + selectedAccount.Wallet[i].WalletAmount);
                 }
                 var userChosenWalletToRemove = ParseHelper.ParseDouble(Console.ReadLine());
-                selectedAccount.Wallet.Remove(selectedAccount.Wallet[(int)userChosenWalletToRemove]);
+
+                if (userChosenWalletToRemove > selectedAccount.Wallet.Count)
+                {
+                    UpdateBalance(selectedAccount);
+                }
+                else
+                {
+                    selectedAccount.Wallet.Remove(selectedAccount.Wallet[(int)userChosenWalletToRemove]);
+                }
+            }
+            else if (userChoice == 5)
+            {
+                // Adds a new wallet
+                Console.WriteLine("Which wallet you wish to rename?");
+                for (int i = 0; i < selectedAccount.Wallet.Count; i++)
+                {
+                    Console.WriteLine(i + ": " + selectedAccount.Wallet[i].WalletName + " contains " + selectedAccount.Wallet[i].WalletAmount);
+                }
+                var userChosenWalletToRename = ParseHelper.ParseDouble(Console.ReadLine());
+
+                if (userChosenWalletToRename > selectedAccount.Wallet.Count)
+                {
+                    UpdateBalance(selectedAccount);
+                }
+                else
+                {
+                    Console.WriteLine("Enter the new name for this account");
+                    selectedAccount.Wallet[(int)userChosenWalletToRename].WalletName = Console.ReadLine();
+                }
             }
             else
             {
@@ -865,7 +910,7 @@ namespace MoneyExperiment
                     this.allTransactionsLineCount++;
 
                     var amountToRemove = selectedBudget.Budget.UserInputCost[i];
-                    selectedBudget.Wallet[0].WalletAmount -= amountToRemove;
+                    selectedBudget.Wallet[0].WalletAmount += amountToRemove;
 
                     selectedBudget.Budget.UserInputItem.Remove(selectedBudget.Budget.UserInputItem[i]);
                     selectedBudget.Budget.UserInputCost.Remove(selectedBudget.Budget.UserInputCost[i]);
