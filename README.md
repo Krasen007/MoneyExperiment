@@ -20,7 +20,7 @@ Repo is located here: <a href="https://github.com/Krasen007/MoneyExperiment">htt
 * Create an empty folder and download and extract the latest version.  
 * Create a new account and/or repository in [github.com](https://github.com/) or [gitlab.com](https://gitlab.com/).  
 * Open Scripts/InitCreateDB.bat using your favorite text editor (notepad) and change the lines of the file to match your repo and credentials you used to make it, for example: git config user.name "Krasen Ivanov"
-git config user.email "krasen007@gmail.com" and git remote add origin https://github.com/Krasen007/MoneyExperimentDB.git  
+git config user.email "krasen007@gmail.com" and git remote add origin <https://github.com/Krasen007/MoneyExperimentDB.git>  
 * If building from, source open your folder with the app and open cmd/terminal and type "dotnet run" to compile and run.  
 * You are done! Enjoy your console .net core budgeting app.  
 * Optional: Repeat on any other PC you want to use the app on and synchronize your settings.  
@@ -44,9 +44,9 @@ If you forget your password you will have to delete the Database folder containi
 
 #### Whats new in version 1.4.0.x
 
-NetWorth of multiple accounts;  
-Walet functionality to transfer between accounts;  
-This version will probably break existing databases;  
+Added Net Worth of multiple accounts;  
+Added Walet functionality and ability to transfer between accounts;  
+**This version will probably break existing databases;**  
 
 * Whats new in version 1.3.11.x
 

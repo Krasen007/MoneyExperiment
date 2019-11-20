@@ -366,13 +366,55 @@ namespace MoneyExperiment
             double totalCosts = 0;
             for (int i = 0; i < this.fileLineCount; i++)
             {
+                totalCosts += selectedAccount.Budget.UserInputCost[i];
+
                 // This is used to add space between the amount of the item so they appear level.
                 Console.WriteLine(Constants.SeparatorHelper(selectedAccount.Budget.UserInputCost[i], 6) + selectedAccount.Budget.UserInputCost[i] + " " + selectedAccount.Budget.UserInputItem[i]);
-                totalCosts += selectedAccount.Budget.UserInputCost[i];
             }
 
+            var stringInfo = Constants.SeparatorHelper(selectedAccount.Budget.Amount - totalCosts, 6) + (selectedAccount.Budget.Amount - totalCosts) + " Left of " + selectedAccount.Budget.Amount + " budgeted.";
+
             Console.WriteLine("\n" + Constants.SeparatorHelper(totalCosts, 6) + totalCosts + " TOTAL SPENT");
-            Console.WriteLine(Constants.SeparatorHelper(selectedAccount.Budget.Amount - totalCosts, 6) + (selectedAccount.Budget.Amount - totalCosts) + " Left of " + selectedAccount.Budget.Amount + " budgeted.");
+            Console.WriteLine(stringInfo);
+
+            /* This is used for budget progress bar display. */
+            var incrementCost = selectedAccount.Budget.Amount / stringInfo.Length;
+            var displayedRemainingBudget = (selectedAccount.Budget.Amount - totalCosts) / incrementCost;
+            var displayedSpending = (selectedAccount.Budget.Amount / incrementCost) - displayedRemainingBudget;
+            var overSpentIncrement = (totalCosts - selectedAccount.Budget.Amount) / incrementCost;
+
+            var progressBar = new System.Text.StringBuilder();
+
+            if (overSpentIncrement > 0)
+            {
+                for (int j = 0; j < stringInfo.Length; j++)
+                {
+                    progressBar.Append('x');
+                }
+
+                for (int i = 0; i < overSpentIncrement; i++)
+                {
+                    progressBar.Append('!');
+                }
+
+                Console.WriteLine("[" + progressBar + "]");
+            }
+            else
+            {
+                for (int j = 0; j < displayedSpending; j++)
+                {
+                    progressBar.Append('x');
+                }
+
+                for (int i = 0; i < displayedRemainingBudget; i++)
+                {
+                    progressBar.Append('-');
+                }
+
+                Console.WriteLine("[" + progressBar + "]");
+            }
+            /* to here */
+
             Console.WriteLine();
         }
 
