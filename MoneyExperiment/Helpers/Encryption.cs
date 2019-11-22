@@ -126,7 +126,7 @@ namespace MoneyExperiment.Helpers
             {
                 for (int i = 0; i < fileLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(selectedAccount.Budget.UserInputCost[i].ToString());
+                    var encryptedString = EncryptString(selectedAccount.Budget.UserInputCost[i].ToString());
                     outputFile.WriteLine(encryptedString);
                 }
             }
@@ -135,7 +135,7 @@ namespace MoneyExperiment.Helpers
             {
                 for (int i = 0; i < fileLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(selectedAccount.Budget.UserInputItem[i]);
+                    var encryptedString = EncryptString(selectedAccount.Budget.UserInputItem[i]);
                     outputFile.WriteLine(encryptedString);
                 }
             }
@@ -144,7 +144,7 @@ namespace MoneyExperiment.Helpers
             {
                 for (int i = 0; i < allTransactionsLineCount; i++)
                 {
-                    var encryptedString = Encryption.EncryptString(selectedAccount.Budget.AllUserTransactionFile[i]);
+                    var encryptedString = EncryptString(selectedAccount.Budget.AllUserTransactionFile[i]);
                     outputFile.WriteLine(encryptedString);
                 }
             }

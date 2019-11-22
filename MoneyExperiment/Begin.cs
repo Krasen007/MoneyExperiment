@@ -72,11 +72,12 @@ namespace MoneyExperiment
         private static Account LoadAccount(string? budgetName)
         {
             Account accountToLoad = new Account();
-            accountToLoad.Wallet.Add(new Wallet());
-            accountToLoad.Wallet[0].WalletName = Constants.DefaultWalletName;
 
             if (budgetName == null)
             {
+                // TODO Fix when password is wrong...
+                accountToLoad.Wallet.Add(new Wallet());
+                accountToLoad.Wallet[0].WalletName = Constants.DefaultWalletName;
                 accountToLoad.Budget = new Budget
                 {
                     Name = Constants.DefaultBudgetName
@@ -84,6 +85,7 @@ namespace MoneyExperiment
             }
             else
             {
+                accountToLoad.Wallet.Add(new Wallet());
                 accountToLoad.Budget = new Budget
                 {
                     Name = budgetName
@@ -122,7 +124,7 @@ namespace MoneyExperiment
                 // Try again.
                 Encryption.IsPasswordWrong = false;
                 Encryption.AskForPassword();
-                this.Start(decryptedAccount);
+                this.Start(selectedAccount);
             }
         }
 
