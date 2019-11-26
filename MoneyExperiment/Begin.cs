@@ -1,5 +1,5 @@
 /*
-    Money Experiment Experimental console budgeting app. 
+    Money Experiment Experimental console budgeting app.
     Built on .net core. Use it to sync between PCs.
     Copyright (C) 2019  Krasen Ivanov
 
@@ -92,7 +92,7 @@ namespace MoneyExperiment
                 };
             }
 
-            accountToLoad.Wallet[0].AmountFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\Amount" + accountToLoad.Wallet[0].WalletName + ".krs";
+            accountToLoad.Wallet[0].AmountAndNameFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\Amount" + accountToLoad.Wallet[0].WalletName + ".krs";
             accountToLoad.Budget.BudgetFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\" + accountToLoad.Budget.Name + "\\Budget" + accountToLoad.Budget.Name + ".krs";
             accountToLoad.Budget.ItemsFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\" + accountToLoad.Budget.Name + "\\Items" + accountToLoad.Budget.Name + ".krs";
             accountToLoad.Budget.CostsFilePath = Constants.DatabaseFolderPath + accountToLoad.Wallet[0].WalletName + "\\" + accountToLoad.Budget.Name + "\\Costs" + accountToLoad.Budget.Name + ".krs";
@@ -159,18 +159,18 @@ namespace MoneyExperiment
             }
 
             // Acc Amount file
-            if (!File.Exists(selectedAccount.Wallet[0].AmountFilePath))
+            if (!File.Exists(selectedAccount.Wallet[0].AmountAndNameFilePath))
             {
-                File.Create(selectedAccount.Wallet[0].AmountFilePath).Dispose();
+                File.Create(selectedAccount.Wallet[0].AmountAndNameFilePath).Dispose();
             }
             else
             {
                 try
                 {
-                    var walletsNumber = File.ReadLines(selectedAccount.Wallet[0].AmountFilePath).Count();
+                    var walletsNumber = File.ReadLines(selectedAccount.Wallet[0].AmountAndNameFilePath).Count();
                     walletsNumber /= 2; // This isused because the file contains both name and amount, but we need only the number of wallets.
 
-                    using StreamReader srBudget = new StreamReader(selectedAccount.Wallet[0].AmountFilePath);
+                    using StreamReader srBudget = new StreamReader(selectedAccount.Wallet[0].AmountAndNameFilePath);
 
                     for (int i = 0; i < walletsNumber - 1; i++)
                     {
@@ -179,8 +179,25 @@ namespace MoneyExperiment
 
                     for (int i = 0; i < walletsNumber; i++)
                     {
-                        selectedAccount.Wallet[i].WalletAmount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
-                        selectedAccount.Wallet[i].WalletName = srBudget.ReadLine()!;
+                        var decryptedAmount = Encryption.DecryptString(srBudget.ReadLine()!);
+                        if (Encryption.IsPasswordWrong)
+                        {
+                            // break
+                        }
+                        else
+                        {
+                            selectedAccount.Wallet[i].WalletAmount = ParseHelper.ParseDouble(decryptedAmount);
+                        }
+
+                        var decryptName = Encryption.DecryptString(srBudget.ReadLine()!);
+                        if (Encryption.IsPasswordWrong)
+                        {
+                            // break
+                        }
+                        else
+                        {
+                            selectedAccount.Wallet[i].WalletName = decryptName;
+                        }
                     }
 
                     srBudget.Close();
@@ -224,8 +241,27 @@ namespace MoneyExperiment
                 {
                     // To work the file should contain first the budget Amount and on the second line the name of the budget.
                     using StreamReader srBudget = new StreamReader(selectedAccount.Budget.BudgetFilePath);
-                    selectedAccount.Budget.Amount = ParseHelper.ParseDouble(srBudget.ReadLine()!);
-                    selectedAccount.Budget.Name = srBudget.ReadLine()!;
+
+                    var decryptedString = Encryption.DecryptString(srBudget.ReadLine()!);
+                    if (Encryption.IsPasswordWrong)
+                    {
+                        // break
+                    }
+                    else
+                    {
+                        selectedAccount.Budget.Amount = ParseHelper.ParseDouble(decryptedString);
+                    }
+
+                    var decryptName = Encryption.DecryptString(srBudget.ReadLine()!);
+                    if (Encryption.IsPasswordWrong)
+                    {
+                        // break
+                    }
+                    else
+                    {
+                        selectedAccount.Budget.Name = decryptName;
+                    }
+
                     srBudget.Close();
                 }
                 catch (IOException error)
@@ -408,7 +444,7 @@ namespace MoneyExperiment
             {
                 for (int j = 0; j < stringInfo.Length; j++)
                 {
-                    progressBar.Append('x');
+                    progressBar.Append('#');
                 }
 
                 for (int i = 0; i < overSpentIncrement; i++)
@@ -422,7 +458,7 @@ namespace MoneyExperiment
             {
                 for (int j = 0; j < displayedSpending; j++)
                 {
-                    progressBar.Append('x');
+                    progressBar.Append('#');
                 }
 
                 for (int i = 0; i < displayedRemainingBudget; i++)

@@ -1,5 +1,5 @@
 ﻿/*
-    Money Experiment Experimental console budgeting app. 
+    Money Experiment Experimental console budgeting app.
     Built on .net core. Use it to sync between PCs.
     Copyright (C) 2019  Krasen Ivanov
 
@@ -122,47 +122,56 @@ namespace MoneyExperiment.Helpers
         /// </summary>
         public static void SaveDatabase(Account selectedAccount, int fileLineCount, int allTransactionsLineCount)
         {
+            // Encrypt budget costs file.
             using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.CostsFilePath))
             {
                 for (int i = 0; i < fileLineCount; i++)
                 {
-                    var encryptedString = EncryptString(selectedAccount.Budget.UserInputCost[i].ToString());
-                    outputFile.WriteLine(encryptedString);
+                    var encryptedUserCostsString = EncryptString(selectedAccount.Budget.UserInputCost[i].ToString());
+                    outputFile.WriteLine(encryptedUserCostsString);
                 }
             }
 
+            // Encrypt budget items file.
             using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.ItemsFilePath))
             {
                 for (int i = 0; i < fileLineCount; i++)
                 {
-                    var encryptedString = EncryptString(selectedAccount.Budget.UserInputItem[i]);
-                    outputFile.WriteLine(encryptedString);
+                    var encryptedUserItemsString = EncryptString(selectedAccount.Budget.UserInputItem[i]);
+                    outputFile.WriteLine(encryptedUserItemsString);
                 }
             }
 
+            // Encrypt budget all transactions file.
             using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.AllTransactionsFilePath))
             {
                 for (int i = 0; i < allTransactionsLineCount; i++)
                 {
-                    var encryptedString = EncryptString(selectedAccount.Budget.AllUserTransactionFile[i]);
-                    outputFile.WriteLine(encryptedString);
+                    var encryptedAllUserTransactionsString = EncryptString(selectedAccount.Budget.AllUserTransactionFile[i]);
+                    outputFile.WriteLine(encryptedAllUserTransactionsString);
                 }
             }
 
-            // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
+            // Encrypt budget file path file.
             using (StreamWriter outputFile = new StreamWriter(selectedAccount.Budget.BudgetFilePath))
             {
-                outputFile.WriteLine(selectedAccount.Budget.Amount);
-                outputFile.WriteLine(selectedAccount.Budget.Name);
+                var encryptedBudgetAmount = EncryptString(selectedAccount.Budget.Amount.ToString());
+                var encryptedBudgetName = EncryptString(selectedAccount.Budget.Name);
+
+                outputFile.WriteLine(encryptedBudgetAmount);
+                outputFile.WriteLine(encryptedBudgetName);
             }
 
-            // Perhaps its not needed to encrypt, maybe its going to be easy to edit too.
-            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Wallet[0].AmountFilePath))
+            // Encrypt wallet amount and name file path file.
+            using (StreamWriter outputFile = new StreamWriter(selectedAccount.Wallet[0].AmountAndNameFilePath))
             {
                 foreach (var wallet in selectedAccount.Wallet)
                 {
-                    outputFile.WriteLine(wallet.WalletAmount);
-                    outputFile.WriteLine(wallet.WalletName);
+                    var encryptedWalletAmount = EncryptString(wallet.WalletAmount.ToString());
+                    var encryptedWalletName = EncryptString(wallet.WalletName);
+
+                    outputFile.WriteLine(encryptedWalletAmount);
+                    outputFile.WriteLine(encryptedWalletName);
                 }
             }
         }

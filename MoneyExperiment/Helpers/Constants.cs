@@ -1,5 +1,5 @@
 ﻿/*
-    Money Experiment Experimental console budgeting app. 
+    Money Experiment Experimental console budgeting app.
     Built on .net core. Use it to sync between PCs.
     Copyright (C) 2019  Krasen Ivanov
 
@@ -21,6 +21,7 @@ namespace MoneyExperiment.Helpers
 {
     using System;
     using System.Text;
+
     public static class Constants
     {
         public static readonly string ReleasesURL = "https://github.com/Krasen007/MoneyExperiment/releases";
