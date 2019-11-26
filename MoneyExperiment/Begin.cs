@@ -679,7 +679,8 @@ namespace MoneyExperiment
             {
                 // Adds a new wallet
                 Console.WriteLine("Which wallet you wish to remove?");
-                for (int i = 0; i < selectedAccount.Wallet.Count; i++)
+                // i starts from 1 because you should not delete the default wallet
+                for (int i = 1; i < selectedAccount.Wallet.Count; i++)
                 {
                     Console.WriteLine(i + ": " + selectedAccount.Wallet[i].WalletName + " contains " + selectedAccount.Wallet[i].WalletAmount);
                 }
