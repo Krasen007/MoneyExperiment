@@ -110,7 +110,26 @@ namespace MoneyExperiment
         /// <param name="selectedAccount">The Budget to operate on.</param>
         private void Start(Account selectedAccount)
         {
-            ///this.PerformIntegrityCheck(selectedAccount);
+            var tempWallet = new List<Wallet>
+            {
+                // Add default wallet
+                selectedAccount.Wallet[0]
+            };
+
+            foreach (var wallet in selectedAccount.Wallet)
+            {
+                if (wallet.WalletName == Constants.DefaultWalletName)
+                {
+                    // Do not add repeatables...
+                }
+                else
+                {
+                    // This contains only non default wallets
+                    tempWallet.Add(wallet);
+                }
+            }
+
+            selectedAccount.Wallet = tempWallet;
 
             if (this.DecryptDatabaseFiles(selectedAccount, out Account decryptedAccount))
             {
