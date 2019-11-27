@@ -29,8 +29,9 @@ git config user.email "krasen007@gmail.com" and git remote add origin <https://g
 
 * After starting, the app will ask you to set a password. Remember this. It's used to encrypt your database.
 If you forget your password you will have to delete the Database folder containing all of the entries. <br>
-* After that, it will ask you to set a name and amount of the budget. For example: name - Monthly Budget, amount - 1000, or Wedding Expenses 12500.  
-* The menu will appear. Use "y" to add entries. Enter how much you spent and on what.  
+* After that, it will ask you to set your spending amount for the budget.  
+* The menu will appear. Use "b" to add your specified amount in the wallet. Create new wallets if you need them.
+* Use "y" to add entries. Enter how much you spent and on what.  Example: 25 food, or 40 gas, etc.
 * You can add new items and if you add the same item their balance will increase automatically. Use **-amount** to decrease costs of already added item.  
 * You can change the name of the budget and amount in the other options menu, also you can create and delete new budgets, export the database to readable txt file, or import a budget.csv with "item, cost" format for example: "food,50".  
 * You can create multiple accounts that you spend from, example: Cash account, Bank account, Saved, Wallet etc.  
@@ -42,10 +43,12 @@ If you forget your password you will have to delete the Database folder containi
 * Main coding: Krasen Ivanov 2019
 * Icon made by Freepik from www.flaticon.com  
 
-#### Whats new in version 1.4.0.x
+#### Whats new in version 1.4.x.x
 
+Added encryption to wallet and budget files;  
+Added progress bar for the spending of the budget;  
 Added Net Worth of multiple accounts;  
-Added Walet functionality and ability to transfer between accounts;  
+Added Wallet functionality and ability to transfer between accounts;  
 **This version will probably break existing databases;**  
 
 * Whats new in version 1.3.11.x
