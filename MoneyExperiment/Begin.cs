@@ -75,7 +75,6 @@ namespace MoneyExperiment
 
             if (budgetName == null)
             {
-                // TODO Fix when password is wrong...
                 accountToLoad.Wallet.Add(new Wallet());
                 accountToLoad.Wallet[0].WalletName = Constants.DefaultWalletName;
                 accountToLoad.Budget = new Budget
@@ -564,7 +563,7 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.B)
             {
                 Console.WriteLine();
-                UpdateBalance(selectedAccount);
+                this.UpdateBalance(selectedAccount);
                 Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
@@ -604,7 +603,7 @@ namespace MoneyExperiment
             }
         }
 
-        private static void UpdateBalance(Account selectedAccount)
+        private void UpdateBalance(Account selectedAccount)
         {
             Console.WriteLine("What do you want to do with the current account?");
             Console.WriteLine("0: Cancel");
@@ -627,6 +626,10 @@ namespace MoneyExperiment
                 var balance = ParseHelper.ParseDouble(Console.ReadLine());
 
                 selectedAccount.Wallet[0].WalletAmount += balance;
+
+                selectedAccount.Budget.TranasctionTime.Add(DateTime.Now.ToString());
+                selectedAccount.Budget.AllUserTransactionFile.Add(Constants.SeparatorHelper(balance, 6) + "Balance corected with: " + balance + " at " + DateTime.Now.ToString());
+                this.allTransactionsLineCount++;
             }
             else if (userChoice == 2)
             {
@@ -659,7 +662,7 @@ namespace MoneyExperiment
                     if (userChoseSecondAcc > selectedAccount.Wallet.Count || userChoseFirstAcc > selectedAccount.Wallet.Count)
                     {
                         Console.WriteLine("Account does not exist");
-                        UpdateBalance(selectedAccount);
+                        this.UpdateBalance(selectedAccount);
                     }
                     else
                     {
@@ -688,7 +691,7 @@ namespace MoneyExperiment
 
                 if (userChosenWalletToRemove > selectedAccount.Wallet.Count)
                 {
-                    UpdateBalance(selectedAccount);
+                    this.UpdateBalance(selectedAccount);
                 }
                 else
                 {
@@ -707,7 +710,7 @@ namespace MoneyExperiment
 
                 if (userChosenWalletToRename > selectedAccount.Wallet.Count)
                 {
-                    UpdateBalance(selectedAccount);
+                    this.UpdateBalance(selectedAccount);
                 }
                 else
                 {
@@ -718,7 +721,7 @@ namespace MoneyExperiment
             else
             {
                 Console.Clear();
-                UpdateBalance(selectedAccount);
+                this.UpdateBalance(selectedAccount);
             }
         }
 
@@ -1174,6 +1177,7 @@ namespace MoneyExperiment
         /// <returns>Returns a name of the budget to be loaded.</returns>
         private string SwitchBudget(Account currentAccount)
         {
+            // TODO Rename folder or this will break when acc name is changed
             var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + currentAccount.Wallet[0].WalletName);
 
             Console.WriteLine(0 + ": Cancel.");
