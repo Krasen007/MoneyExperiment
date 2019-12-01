@@ -639,7 +639,7 @@ namespace MoneyExperiment
                 }
                 else
                 {
-                    Console.WriteLine("What amount you want to transfer between who?");
+                    ///Console.WriteLine("What amount you want to transfer between who?");
 
                     Console.WriteLine("Pick from which account to move funds: ");
                     for (int i = 0; i < selectedAccount.Wallet.Count; i++)
@@ -969,6 +969,7 @@ namespace MoneyExperiment
                 if (renameItem == i + 1)
                 {
                     Console.WriteLine("Enter new name for this item: ");
+                    // TODO Somehwow I have to check for same name items and add their amount.
                     selectedBudget.UserInputItem[i] = ParseHelper.ParseStringInput(Console.ReadLine());
                     break;
                 }
