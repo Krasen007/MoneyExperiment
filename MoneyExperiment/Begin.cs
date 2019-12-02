@@ -29,7 +29,7 @@ namespace MoneyExperiment
 
     public class Begin
     {
-        private int fileLineCount;
+        private int itemsFileLineCount;
         private int allTransactionsLineCount;
 
         public Begin()
@@ -132,7 +132,7 @@ namespace MoneyExperiment
 
             if (this.DecryptDatabaseFiles(selectedAccount, out Account decryptedAccount))
             {
-                Encryption.SaveDatabase(decryptedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(decryptedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
                 // Start UI
                 this.ListDataBaseSummary(decryptedAccount);
                 this.ShowMainMenu(decryptedAccount);
@@ -297,16 +297,16 @@ namespace MoneyExperiment
 
                 selectedAccount.Budget.ItemsFilePath = Constants.DatabaseFolderPath + selectedAccount.Wallet[0].WalletName + backslash + selectedAccount.Budget.Name + "\\Items" + selectedAccount.Budget.Name + ".krs";
                 File.Create(selectedAccount.Budget.ItemsFilePath).Dispose();
-                this.fileLineCount = 0;
+                this.itemsFileLineCount = 0;
             }
             else
             {
-                this.fileLineCount = File.ReadLines(selectedAccount.Budget.ItemsFilePath).Count();
+                this.itemsFileLineCount = File.ReadLines(selectedAccount.Budget.ItemsFilePath).Count();
 
                 using StreamReader srItems = new StreamReader(selectedAccount.Budget.ItemsFilePath);
                 try
                 {
-                    for (int i = 0; i < this.fileLineCount; i++)
+                    for (int i = 0; i < this.itemsFileLineCount; i++)
                     {
                         var decryptedString = Encryption.DecryptString(srItems.ReadLine()!);
                         if (Encryption.IsPasswordWrong)
@@ -341,7 +341,7 @@ namespace MoneyExperiment
                 using StreamReader srCosts = new StreamReader(selectedAccount.Budget.CostsFilePath);
                 try
                 {
-                    for (int i = 0; i < this.fileLineCount; i++)
+                    for (int i = 0; i < this.itemsFileLineCount; i++)
                     {
                         var decryptedString = Encryption.DecryptString(srCosts.ReadLine()!);
                         if (Encryption.IsPasswordWrong)
@@ -437,7 +437,7 @@ namespace MoneyExperiment
             Console.WriteLine();
 
             double totalCosts = 0;
-            for (int i = 0; i < this.fileLineCount; i++)
+            for (int i = 0; i < this.itemsFileLineCount; i++)
             {
                 totalCosts += selectedAccount.Budget.UserInputCost[i];
 
@@ -555,7 +555,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine();
                 this.AddOrUpdateBudgetItem(selectedAccount);
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
@@ -564,7 +564,7 @@ namespace MoneyExperiment
             {
                 Console.WriteLine();
                 this.UpdateBalance(selectedAccount);
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
                 Console.Clear();
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
@@ -572,11 +572,11 @@ namespace MoneyExperiment
             else if (userInput.Key == ConsoleKey.E)
             {
                 Console.WriteLine("\nExiting...");
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
             }
             else if (userInput.Key == ConsoleKey.U)
             {
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
 
                 Console.WriteLine("\nUploading...");
                 UploadOnline();
@@ -769,7 +769,7 @@ namespace MoneyExperiment
 
             // Check if item is already in the database
             bool isDublicateItem = false;
-            for (int i = 0; i < this.fileLineCount; i++)
+            for (int i = 0; i < this.itemsFileLineCount; i++)
             {
                 if (itemInput == selectedAccount.Budget.UserInputItem[i])
                 {
@@ -789,7 +789,7 @@ namespace MoneyExperiment
                 selectedAccount.Budget.UserInputItem.Add(itemInput);
                 selectedAccount.Budget.UserInputCost.Add(costInput);
                 selectedAccount.Budget.TranasctionTime.Add(DateTime.Now.ToString());
-                this.fileLineCount++;
+                this.itemsFileLineCount++;
             }
 
             // This is used to add space between the amount of the item so they appear level.
@@ -841,7 +841,7 @@ namespace MoneyExperiment
             if (userInput.Key == ConsoleKey.X)
             {
                 Console.Clear();
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
                 this.ExportReadable(selectedAccount.Budget);
                 Console.WriteLine("View your summary in " + selectedAccount.Budget.SummaryFilePath);
                 Constants.PressEnterToContinue();
@@ -856,7 +856,7 @@ namespace MoneyExperiment
                 this.RemoveItemFromBudget(selectedAccount);
                 Console.Clear();
 
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
 
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
@@ -868,7 +868,7 @@ namespace MoneyExperiment
                 this.RenameBudgetItem(selectedAccount.Budget);
                 Console.Clear();
 
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -880,7 +880,7 @@ namespace MoneyExperiment
                 this.ImportCSV(selectedAccount.Budget);
                 Constants.PressEnterToContinue();
 
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -889,7 +889,7 @@ namespace MoneyExperiment
                 ChangeBudgetNameAndAmount(selectedAccount.Budget);
                 Console.Clear();
 
-                Encryption.SaveDatabase(selectedAccount, this.fileLineCount, this.allTransactionsLineCount);
+                Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
                 this.ListDataBaseSummary(selectedAccount);
                 this.ShowMainMenu(selectedAccount);
             }
@@ -969,8 +969,30 @@ namespace MoneyExperiment
                 if (renameItem == i + 1)
                 {
                     Console.WriteLine("Enter new name for this item: ");
-                    // TODO Somehwow I have to check for same name items and add their amount.
-                    selectedBudget.UserInputItem[i] = ParseHelper.ParseStringInput(Console.ReadLine());
+
+                    var newName = ParseHelper.ParseStringInput(Console.ReadLine());
+
+                    if (selectedBudget.UserInputItem.Contains(newName))
+                    {
+                        var tempCost = selectedBudget.UserInputCost[i];
+
+                        selectedBudget.UserInputItem.Remove(selectedBudget.UserInputItem[i]);
+                        selectedBudget.UserInputCost.Remove(selectedBudget.UserInputCost[i]);
+                        this.itemsFileLineCount--;
+
+                        for (int j = 0; j < selectedBudget.UserInputCost.Count; j++)
+                        {
+                            if (selectedBudget.UserInputItem[j] == newName)
+                            {
+                                selectedBudget.UserInputCost[j] += tempCost;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        selectedBudget.UserInputItem[i] = newName;
+                    }
                     break;
                 }
                 else if (renameItem == 0)
@@ -995,13 +1017,13 @@ namespace MoneyExperiment
             using StreamWriter outputFile = new StreamWriter(selectedBudget.SummaryFilePath);
             outputFile.WriteLine("*********** {0} **********", selectedBudget.Name);
 
-            for (int i = 0; i < this.fileLineCount; i++)
+            for (int i = 0; i < this.itemsFileLineCount; i++)
             {
                 outputFile.WriteLine(selectedBudget.UserInputItem[i] + " " + selectedBudget.UserInputCost[i]);
             }
 
             double totalCosts = 0;
-            for (int i = 0; i < this.fileLineCount; i++)
+            for (int i = 0; i < this.itemsFileLineCount; i++)
             {
                 totalCosts += selectedBudget.UserInputCost[i];
             }
@@ -1035,7 +1057,7 @@ namespace MoneyExperiment
 
                     selectedBudget.Budget.UserInputItem.Remove(selectedBudget.Budget.UserInputItem[i]);
                     selectedBudget.Budget.UserInputCost.Remove(selectedBudget.Budget.UserInputCost[i]);
-                    this.fileLineCount--;
+                    this.itemsFileLineCount--;
                     break;
                 }
                 else if (deleteItem == 0)
@@ -1078,7 +1100,7 @@ namespace MoneyExperiment
 
                         // Check if item is already in the database
                         bool isDublicateItem = false;
-                        for (int j = 0; j < this.fileLineCount; j++)
+                        for (int j = 0; j < this.itemsFileLineCount; j++)
                         {
                             if (itemInput == selectedBudget.UserInputItem[j])
                             {
@@ -1095,7 +1117,7 @@ namespace MoneyExperiment
                             selectedBudget.UserInputItem.Add(itemInput);
                             selectedBudget.UserInputCost.Add(Convert.ToDouble(costInput));
                             selectedBudget.TranasctionTime.Add(DateTime.Now.ToString());
-                            this.fileLineCount++;
+                            this.itemsFileLineCount++;
                         }
                     }
                     Console.WriteLine("Import complete!");
