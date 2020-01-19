@@ -133,7 +133,12 @@ namespace MoneyExperiment
             if (this.DecryptDatabaseFiles(selectedAccount, out Account decryptedAccount))
             {
                 Encryption.SaveDatabase(decryptedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
+
                 // Start UI
+
+                // Update console size.
+                Console.SetWindowSize(Console.WindowWidth, Console.WindowHeight + this.itemsFileLineCount + 7); // Increases the console height to fit the items + offset
+
                 this.ListDataBaseSummary(decryptedAccount);
                 this.ShowMainMenu(decryptedAccount);
             }
@@ -578,6 +583,7 @@ namespace MoneyExperiment
             {
                 Encryption.SaveDatabase(selectedAccount, this.itemsFileLineCount, this.allTransactionsLineCount);
 
+                Console.Clear();
                 Console.WriteLine("\nUploading...");
                 UploadOnline();
                 Constants.PressEnterToContinue();
@@ -1200,7 +1206,7 @@ namespace MoneyExperiment
         /// <returns>Returns a name of the budget to be loaded.</returns>
         private string SwitchBudget(Account currentAccount)
         {
-            // TODO Rename folder or this will break when acc name is changed
+            // ODO Rename folder or this will break when acc name is changed
             var dirList = Directory.GetDirectories(Constants.DatabaseFolderPath + currentAccount.Wallet[0].WalletName);
 
             Console.WriteLine(0 + ": Cancel.");

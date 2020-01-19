@@ -9,7 +9,7 @@ The trick is that your database of items is always encrypted even if its in a pu
 
 ## Download
 
-Latest release: <a href="https://github.com/Krasen007/MoneyExperiment/releases">1.4.0.0</a>.  
+Latest release: <a href="https://github.com/Krasen007/MoneyExperiment/releases">1.4.1.2</a>.  
 
 Repo is located here: <a href="https://github.com/Krasen007/MoneyExperiment">https://github.com/Krasen007/MoneyExperiment</a>.
 
