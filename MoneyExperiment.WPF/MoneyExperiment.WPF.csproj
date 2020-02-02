@@ -1,8 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>Resources/icon.ico</ApplicationIcon>
+    <Authors>Krasen Ivanov</Authors>
+    <Copyright>Krasen Ivanov 2019</Copyright>
+    <Version>0.0.2</Version>
+    <AssemblyName>MoneyExperiment.WPF</AssemblyName>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
