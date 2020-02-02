@@ -81,7 +81,7 @@ Ability to find and load or rename items in budget folder.<br>
 Get it setup using git portable.<br>
 Test the app on linux.<br>
 Add tool or functionality to update all needed for git .bat files. Example: First run, setup your git remote, then the app opens all the .bat files and changes the lines needed for git to match the users input.<br>
-Publish releases on github, and since I am already using git to downlaod the database, maybe I can use github to download new versions of the app.
+Publish releases on github, and since I am already using git to downlaod the database, maybe I can use github to download new versions of the app. Maybe update only the needed files in this repo and download and update only them.
 
 #### Known issues
 The app may require elevated permissions if using the release versions.<br>
